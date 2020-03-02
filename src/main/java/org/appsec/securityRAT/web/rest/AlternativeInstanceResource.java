@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.AlternativeInstance;
-import org.appsec.securityRAT.repository.AlternativeInstanceRepository;
-import org.appsec.securityRAT.repository.search.AlternativeInstanceSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.AlternativeInstance;
+import org.appsec.securityrat.repository.AlternativeInstanceRepository;
+import org.appsec.securityrat.repository.search.AlternativeInstanceSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing AlternativeInstance.
+ * REST controller for managing {@link org.appsec.securityrat.domain.AlternativeInstance}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class AlternativeInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(AlternativeInstanceResource.class);
 
-    @Inject
-    private AlternativeInstanceRepository alternativeInstanceRepository;
+    private static final String ENTITY_NAME = "alternativeInstance";
 
-    @Inject
-    private AlternativeInstanceSearchRepository alternativeInstanceSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final AlternativeInstanceRepository alternativeInstanceRepository;
+
+    private final AlternativeInstanceSearchRepository alternativeInstanceSearchRepository;
+
+    public AlternativeInstanceResource(AlternativeInstanceRepository alternativeInstanceRepository, AlternativeInstanceSearchRepository alternativeInstanceSearchRepository) {
+        this.alternativeInstanceRepository = alternativeInstanceRepository;
+        this.alternativeInstanceSearchRepository = alternativeInstanceSearchRepository;
+    }
 
     /**
-     * POST  /alternativeInstances -> Create a new alternativeInstance.
+     * {@code POST  /alternative-instances} : Create a new alternativeInstance.
+     *
+     * @param alternativeInstance the alternativeInstance to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new alternativeInstance, or with status {@code 400 (Bad Request)} if the alternativeInstance has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/alternativeInstances",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeInstance> create(@RequestBody AlternativeInstance alternativeInstance) throws URISyntaxException {
+    @PostMapping("/alternative-instances")
+    public ResponseEntity<AlternativeInstance> createAlternativeInstance(@RequestBody AlternativeInstance alternativeInstance) throws URISyntaxException {
         log.debug("REST request to save AlternativeInstance : {}", alternativeInstance);
         if (alternativeInstance.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new alternativeInstance cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new alternativeInstance cannot already have an ID", ENTITY_NAME, "idexists");
         }
         AlternativeInstance result = alternativeInstanceRepository.save(alternativeInstance);
         alternativeInstanceSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/alternativeInstances/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("alternativeInstance", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/alternative-instances/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /alternativeInstances -> Updates an existing alternativeInstance.
+     * {@code PUT  /alternative-instances} : Updates an existing alternativeInstance.
+     *
+     * @param alternativeInstance the alternativeInstance to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated alternativeInstance,
+     * or with status {@code 400 (Bad Request)} if the alternativeInstance is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the alternativeInstance couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/alternativeInstances",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeInstance> update(@RequestBody AlternativeInstance alternativeInstance) throws URISyntaxException {
+    @PutMapping("/alternative-instances")
+    public ResponseEntity<AlternativeInstance> updateAlternativeInstance(@RequestBody AlternativeInstance alternativeInstance) throws URISyntaxException {
         log.debug("REST request to update AlternativeInstance : {}", alternativeInstance);
         if (alternativeInstance.getId() == null) {
-            return create(alternativeInstance);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         AlternativeInstance result = alternativeInstanceRepository.save(alternativeInstance);
-        alternativeInstanceSearchRepository.save(alternativeInstance);
+        alternativeInstanceSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("alternativeInstance", alternativeInstance.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, alternativeInstance.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /alternativeInstances -> get all the alternativeInstances.
+     * {@code GET  /alternative-instances} : get all the alternativeInstances.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of alternativeInstances in body.
      */
-    @RequestMapping(value = "/alternativeInstances",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<AlternativeInstance> getAll() {
+    @GetMapping("/alternative-instances")
+    public List<AlternativeInstance> getAllAlternativeInstances() {
         log.debug("REST request to get all AlternativeInstances");
         return alternativeInstanceRepository.findAll();
     }
 
     /**
-     * GET  /alternativeInstances/:id -> get the "id" alternativeInstance.
+     * {@code GET  /alternative-instances/:id} : get the "id" alternativeInstance.
+     *
+     * @param id the id of the alternativeInstance to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the alternativeInstance, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/alternativeInstances/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeInstance> get(@PathVariable Long id) {
+    @GetMapping("/alternative-instances/{id}")
+    public ResponseEntity<AlternativeInstance> getAlternativeInstance(@PathVariable Long id) {
         log.debug("REST request to get AlternativeInstance : {}", id);
-        return Optional.ofNullable(alternativeInstanceRepository.findOne(id))
-            .map(alternativeInstance -> new ResponseEntity<>(
-                alternativeInstance,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<AlternativeInstance> alternativeInstance = alternativeInstanceRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(alternativeInstance);
     }
 
     /**
-     * DELETE  /alternativeInstances/:id -> delete the "id" alternativeInstance.
+     * {@code DELETE  /alternative-instances/:id} : delete the "id" alternativeInstance.
+     *
+     * @param id the id of the alternativeInstance to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/alternativeInstances/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/alternative-instances/{id}")
+    public ResponseEntity<Void> deleteAlternativeInstance(@PathVariable Long id) {
         log.debug("REST request to delete AlternativeInstance : {}", id);
-        return Optional.ofNullable(alternativeInstanceRepository.findOne(id))
-                .map(alternativeInstance -> {
-                	alternativeInstanceRepository.delete(id);
-                    alternativeInstanceSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("alternativeInstance", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        alternativeInstanceRepository.deleteById(id);
+        alternativeInstanceSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/alternativeInstances/:query -> search for the alternativeInstance corresponding
+     * {@code SEARCH  /_search/alternative-instances?query=:query} : search for the alternativeInstance corresponding
      * to the query.
+     *
+     * @param query the query of the alternativeInstance search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/alternativeInstances/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<AlternativeInstance> search(@PathVariable String query) {
+    @GetMapping("/_search/alternative-instances")
+    public List<AlternativeInstance> searchAlternativeInstances(@RequestParam String query) {
+        log.debug("REST request to search AlternativeInstances for query {}", query);
         return StreamSupport
-            .stream(alternativeInstanceSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(alternativeInstanceSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

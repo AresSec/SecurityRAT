@@ -1,4 +1,4 @@
 /**
  * Spring Data JPA repositories.
  */
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;

@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.OptColumn;
-import org.appsec.securityRAT.repository.OptColumnRepository;
-import org.appsec.securityRAT.repository.search.OptColumnSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.OptColumn;
+import org.appsec.securityrat.repository.OptColumnRepository;
+import org.appsec.securityrat.repository.search.OptColumnSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing OptColumn.
+ * REST controller for managing {@link org.appsec.securityrat.domain.OptColumn}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class OptColumnResource {
 
     private final Logger log = LoggerFactory.getLogger(OptColumnResource.class);
 
-    @Inject
-    private OptColumnRepository optColumnRepository;
+    private static final String ENTITY_NAME = "optColumn";
 
-    @Inject
-    private OptColumnSearchRepository optColumnSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final OptColumnRepository optColumnRepository;
+
+    private final OptColumnSearchRepository optColumnSearchRepository;
+
+    public OptColumnResource(OptColumnRepository optColumnRepository, OptColumnSearchRepository optColumnSearchRepository) {
+        this.optColumnRepository = optColumnRepository;
+        this.optColumnSearchRepository = optColumnSearchRepository;
+    }
 
     /**
-     * POST  /optColumns -> Create a new optColumn.
+     * {@code POST  /opt-columns} : Create a new optColumn.
+     *
+     * @param optColumn the optColumn to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new optColumn, or with status {@code 400 (Bad Request)} if the optColumn has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/optColumns",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<OptColumn> create(@RequestBody OptColumn optColumn) throws URISyntaxException {
+    @PostMapping("/opt-columns")
+    public ResponseEntity<OptColumn> createOptColumn(@RequestBody OptColumn optColumn) throws URISyntaxException {
         log.debug("REST request to save OptColumn : {}", optColumn);
         if (optColumn.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new optColumn cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new optColumn cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OptColumn result = optColumnRepository.save(optColumn);
         optColumnSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/optColumns/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("optColumn", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/opt-columns/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /optColumns -> Updates an existing optColumn.
+     * {@code PUT  /opt-columns} : Updates an existing optColumn.
+     *
+     * @param optColumn the optColumn to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated optColumn,
+     * or with status {@code 400 (Bad Request)} if the optColumn is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the optColumn couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/optColumns",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<OptColumn> update(@RequestBody OptColumn optColumn) throws URISyntaxException {
+    @PutMapping("/opt-columns")
+    public ResponseEntity<OptColumn> updateOptColumn(@RequestBody OptColumn optColumn) throws URISyntaxException {
         log.debug("REST request to update OptColumn : {}", optColumn);
         if (optColumn.getId() == null) {
-            return create(optColumn);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         OptColumn result = optColumnRepository.save(optColumn);
-        optColumnSearchRepository.save(optColumn);
+        optColumnSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("optColumn", optColumn.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, optColumn.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /optColumns -> get all the optColumns.
+     * {@code GET  /opt-columns} : get all the optColumns.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of optColumns in body.
      */
-    @RequestMapping(value = "/optColumns",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<OptColumn> getAll() {
+    @GetMapping("/opt-columns")
+    public List<OptColumn> getAllOptColumns() {
         log.debug("REST request to get all OptColumns");
         return optColumnRepository.findAll();
     }
 
     /**
-     * GET  /optColumns/:id -> get the "id" optColumn.
+     * {@code GET  /opt-columns/:id} : get the "id" optColumn.
+     *
+     * @param id the id of the optColumn to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the optColumn, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/optColumns/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<OptColumn> get(@PathVariable Long id) {
+    @GetMapping("/opt-columns/{id}")
+    public ResponseEntity<OptColumn> getOptColumn(@PathVariable Long id) {
         log.debug("REST request to get OptColumn : {}", id);
-        return Optional.ofNullable(optColumnRepository.findOne(id))
-            .map(optColumn -> new ResponseEntity<>(
-                optColumn,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<OptColumn> optColumn = optColumnRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(optColumn);
     }
 
     /**
-     * DELETE  /optColumns/:id -> delete the "id" optColumn.
+     * {@code DELETE  /opt-columns/:id} : delete the "id" optColumn.
+     *
+     * @param id the id of the optColumn to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/optColumns/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/opt-columns/{id}")
+    public ResponseEntity<Void> deleteOptColumn(@PathVariable Long id) {
         log.debug("REST request to delete OptColumn : {}", id);
-        return Optional.ofNullable(optColumnRepository.findOne(id))
-                .map(optColumn -> {
-                	optColumnRepository.delete(id);
-                    optColumnSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("optColumn", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        optColumnRepository.deleteById(id);
+        optColumnSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/optColumns/:query -> search for the optColumn corresponding
+     * {@code SEARCH  /_search/opt-columns?query=:query} : search for the optColumn corresponding
      * to the query.
+     *
+     * @param query the query of the optColumn search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/optColumns/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<OptColumn> search(@PathVariable String query) {
+    @GetMapping("/_search/opt-columns")
+    public List<OptColumn> searchOptColumns(@RequestParam String query) {
+        log.debug("REST request to search OptColumns for query {}", query);
         return StreamSupport
-            .stream(optColumnSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(optColumnSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,28 @@
+{
+  "securityRatApp": {
+    "collectionInstance": {
+      "home": {
+        "title": "Collection Instances",
+        "createLabel": "Create a new Collection Instance",
+        "createOrEditLabel": "Create or edit a Collection Instance",
+        "search": "Search for Collection Instance",
+        "notFound": "No Collection Instances found"
+      },
+      "created": "A new Collection Instance is created with identifier {{ param }}",
+      "updated": "A Collection Instance is updated with identifier {{ param }}",
+      "deleted": "A Collection Instance is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Collection Instance {{ id }}?"
+      },
+      "detail": {
+        "title": "Collection Instance"
+      },
+      "name": "Name",
+      "description": "Description",
+      "showOrder": "Show Order",
+      "active": "Active",
+      "collectionCategory": "Collection Category",
+      "requirementSkeleton": "Requirement Skeleton"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="trainingRequirementNode">
+            <h2><span jhiTranslate="securityRatApp.trainingRequirementNode.detail.title">Training Requirement Node</span> {{ trainingRequirementNode.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="securityRatApp.trainingRequirementNode.node">Node</span></dt>
+                <dd>
+                    <div *ngIf="trainingRequirementNode.node">
+                        <a [routerLink]="['/training-tree-node', trainingRequirementNode.node?.id, 'view']">{{ trainingRequirementNode.node?.id }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.trainingRequirementNode.requirementSkeleton">Requirement Skeleton</span></dt>
+                <dd>
+                    <div *ngIf="trainingRequirementNode.requirementSkeleton">
+                        <a [routerLink]="['/requirement-skeleton', trainingRequirementNode.requirementSkeleton?.id, 'view']">{{ trainingRequirementNode.requirementSkeleton?.id }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/training-requirement-node', trainingRequirementNode.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

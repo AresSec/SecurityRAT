@@ -1,11 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.OptColumnType;
+import org.appsec.securityrat.domain.OptColumnType;
+
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the OptColumnType entity.
+ * Spring Data  repository for the OptColumnType entity.
  */
-public interface OptColumnTypeRepository extends JpaRepository<OptColumnType,Long> {
+@SuppressWarnings("unused")
+@Repository
+public interface OptColumnTypeRepository extends JpaRepository<OptColumnType, Long> {
 
 }

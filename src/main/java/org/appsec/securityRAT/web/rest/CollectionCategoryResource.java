@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.CollectionCategory;
-import org.appsec.securityRAT.repository.CollectionCategoryRepository;
-import org.appsec.securityRAT.repository.search.CollectionCategorySearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.CollectionCategory;
+import org.appsec.securityrat.repository.CollectionCategoryRepository;
+import org.appsec.securityrat.repository.search.CollectionCategorySearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing CollectionCategory.
+ * REST controller for managing {@link org.appsec.securityrat.domain.CollectionCategory}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class CollectionCategoryResource {
 
     private final Logger log = LoggerFactory.getLogger(CollectionCategoryResource.class);
 
-    @Inject
-    private CollectionCategoryRepository collectionCategoryRepository;
+    private static final String ENTITY_NAME = "collectionCategory";
 
-    @Inject
-    private CollectionCategorySearchRepository collectionCategorySearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final CollectionCategoryRepository collectionCategoryRepository;
+
+    private final CollectionCategorySearchRepository collectionCategorySearchRepository;
+
+    public CollectionCategoryResource(CollectionCategoryRepository collectionCategoryRepository, CollectionCategorySearchRepository collectionCategorySearchRepository) {
+        this.collectionCategoryRepository = collectionCategoryRepository;
+        this.collectionCategorySearchRepository = collectionCategorySearchRepository;
+    }
 
     /**
-     * POST  /collectionCategorys -> Create a new collectionCategory.
+     * {@code POST  /collection-categories} : Create a new collectionCategory.
+     *
+     * @param collectionCategory the collectionCategory to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new collectionCategory, or with status {@code 400 (Bad Request)} if the collectionCategory has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/collectionCategorys",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionCategory> create(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
+    @PostMapping("/collection-categories")
+    public ResponseEntity<CollectionCategory> createCollectionCategory(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
         log.debug("REST request to save CollectionCategory : {}", collectionCategory);
         if (collectionCategory.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new collectionCategory cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new collectionCategory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CollectionCategory result = collectionCategoryRepository.save(collectionCategory);
         collectionCategorySearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/collectionCategorys/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("collectionCategory", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/collection-categories/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /collectionCategorys -> Updates an existing collectionCategory.
+     * {@code PUT  /collection-categories} : Updates an existing collectionCategory.
+     *
+     * @param collectionCategory the collectionCategory to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated collectionCategory,
+     * or with status {@code 400 (Bad Request)} if the collectionCategory is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the collectionCategory couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/collectionCategorys",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionCategory> update(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
+    @PutMapping("/collection-categories")
+    public ResponseEntity<CollectionCategory> updateCollectionCategory(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
         log.debug("REST request to update CollectionCategory : {}", collectionCategory);
         if (collectionCategory.getId() == null) {
-            return create(collectionCategory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CollectionCategory result = collectionCategoryRepository.save(collectionCategory);
-        collectionCategorySearchRepository.save(collectionCategory);
+        collectionCategorySearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("collectionCategory", collectionCategory.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, collectionCategory.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /collectionCategorys -> get all the collectionCategorys.
+     * {@code GET  /collection-categories} : get all the collectionCategories.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of collectionCategories in body.
      */
-    @RequestMapping(value = "/collectionCategorys",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<CollectionCategory> getAll() {
-        log.debug("REST request to get all CollectionCategorys");
+    @GetMapping("/collection-categories")
+    public List<CollectionCategory> getAllCollectionCategories() {
+        log.debug("REST request to get all CollectionCategories");
         return collectionCategoryRepository.findAll();
     }
 
     /**
-     * GET  /collectionCategorys/:id -> get the "id" collectionCategory.
+     * {@code GET  /collection-categories/:id} : get the "id" collectionCategory.
+     *
+     * @param id the id of the collectionCategory to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the collectionCategory, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/collectionCategorys/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionCategory> get(@PathVariable Long id) {
+    @GetMapping("/collection-categories/{id}")
+    public ResponseEntity<CollectionCategory> getCollectionCategory(@PathVariable Long id) {
         log.debug("REST request to get CollectionCategory : {}", id);
-        return Optional.ofNullable(collectionCategoryRepository.findOne(id))
-            .map(collectionCategory -> new ResponseEntity<>(
-                collectionCategory,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<CollectionCategory> collectionCategory = collectionCategoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(collectionCategory);
     }
 
     /**
-     * DELETE  /collectionCategorys/:id -> delete the "id" collectionCategory.
+     * {@code DELETE  /collection-categories/:id} : delete the "id" collectionCategory.
+     *
+     * @param id the id of the collectionCategory to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/collectionCategorys/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/collection-categories/{id}")
+    public ResponseEntity<Void> deleteCollectionCategory(@PathVariable Long id) {
         log.debug("REST request to delete CollectionCategory : {}", id);
-        return Optional.ofNullable(collectionCategoryRepository.findOne(id))
-                .map(collectionCategory -> {
-                	collectionCategoryRepository.delete(id);
-                    collectionCategorySearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("collectionCategory", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        collectionCategoryRepository.deleteById(id);
+        collectionCategorySearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/collectionCategorys/:query -> search for the collectionCategory corresponding
+     * {@code SEARCH  /_search/collection-categories?query=:query} : search for the collectionCategory corresponding
      * to the query.
+     *
+     * @param query the query of the collectionCategory search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/collectionCategorys/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<CollectionCategory> search(@PathVariable String query) {
+    @GetMapping("/_search/collection-categories")
+    public List<CollectionCategory> searchCollectionCategories(@RequestParam String query) {
+        log.debug("REST request to search CollectionCategories for query {}", query);
         return StreamSupport
-            .stream(collectionCategorySearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(collectionCategorySearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

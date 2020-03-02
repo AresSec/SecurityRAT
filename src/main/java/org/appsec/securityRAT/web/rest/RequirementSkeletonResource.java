@@ -1,36 +1,21 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+import org.appsec.securityrat.domain.RequirementSkeleton;
+import org.appsec.securityrat.repository.RequirementSkeletonRepository;
+import org.appsec.securityrat.repository.search.RequirementSkeletonSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
 
-
-
-
-
-
-
-
-import org.appsec.securityRAT.domain.CollectionCategory;
-import org.appsec.securityRAT.domain.CollectionInstance;
-import org.appsec.securityRAT.domain.ProjectType;
-import org.appsec.securityRAT.domain.RequirementSkeleton;
-import org.appsec.securityRAT.repository.CollectionInstanceRepository;
-import org.appsec.securityRAT.repository.ProjectTypeRepository;
-import org.appsec.securityRAT.repository.RequirementSkeletonRepository;
-import org.appsec.securityRAT.repository.search.RequirementSkeletonSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,193 +24,122 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing RequirementSkeleton.
+ * REST controller for managing {@link org.appsec.securityrat.domain.RequirementSkeleton}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class RequirementSkeletonResource {
 
     private final Logger log = LoggerFactory.getLogger(RequirementSkeletonResource.class);
 
-    @Inject
-    private RequirementSkeletonRepository requirementSkeletonRepository;
+    private static final String ENTITY_NAME = "requirementSkeleton";
 
-    @Inject
-    private ProjectTypeRepository projectTypeRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private CollectionInstanceRepository collectionInstanceRepository;
+    private final RequirementSkeletonRepository requirementSkeletonRepository;
 
-    @Inject
-    private RequirementSkeletonSearchRepository requirementSkeletonSearchRepository;
+    private final RequirementSkeletonSearchRepository requirementSkeletonSearchRepository;
+
+    public RequirementSkeletonResource(RequirementSkeletonRepository requirementSkeletonRepository, RequirementSkeletonSearchRepository requirementSkeletonSearchRepository) {
+        this.requirementSkeletonRepository = requirementSkeletonRepository;
+        this.requirementSkeletonSearchRepository = requirementSkeletonSearchRepository;
+    }
 
     /**
-     * POST  /requirementSkeletons -> Create a new requirementSkeleton.
+     * {@code POST  /requirement-skeletons} : Create a new requirementSkeleton.
+     *
+     * @param requirementSkeleton the requirementSkeleton to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new requirementSkeleton, or with status {@code 400 (Bad Request)} if the requirementSkeleton has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/requirementSkeletons",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<RequirementSkeleton> create(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
+    @PostMapping("/requirement-skeletons")
+    public ResponseEntity<RequirementSkeleton> createRequirementSkeleton(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
         log.debug("REST request to save RequirementSkeleton : {}", requirementSkeleton);
         if (requirementSkeleton.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new requirementSkeleton cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new requirementSkeleton cannot already have an ID", ENTITY_NAME, "idexists");
         }
         RequirementSkeleton result = requirementSkeletonRepository.save(requirementSkeleton);
         requirementSkeletonSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/requirementSkeletons/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("requirementSkeleton", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/requirement-skeletons/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /requirementSkeletons -> Updates an existing requirementSkeleton.
+     * {@code PUT  /requirement-skeletons} : Updates an existing requirementSkeleton.
+     *
+     * @param requirementSkeleton the requirementSkeleton to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirementSkeleton,
+     * or with status {@code 400 (Bad Request)} if the requirementSkeleton is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the requirementSkeleton couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/requirementSkeletons",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<RequirementSkeleton> update(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
+    @PutMapping("/requirement-skeletons")
+    public ResponseEntity<RequirementSkeleton> updateRequirementSkeleton(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
         log.debug("REST request to update RequirementSkeleton : {}", requirementSkeleton);
         if (requirementSkeleton.getId() == null) {
-            return create(requirementSkeleton);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         RequirementSkeleton result = requirementSkeletonRepository.save(requirementSkeleton);
-        requirementSkeletonSearchRepository.save(requirementSkeleton);
+        requirementSkeletonSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("requirementSkeleton", requirementSkeleton.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, requirementSkeleton.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /requirementSkeletons -> get all the requirementSkeletons.
+     * {@code GET  /requirement-skeletons} : get all the requirementSkeletons.
+     *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requirementSkeletons in body.
      */
-    @RequestMapping(value = "/requirementSkeletons",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<RequirementSkeleton> getAll() {
+    @GetMapping("/requirement-skeletons")
+    public List<RequirementSkeleton> getAllRequirementSkeletons(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all RequirementSkeletons");
         return requirementSkeletonRepository.findAllWithEagerRelationships();
     }
 
     /**
-     * GET  /requirementSkeletons/:id -> get the "id" requirementSkeleton.
+     * {@code GET  /requirement-skeletons/:id} : get the "id" requirementSkeleton.
+     *
+     * @param id the id of the requirementSkeleton to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the requirementSkeleton, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/requirementSkeletons/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<RequirementSkeleton> get(@PathVariable Long id) {
+    @GetMapping("/requirement-skeletons/{id}")
+    public ResponseEntity<RequirementSkeleton> getRequirementSkeleton(@PathVariable Long id) {
         log.debug("REST request to get RequirementSkeleton : {}", id);
-        return Optional.ofNullable(requirementSkeletonRepository.findOneWithEagerRelationships(id))
-            .map(requirementSkeleton -> new ResponseEntity<>(
-                requirementSkeleton,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<RequirementSkeleton> requirementSkeleton = requirementSkeletonRepository.findOneWithEagerRelationships(id);
+        return ResponseUtil.wrapOrNotFound(requirementSkeleton);
     }
 
     /**
-     * GET /requirementSkeletons/getSelected --> get category and project type specific requirementSkeletons.
-     * @author dkefer
-     * @param collections: list of ids of collectionInstances
-     * @param projecttypes: list of ids of project types
+     * {@code DELETE  /requirement-skeletons/:id} : delete the "id" requirementSkeleton.
      *
-     *
+     * @param id the id of the requirementSkeleton to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value="/requirementSkeletons/getSelected",
-    		method=RequestMethod.GET,
-    		produces = MediaType.APPLICATION_JSON_VALUE)
-    //public ResponseEntity<Set<RequirementSkeleton>> get(@RequestParam Map<String,String> allRequestParams) {
-    public List<RequirementSkeleton> get(@RequestParam("collections") Long[] collections, @RequestParam("projecttypes") Long[] projectTypes) {
-    	/**
-    	 * @author dkefer
-    	 * @ToDo: this should be implemented in requirementSkeletonRepository -> best way to be found
-    	 * @ToDo: implement "or" within particular collections and project types if more get selected
-    	 */
-    	//getting list of collection categories for which collection instances have been requested in order to perform OR within them
-    	List<CollectionCategory> collectionCategories = new ArrayList<CollectionCategory>();
-    	for (Long collectionId:collections) {
-    		CollectionInstance collectionInstance = collectionInstanceRepository.findOne(collectionId);
-    		if (!collectionCategories.contains(collectionInstance.getCollectionCategory()))
-    			collectionCategories.add(collectionInstance.getCollectionCategory());
-    	}
-
-
-
-    	List<RequirementSkeleton> skeletons = (requirementSkeletonRepository.findAllWithEagerRelationships());
-    	// Walking through the list of all skeletons, if a skeleton is not in all collections and projecttypes, it gets marked for deletion
-    	for (Iterator<RequirementSkeleton> iterator = skeletons.iterator(); iterator.hasNext();) {
-    		RequirementSkeleton skeleton = iterator.next();
-    		boolean toDelete = false;
-
-    		for (CollectionCategory collectionCategory:collectionCategories) {
-    			boolean atLeastInOneCollection = false;
-    			for (Long collectionId:collections) {
-    				CollectionInstance collectionInstance = collectionInstanceRepository.findOne(collectionId);
-    				if (collectionInstance.getCollectionCategory().equals(collectionCategory))
-    					if (collectionInstance.getRequirementSkeletons().contains(skeleton))
-    						atLeastInOneCollection = true;
-    			}
-    			if (!atLeastInOneCollection)
-    				toDelete = true;
-    		}
-      		for (Long projectTypeId:projectTypes) {
-    			ProjectType projectType = projectTypeRepository.findOne(projectTypeId);
-
-    			if (!projectType.getRequirementSkeletons().contains(skeleton))
-    				toDelete = true;
-    		}
-    	if (toDelete) iterator.remove();
-    	}
-    	return skeletons;
-
-    }
-
-    /**
-     * DELETE  /requirementSkeletons/:id -> delete the "id" requirementSkeleton.
-     */
-    @RequestMapping(value = "/requirementSkeletons/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/requirement-skeletons/{id}")
+    public ResponseEntity<Void> deleteRequirementSkeleton(@PathVariable Long id) {
         log.debug("REST request to delete RequirementSkeleton : {}", id);
-        return Optional.ofNullable(requirementSkeletonRepository.findOne(id))
-                .map(requirementSkeleton -> {
-                	requirementSkeletonRepository.delete(id);
-                    requirementSkeletonSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("requirementSkeleton", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        requirementSkeletonRepository.deleteById(id);
+        requirementSkeletonSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/requirementSkeletons/:query -> search for the requirementSkeleton corresponding
+     * {@code SEARCH  /_search/requirement-skeletons?query=:query} : search for the requirementSkeleton corresponding
      * to the query.
-     */
-    @RequestMapping(value = "/_search/requirementSkeletons/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<RequirementSkeleton> search(@PathVariable String query) {
-        return StreamSupport
-            .stream(requirementSkeletonSearchRepository.search(queryString(query)).spliterator(), false)
-            .collect(Collectors.toList());
-    }
-
-
-
-    /**
-     * just for testing the repository
      *
+     * @param query the query of the requirementSkeleton search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/requirementSkeletons/foo/{shortName}",
-    		method = RequestMethod.GET,
-    		produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<RequirementSkeleton> foo(@PathVariable String shortName) {
-    //public List<RequirementSkeleton> foo() {
-    //log.debug(shortName);
-    	return requirementSkeletonRepository.findByShortName(shortName);
+    @GetMapping("/_search/requirement-skeletons")
+    public List<RequirementSkeleton> searchRequirementSkeletons(@RequestParam String query) {
+        log.debug("REST request to search RequirementSkeletons for query {}", query);
+        return StreamSupport
+            .stream(requirementSkeletonSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .collect(Collectors.toList());
     }
 }

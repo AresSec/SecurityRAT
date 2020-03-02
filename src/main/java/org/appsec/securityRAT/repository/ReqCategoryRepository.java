@@ -1,16 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.ReqCategory;
+import org.appsec.securityrat.domain.ReqCategory;
+
 import org.springframework.data.jpa.repository.*;
-
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the ReqCategory entity.
+ * Spring Data  repository for the ReqCategory entity.
  */
-public interface ReqCategoryRepository extends JpaRepository<ReqCategory,Long>, ReqCategoryRepositoryCustom {
-
-    @Query("select distinct reqCategory from ReqCategory reqCategory where reqCategory.active=true")
-    List<ReqCategory> findAllActive();
+@SuppressWarnings("unused")
+@Repository
+public interface ReqCategoryRepository extends JpaRepository<ReqCategory, Long> {
 
 }

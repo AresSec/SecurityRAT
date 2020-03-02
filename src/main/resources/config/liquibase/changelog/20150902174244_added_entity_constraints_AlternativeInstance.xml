@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity AlternativeInstance.
+    -->
+    <changeSet id="20150902174244-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="alternative_set_id"
+                                 baseTableName="alternative_instance"
+                                 constraintName="fk_alternative_instance_alternative_set_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="alternative_set"/>
+
+        <addForeignKeyConstraint baseColumnNames="requirement_skeleton_id"
+                                 baseTableName="alternative_instance"
+                                 constraintName="fk_alternative_instance_requirement_skeleton_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="requirement_skeleton"/>
+
+    </changeSet>
+</databaseChangeLog>

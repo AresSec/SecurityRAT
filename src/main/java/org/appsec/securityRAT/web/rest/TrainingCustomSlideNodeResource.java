@@ -1,21 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.TrainingCustomSlideNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
-import org.appsec.securityRAT.repository.TrainingCustomSlideNodeRepository;
-import org.appsec.securityRAT.repository.TrainingTreeNodeRepository;
-import org.appsec.securityRAT.repository.search.TrainingCustomSlideNodeSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.TrainingCustomSlideNode;
+import org.appsec.securityrat.repository.TrainingCustomSlideNodeRepository;
+import org.appsec.securityrat.repository.search.TrainingCustomSlideNodeSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -26,130 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TrainingCustomSlideNode.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TrainingCustomSlideNode}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TrainingCustomSlideNodeResource {
 
     private final Logger log = LoggerFactory.getLogger(TrainingCustomSlideNodeResource.class);
 
-    @Inject
-    private TrainingCustomSlideNodeRepository trainingCustomSlideNodeRepository;
+    private static final String ENTITY_NAME = "trainingCustomSlideNode";
 
-    @Inject
-    private TrainingCustomSlideNodeSearchRepository trainingCustomSlideNodeSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private TrainingTreeNodeRepository trainingTreeNodeRepository;
+    private final TrainingCustomSlideNodeRepository trainingCustomSlideNodeRepository;
+
+    private final TrainingCustomSlideNodeSearchRepository trainingCustomSlideNodeSearchRepository;
+
+    public TrainingCustomSlideNodeResource(TrainingCustomSlideNodeRepository trainingCustomSlideNodeRepository, TrainingCustomSlideNodeSearchRepository trainingCustomSlideNodeSearchRepository) {
+        this.trainingCustomSlideNodeRepository = trainingCustomSlideNodeRepository;
+        this.trainingCustomSlideNodeSearchRepository = trainingCustomSlideNodeSearchRepository;
+    }
 
     /**
-     * POST  /trainingCustomSlideNodes -> Create a new trainingCustomSlideNode.
+     * {@code POST  /training-custom-slide-nodes} : Create a new trainingCustomSlideNode.
+     *
+     * @param trainingCustomSlideNode the trainingCustomSlideNode to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trainingCustomSlideNode, or with status {@code 400 (Bad Request)} if the trainingCustomSlideNode has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingCustomSlideNodes",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingCustomSlideNode> create(@RequestBody TrainingCustomSlideNode trainingCustomSlideNode) throws URISyntaxException {
+    @PostMapping("/training-custom-slide-nodes")
+    public ResponseEntity<TrainingCustomSlideNode> createTrainingCustomSlideNode(@RequestBody TrainingCustomSlideNode trainingCustomSlideNode) throws URISyntaxException {
         log.debug("REST request to save TrainingCustomSlideNode : {}", trainingCustomSlideNode);
         if (trainingCustomSlideNode.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new trainingCustomSlideNode cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new trainingCustomSlideNode cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TrainingCustomSlideNode result = trainingCustomSlideNodeRepository.save(trainingCustomSlideNode);
         trainingCustomSlideNodeSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/trainingCustomSlideNodes/" + result.getId()))
-                .headers(new HttpHeaders())
-                .body(result);
+        return ResponseEntity.created(new URI("/api/training-custom-slide-nodes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /trainingCustomSlideNodes -> Updates an existing trainingCustomSlideNode.
+     * {@code PUT  /training-custom-slide-nodes} : Updates an existing trainingCustomSlideNode.
+     *
+     * @param trainingCustomSlideNode the trainingCustomSlideNode to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trainingCustomSlideNode,
+     * or with status {@code 400 (Bad Request)} if the trainingCustomSlideNode is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trainingCustomSlideNode couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingCustomSlideNodes",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingCustomSlideNode> update(@RequestBody TrainingCustomSlideNode trainingCustomSlideNode) throws URISyntaxException {
+    @PutMapping("/training-custom-slide-nodes")
+    public ResponseEntity<TrainingCustomSlideNode> updateTrainingCustomSlideNode(@RequestBody TrainingCustomSlideNode trainingCustomSlideNode) throws URISyntaxException {
         log.debug("REST request to update TrainingCustomSlideNode : {}", trainingCustomSlideNode);
         if (trainingCustomSlideNode.getId() == null) {
-            return create(trainingCustomSlideNode);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TrainingCustomSlideNode result = trainingCustomSlideNodeRepository.save(trainingCustomSlideNode);
-        trainingCustomSlideNodeSearchRepository.save(trainingCustomSlideNode);
+        trainingCustomSlideNodeSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("trainingCustomSlideNode", trainingCustomSlideNode.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trainingCustomSlideNode.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /trainingCustomSlideNodes -> get all the trainingCustomSlideNodes.
+     * {@code GET  /training-custom-slide-nodes} : get all the trainingCustomSlideNodes.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trainingCustomSlideNodes in body.
      */
-    @RequestMapping(value = "/trainingCustomSlideNodes",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingCustomSlideNode> getAll() {
+    @GetMapping("/training-custom-slide-nodes")
+    public List<TrainingCustomSlideNode> getAllTrainingCustomSlideNodes() {
         log.debug("REST request to get all TrainingCustomSlideNodes");
         return trainingCustomSlideNodeRepository.findAll();
     }
 
     /**
-     * GET  /trainingCustomSlideNodes/:id -> get the "id" trainingCustomSlideNode.
+     * {@code GET  /training-custom-slide-nodes/:id} : get the "id" trainingCustomSlideNode.
+     *
+     * @param id the id of the trainingCustomSlideNode to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trainingCustomSlideNode, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/trainingCustomSlideNodes/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingCustomSlideNode> get(@PathVariable Long id) {
+    @GetMapping("/training-custom-slide-nodes/{id}")
+    public ResponseEntity<TrainingCustomSlideNode> getTrainingCustomSlideNode(@PathVariable Long id) {
         log.debug("REST request to get TrainingCustomSlideNode : {}", id);
-        return Optional.ofNullable(trainingCustomSlideNodeRepository.findOne(id))
-            .map(trainingCustomSlideNode -> new ResponseEntity<>(
-                trainingCustomSlideNode,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TrainingCustomSlideNode> trainingCustomSlideNode = trainingCustomSlideNodeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(trainingCustomSlideNode);
     }
 
     /**
-     * DELETE  /trainingCustomSlideNodes/:id -> delete the "id" trainingCustomSlideNode.
+     * {@code DELETE  /training-custom-slide-nodes/:id} : delete the "id" trainingCustomSlideNode.
+     *
+     * @param id the id of the trainingCustomSlideNode to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/trainingCustomSlideNodes/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/training-custom-slide-nodes/{id}")
+    public ResponseEntity<Void> deleteTrainingCustomSlideNode(@PathVariable Long id) {
         log.debug("REST request to delete TrainingCustomSlideNode : {}", id);
-        trainingCustomSlideNodeRepository.delete(id);
-        trainingCustomSlideNodeSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("trainingCustomSlideNode", id.toString())).build();
+        trainingCustomSlideNodeRepository.deleteById(id);
+        trainingCustomSlideNodeSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/trainingCustomSlideNodes/:query -> search for the trainingCustomSlideNode corresponding
+     * {@code SEARCH  /_search/training-custom-slide-nodes?query=:query} : search for the trainingCustomSlideNode corresponding
      * to the query.
+     *
+     * @param query the query of the trainingCustomSlideNode search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/trainingCustomSlideNodes/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingCustomSlideNode> search(@PathVariable String query) {
+    @GetMapping("/_search/training-custom-slide-nodes")
+    public List<TrainingCustomSlideNode> searchTrainingCustomSlideNodes(@RequestParam String query) {
+        log.debug("REST request to search TrainingCustomSlideNodes for query {}", query);
         return StreamSupport
-            .stream(trainingCustomSlideNodeSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(trainingCustomSlideNodeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * GET TrainingCustomSlideNode by its node_id
-     */
-    @RequestMapping(value = "/TrainingCustomSlideNodeByTrainingTreeNode/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingCustomSlideNode> getTrainingCustomSlideNodeByTrainingTreeNode(@PathVariable Long id) {
-        log.debug("REST request to get TrainingCustomSlideNode with node_id : {}", id);
-        TrainingTreeNode node = trainingTreeNodeRepository.getOne(id);
-        TrainingCustomSlideNode result = trainingCustomSlideNodeRepository.getTrainingCustomSlideNodeByTrainingTreeNode(node);
-        return ResponseEntity.ok()
-            .headers(new HttpHeaders())
-            .body(result);
     }
 }

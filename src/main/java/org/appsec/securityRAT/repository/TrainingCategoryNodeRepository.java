@@ -1,18 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.TrainingCategoryNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
+import org.appsec.securityrat.domain.TrainingCategoryNode;
+
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the TrainingCategoryNode entity.
+ * Spring Data  repository for the TrainingCategoryNode entity.
  */
-public interface TrainingCategoryNodeRepository extends JpaRepository<TrainingCategoryNode,Long> {
-
-    @Query("select distinct trainingCategoryNode from TrainingCategoryNode trainingCategoryNode where trainingCategoryNode.node = :node")
-    TrainingCategoryNode getTrainingCategoryNodeByTrainingTreeNode(@Param("node") TrainingTreeNode node);
+@SuppressWarnings("unused")
+@Repository
+public interface TrainingCategoryNodeRepository extends JpaRepository<TrainingCategoryNode, Long> {
 
 }

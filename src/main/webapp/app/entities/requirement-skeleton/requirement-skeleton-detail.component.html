@@ -1,0 +1,70 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="requirementSkeleton">
+            <h2><span jhiTranslate="securityRatApp.requirementSkeleton.detail.title">Requirement Skeleton</span> {{ requirementSkeleton.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.universalId">Universal Id</span></dt>
+                <dd>
+                    <span>{{ requirementSkeleton.universalId }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.shortName">Short Name</span></dt>
+                <dd>
+                    <span>{{ requirementSkeleton.shortName }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.description">Description</span></dt>
+                <dd>
+                    <span>{{ requirementSkeleton.description }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.showOrder">Show Order</span></dt>
+                <dd>
+                    <span>{{ requirementSkeleton.showOrder }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.active">Active</span></dt>
+                <dd>
+                    <span>{{ requirementSkeleton.active }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.reqCategory">Req Category</span></dt>
+                <dd>
+                    <div *ngIf="requirementSkeleton.reqCategory">
+                        <a [routerLink]="['/req-category', requirementSkeleton.reqCategory?.id, 'view']">{{ requirementSkeleton.reqCategory?.name }}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.tagInstance">Tag Instance</span></dt>
+                <dd>
+                    <span *ngFor="let tagInstance of requirementSkeleton.tagInstances; let last = last">
+                        <a [routerLink]="['/tag-instance', tagInstance?.id, 'view']">{{ tagInstance.name }}</a>{{ last ? '' : ', ' }}
+                    </span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.collectionInstance">Collection Instance</span></dt>
+                <dd>
+                    <span *ngFor="let collectionInstance of requirementSkeleton.collectionInstances; let last = last">
+                        <a [routerLink]="['/collection-instance', collectionInstance?.id, 'view']">{{ collectionInstance.name }}</a>{{ last ? '' : ', ' }}
+                    </span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.requirementSkeleton.projectType">Project Type</span></dt>
+                <dd>
+                    <span *ngFor="let projectType of requirementSkeleton.projectTypes; let last = last">
+                        <a [routerLink]="['/project-type', projectType?.id, 'view']">{{ projectType.name }}</a>{{ last ? '' : ', ' }}
+                    </span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/requirement-skeleton', requirementSkeleton.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

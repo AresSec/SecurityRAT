@@ -1,0 +1,101 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="securityRatApp.training.home.title">Trainings</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-training" [routerLink]="['/training/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span class="hidden-sm-down"  jhiTranslate="securityRatApp.training.home.createLabel">
+            Create a new Training
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'securityRatApp.training.home.search' | translate }}">
+
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon icon="search"></fa-icon>
+                    </button>
+
+                    <button class="input-group-append btn btn-danger" (click)="search('')" *ngIf="currentSearch">
+                        <fa-icon icon="trash-alt"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="trainings?.length === 0">
+        <span jhiTranslate="securityRatApp.training.home.notFound">No trainings found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="trainings?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr>
+                    <th scope="col" ><span jhiTranslate="global.field.id">ID</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.name">Name</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.description">Description</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.allRequirementsSelected">All Requirements Selected</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.optColumn">Opt Column</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.collection">Collection</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.training.projectType">Project Type</span></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let training of trainings ;trackBy: trackId">
+                    <td><a [routerLink]="['/training', training.id, 'view']">{{ training.id }}</a></td>
+                    <td>{{ training.name }}</td>
+                    <td>{{ training.description }}</td>
+                    <td>{{ training.allRequirementsSelected }}</td>
+                    <td>
+                        <span *ngFor="let optColumn of training.optColumns; let last = last">
+                            <a class="form-control-static" [routerLink]="['/opt-column', optColumn?.id, 'view']">{{ optColumn.name }}</a>{{ last ? '' : ', ' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span *ngFor="let collection of training.collections; let last = last">
+                            <a class="form-control-static" [routerLink]="['/collection-instance', collection?.id, 'view']">{{ collection.name }}</a>{{ last ? '' : ', ' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span *ngFor="let projectType of training.projectTypes; let last = last">
+                            <a class="form-control-static" [routerLink]="['/project-type', projectType?.id, 'view']">{{ projectType.name }}</a>{{ last ? '' : ', ' }}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/training', training.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/training', training.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(training)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

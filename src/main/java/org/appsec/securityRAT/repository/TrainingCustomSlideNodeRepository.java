@@ -1,16 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.TrainingCustomSlideNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
+import org.appsec.securityrat.domain.TrainingCustomSlideNode;
+
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the TrainingCustomSlideNode entity.
+ * Spring Data  repository for the TrainingCustomSlideNode entity.
  */
-public interface TrainingCustomSlideNodeRepository extends JpaRepository<TrainingCustomSlideNode,Long> {
-
-    @Query("select distinct trainingCustomSlideNode from TrainingCustomSlideNode trainingCustomSlideNode where trainingCustomSlideNode.node = :node")
-    TrainingCustomSlideNode getTrainingCustomSlideNodeByTrainingTreeNode(@Param("node") TrainingTreeNode node);
+@SuppressWarnings("unused")
+@Repository
+public interface TrainingCustomSlideNodeRepository extends JpaRepository<TrainingCustomSlideNode, Long> {
 
 }

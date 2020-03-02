@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity OptColumnContent.
+    -->
+    <changeSet id="20150902174552-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="opt_column_id"
+                                 baseTableName="opt_column_content"
+                                 constraintName="fk_opt_column_content_opt_column_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="opt_column"/>
+
+        <addForeignKeyConstraint baseColumnNames="requirement_skeleton_id"
+                                 baseTableName="opt_column_content"
+                                 constraintName="fk_opt_column_content_requirement_skeleton_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="requirement_skeleton"/>
+
+    </changeSet>
+</databaseChangeLog>

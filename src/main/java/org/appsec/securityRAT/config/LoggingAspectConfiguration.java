@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.config;
+package org.appsec.securityrat.config;
 
-import org.appsec.securityRAT.aop.logging.LoggingAspect;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Profile;
+import org.appsec.securityrat.aop.logging.LoggingAspect;
+
+import io.github.jhipster.config.JHipsterConstants;
+
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 
 @Configuration
 @EnableAspectJAutoProxy
 public class LoggingAspectConfiguration {
 
     @Bean
-    @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
-    public LoggingAspect loggingAspect() {
-        return new LoggingAspect();
+    @Profile(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)
+    public LoggingAspect loggingAspect(Environment env) {
+        return new LoggingAspect(env);
     }
 }

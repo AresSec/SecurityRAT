@@ -1,26 +1,61 @@
-package org.appsec.securityRAT.config;
+package org.appsec.securityrat.config;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import org.appsec.securityRAT.domain.util.CustomDateTimeDeserializer;
-import org.appsec.securityRAT.domain.util.CustomDateTimeSerializer;
-import org.appsec.securityRAT.domain.util.CustomLocalDateSerializer;
-import org.appsec.securityRAT.domain.util.ISO8601LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import org.zalando.problem.ProblemModule;
+import org.zalando.problem.violations.ConstraintViolationProblemModule;
 
 @Configuration
 public class JacksonConfiguration {
 
+    /**
+     * Support for Java date and time API.
+     * @return the corresponding Jackson module.
+     */
     @Bean
-    public JodaModule jacksonJodaModule() {
-        JodaModule module = new JodaModule();
-        module.addSerializer(DateTime.class, new CustomDateTimeSerializer());
-        module.addDeserializer(DateTime.class, new CustomDateTimeDeserializer());
-        module.addSerializer(LocalDate.class, new CustomLocalDateSerializer());
-        module.addDeserializer(LocalDate.class, new ISO8601LocalDateDeserializer());
-        return module;
+    public JavaTimeModule javaTimeModule() {
+        return new JavaTimeModule();
+    }
+
+    @Bean
+    public Jdk8Module jdk8TimeModule() {
+        return new Jdk8Module();
+    }
+
+    /*
+     * Support for Hibernate types in Jackson.
+     */
+    @Bean
+    public Hibernate5Module hibernate5Module() {
+        return new Hibernate5Module();
+    }
+
+    /*
+     * Jackson Afterburner module to speed up serialization/deserialization.
+     */
+    @Bean
+    public AfterburnerModule afterburnerModule() {
+        return new AfterburnerModule();
+    }
+
+    /*
+     * Module for serialization/deserialization of RFC7807 Problem.
+     */
+    @Bean
+    ProblemModule problemModule() {
+        return new ProblemModule();
+    }
+
+    /*
+     * Module for serialization/deserialization of ConstraintViolationProblem.
+     */
+    @Bean
+    ConstraintViolationProblemModule constraintViolationProblemModule() {
+        return new ConstraintViolationProblemModule();
     }
 }

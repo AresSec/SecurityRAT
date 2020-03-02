@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.AlternativeSet;
-import org.appsec.securityRAT.repository.AlternativeSetRepository;
-import org.appsec.securityRAT.repository.search.AlternativeSetSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.AlternativeSet;
+import org.appsec.securityrat.repository.AlternativeSetRepository;
+import org.appsec.securityrat.repository.search.AlternativeSetSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing AlternativeSet.
+ * REST controller for managing {@link org.appsec.securityrat.domain.AlternativeSet}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class AlternativeSetResource {
 
     private final Logger log = LoggerFactory.getLogger(AlternativeSetResource.class);
 
-    @Inject
-    private AlternativeSetRepository alternativeSetRepository;
+    private static final String ENTITY_NAME = "alternativeSet";
 
-    @Inject
-    private AlternativeSetSearchRepository alternativeSetSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final AlternativeSetRepository alternativeSetRepository;
+
+    private final AlternativeSetSearchRepository alternativeSetSearchRepository;
+
+    public AlternativeSetResource(AlternativeSetRepository alternativeSetRepository, AlternativeSetSearchRepository alternativeSetSearchRepository) {
+        this.alternativeSetRepository = alternativeSetRepository;
+        this.alternativeSetSearchRepository = alternativeSetSearchRepository;
+    }
 
     /**
-     * POST  /alternativeSets -> Create a new alternativeSet.
+     * {@code POST  /alternative-sets} : Create a new alternativeSet.
+     *
+     * @param alternativeSet the alternativeSet to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new alternativeSet, or with status {@code 400 (Bad Request)} if the alternativeSet has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/alternativeSets",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeSet> create(@RequestBody AlternativeSet alternativeSet) throws URISyntaxException {
+    @PostMapping("/alternative-sets")
+    public ResponseEntity<AlternativeSet> createAlternativeSet(@RequestBody AlternativeSet alternativeSet) throws URISyntaxException {
         log.debug("REST request to save AlternativeSet : {}", alternativeSet);
         if (alternativeSet.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new alternativeSet cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new alternativeSet cannot already have an ID", ENTITY_NAME, "idexists");
         }
         AlternativeSet result = alternativeSetRepository.save(alternativeSet);
         alternativeSetSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/alternativeSets/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("alternativeSet", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/alternative-sets/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /alternativeSets -> Updates an existing alternativeSet.
+     * {@code PUT  /alternative-sets} : Updates an existing alternativeSet.
+     *
+     * @param alternativeSet the alternativeSet to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated alternativeSet,
+     * or with status {@code 400 (Bad Request)} if the alternativeSet is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the alternativeSet couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/alternativeSets",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeSet> update(@RequestBody AlternativeSet alternativeSet) throws URISyntaxException {
+    @PutMapping("/alternative-sets")
+    public ResponseEntity<AlternativeSet> updateAlternativeSet(@RequestBody AlternativeSet alternativeSet) throws URISyntaxException {
         log.debug("REST request to update AlternativeSet : {}", alternativeSet);
         if (alternativeSet.getId() == null) {
-            return create(alternativeSet);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         AlternativeSet result = alternativeSetRepository.save(alternativeSet);
-        alternativeSetSearchRepository.save(alternativeSet);
+        alternativeSetSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("alternativeSet", alternativeSet.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, alternativeSet.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /alternativeSets -> get all the alternativeSets.
+     * {@code GET  /alternative-sets} : get all the alternativeSets.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of alternativeSets in body.
      */
-    @RequestMapping(value = "/alternativeSets",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<AlternativeSet> getAll() {
+    @GetMapping("/alternative-sets")
+    public List<AlternativeSet> getAllAlternativeSets() {
         log.debug("REST request to get all AlternativeSets");
         return alternativeSetRepository.findAll();
     }
 
     /**
-     * GET  /alternativeSets/:id -> get the "id" alternativeSet.
+     * {@code GET  /alternative-sets/:id} : get the "id" alternativeSet.
+     *
+     * @param id the id of the alternativeSet to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the alternativeSet, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/alternativeSets/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<AlternativeSet> get(@PathVariable Long id) {
+    @GetMapping("/alternative-sets/{id}")
+    public ResponseEntity<AlternativeSet> getAlternativeSet(@PathVariable Long id) {
         log.debug("REST request to get AlternativeSet : {}", id);
-        return Optional.ofNullable(alternativeSetRepository.findOne(id))
-            .map(alternativeSet -> new ResponseEntity<>(
-                alternativeSet,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<AlternativeSet> alternativeSet = alternativeSetRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(alternativeSet);
     }
 
     /**
-     * DELETE  /alternativeSets/:id -> delete the "id" alternativeSet.
+     * {@code DELETE  /alternative-sets/:id} : delete the "id" alternativeSet.
+     *
+     * @param id the id of the alternativeSet to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/alternativeSets/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/alternative-sets/{id}")
+    public ResponseEntity<Void> deleteAlternativeSet(@PathVariable Long id) {
         log.debug("REST request to delete AlternativeSet : {}", id);
-        return Optional.ofNullable(alternativeSetRepository.findOne(id))
-                .map(alternativeSet -> {
-                	alternativeSetRepository.delete(id);
-                    alternativeSetSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("alternativeSet", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        alternativeSetRepository.deleteById(id);
+        alternativeSetSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/alternativeSets/:query -> search for the alternativeSet corresponding
+     * {@code SEARCH  /_search/alternative-sets?query=:query} : search for the alternativeSet corresponding
      * to the query.
+     *
+     * @param query the query of the alternativeSet search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/alternativeSets/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<AlternativeSet> search(@PathVariable String query) {
+    @GetMapping("/_search/alternative-sets")
+    public List<AlternativeSet> searchAlternativeSets(@RequestParam String query) {
+        log.debug("REST request to search AlternativeSets for query {}", query);
         return StreamSupport
-            .stream(alternativeSetSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(alternativeSetSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

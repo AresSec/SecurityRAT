@@ -1,39 +1,38 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.io.Serializable;
 
 /**
  * A SlideTemplate.
  */
 @Entity
-@Table(name = "SLIDETEMPLATE")
+@Table(name = "slide_template")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="slidetemplate")
-public class SlideTemplate extends AbstractAuditingEntity implements Serializable {
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "slidetemplate")
+public class SlideTemplate implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    
+
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "description")
-    @Lob
     private String description;
-    
+
     @Column(name = "content")
-    @Lob
     private String content;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -65,35 +64,31 @@ public class SlideTemplate extends AbstractAuditingEntity implements Serializabl
     public void setContent(String content) {
         this.content = content;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof SlideTemplate)) {
             return false;
         }
-
-        SlideTemplate slideTemplate = (SlideTemplate) o;
-
-        if ( ! Objects.equals(id, slideTemplate.id)) return false;
-
-        return true;
+        return id != null && id.equals(((SlideTemplate) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "SlideTemplate{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", content='" + content + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", content='" + getContent() + "'" +
+            "}";
     }
 }

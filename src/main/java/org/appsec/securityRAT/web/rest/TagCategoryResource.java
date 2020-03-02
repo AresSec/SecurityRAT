@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.TagCategory;
-import org.appsec.securityRAT.repository.TagCategoryRepository;
-import org.appsec.securityRAT.repository.search.TagCategorySearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.TagCategory;
+import org.appsec.securityrat.repository.TagCategoryRepository;
+import org.appsec.securityrat.repository.search.TagCategorySearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TagCategory.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TagCategory}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TagCategoryResource {
 
     private final Logger log = LoggerFactory.getLogger(TagCategoryResource.class);
 
-    @Inject
-    private TagCategoryRepository tagCategoryRepository;
+    private static final String ENTITY_NAME = "tagCategory";
 
-    @Inject
-    private TagCategorySearchRepository tagCategorySearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final TagCategoryRepository tagCategoryRepository;
+
+    private final TagCategorySearchRepository tagCategorySearchRepository;
+
+    public TagCategoryResource(TagCategoryRepository tagCategoryRepository, TagCategorySearchRepository tagCategorySearchRepository) {
+        this.tagCategoryRepository = tagCategoryRepository;
+        this.tagCategorySearchRepository = tagCategorySearchRepository;
+    }
 
     /**
-     * POST  /tagCategorys -> Create a new tagCategory.
+     * {@code POST  /tag-categories} : Create a new tagCategory.
+     *
+     * @param tagCategory the tagCategory to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tagCategory, or with status {@code 400 (Bad Request)} if the tagCategory has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/tagCategorys",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagCategory> create(@RequestBody TagCategory tagCategory) throws URISyntaxException {
+    @PostMapping("/tag-categories")
+    public ResponseEntity<TagCategory> createTagCategory(@RequestBody TagCategory tagCategory) throws URISyntaxException {
         log.debug("REST request to save TagCategory : {}", tagCategory);
         if (tagCategory.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new tagCategory cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new tagCategory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TagCategory result = tagCategoryRepository.save(tagCategory);
         tagCategorySearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/tagCategorys/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("tagCategory", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/tag-categories/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /tagCategorys -> Updates an existing tagCategory.
+     * {@code PUT  /tag-categories} : Updates an existing tagCategory.
+     *
+     * @param tagCategory the tagCategory to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tagCategory,
+     * or with status {@code 400 (Bad Request)} if the tagCategory is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the tagCategory couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/tagCategorys",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagCategory> update(@RequestBody TagCategory tagCategory) throws URISyntaxException {
+    @PutMapping("/tag-categories")
+    public ResponseEntity<TagCategory> updateTagCategory(@RequestBody TagCategory tagCategory) throws URISyntaxException {
         log.debug("REST request to update TagCategory : {}", tagCategory);
         if (tagCategory.getId() == null) {
-            return create(tagCategory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TagCategory result = tagCategoryRepository.save(tagCategory);
-        tagCategorySearchRepository.save(tagCategory);
+        tagCategorySearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("tagCategory", tagCategory.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, tagCategory.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /tagCategorys -> get all the tagCategorys.
+     * {@code GET  /tag-categories} : get all the tagCategories.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tagCategories in body.
      */
-    @RequestMapping(value = "/tagCategorys",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TagCategory> getAll() {
-        log.debug("REST request to get all TagCategorys");
+    @GetMapping("/tag-categories")
+    public List<TagCategory> getAllTagCategories() {
+        log.debug("REST request to get all TagCategories");
         return tagCategoryRepository.findAll();
     }
 
     /**
-     * GET  /tagCategorys/:id -> get the "id" tagCategory.
+     * {@code GET  /tag-categories/:id} : get the "id" tagCategory.
+     *
+     * @param id the id of the tagCategory to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tagCategory, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/tagCategorys/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagCategory> get(@PathVariable Long id) {
+    @GetMapping("/tag-categories/{id}")
+    public ResponseEntity<TagCategory> getTagCategory(@PathVariable Long id) {
         log.debug("REST request to get TagCategory : {}", id);
-        return Optional.ofNullable(tagCategoryRepository.findOne(id))
-            .map(tagCategory -> new ResponseEntity<>(
-                tagCategory,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TagCategory> tagCategory = tagCategoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(tagCategory);
     }
 
     /**
-     * DELETE  /tagCategorys/:id -> delete the "id" tagCategory.
+     * {@code DELETE  /tag-categories/:id} : delete the "id" tagCategory.
+     *
+     * @param id the id of the tagCategory to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/tagCategorys/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/tag-categories/{id}")
+    public ResponseEntity<Void> deleteTagCategory(@PathVariable Long id) {
         log.debug("REST request to delete TagCategory : {}", id);
-        return Optional.ofNullable(tagCategoryRepository.findOne(id))
-                .map(tagCategory -> {
-                	tagCategoryRepository.delete(id);
-                    tagCategorySearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("tagCategory", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        tagCategoryRepository.deleteById(id);
+        tagCategorySearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/tagCategorys/:query -> search for the tagCategory corresponding
+     * {@code SEARCH  /_search/tag-categories?query=:query} : search for the tagCategory corresponding
      * to the query.
+     *
+     * @param query the query of the tagCategory search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/tagCategorys/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TagCategory> search(@PathVariable String query) {
+    @GetMapping("/_search/tag-categories")
+    public List<TagCategory> searchTagCategories(@RequestParam String query) {
+        log.debug("REST request to search TagCategories for query {}", query);
         return StreamSupport
-            .stream(tagCategorySearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(tagCategorySearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

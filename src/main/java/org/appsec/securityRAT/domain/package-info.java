@@ -1,4 +1,4 @@
 /**
  * JPA domain objects.
  */
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;

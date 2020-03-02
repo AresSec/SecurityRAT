@@ -1,37 +1,40 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.io.Serializable;
 
 /**
  * A TrainingBranchNode.
  */
 @Entity
-@Table(name = "TRAININGBRANCHNODE")
+@Table(name = "training_branch_node")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="trainingbranchnode")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "trainingbranchnode")
 public class TrainingBranchNode implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    
+
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "anchor")
     private Integer anchor;
 
     @ManyToOne
+    @JsonIgnoreProperties("trainingBranchNodes")
     private TrainingTreeNode node;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -63,34 +66,30 @@ public class TrainingBranchNode implements Serializable {
     public void setNode(TrainingTreeNode trainingTreeNode) {
         this.node = trainingTreeNode;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TrainingBranchNode)) {
             return false;
         }
-
-        TrainingBranchNode trainingBranchNode = (TrainingBranchNode) o;
-
-        if ( ! Objects.equals(id, trainingBranchNode.id)) return false;
-
-        return true;
+        return id != null && id.equals(((TrainingBranchNode) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "TrainingBranchNode{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", anchor='" + anchor + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", anchor=" + getAnchor() +
+            "}";
     }
 }

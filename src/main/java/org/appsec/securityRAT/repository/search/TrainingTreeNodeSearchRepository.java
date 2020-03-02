@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.TrainingTreeNode;
+import org.appsec.securityrat.domain.TrainingTreeNode;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the TrainingTreeNode entity.
+ * Spring Data Elasticsearch repository for the {@link TrainingTreeNode} entity.
  */
 public interface TrainingTreeNodeSearchRepository extends ElasticsearchRepository<TrainingTreeNode, Long> {
 }

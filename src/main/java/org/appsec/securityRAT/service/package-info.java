@@ -1,4 +1,4 @@
 /**
  * Service layer beans.
  */
-package org.appsec.securityRAT.service;
+package org.appsec.securityrat.service;

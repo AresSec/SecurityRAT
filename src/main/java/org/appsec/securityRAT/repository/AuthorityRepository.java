@@ -1,10 +1,11 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.Authority;
+import org.appsec.securityrat.domain.Authority;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Spring Data JPA repository for the Authority entity.
+ * Spring Data JPA repository for the {@link Authority} entity.
  */
 public interface AuthorityRepository extends JpaRepository<Authority, String> {
 }

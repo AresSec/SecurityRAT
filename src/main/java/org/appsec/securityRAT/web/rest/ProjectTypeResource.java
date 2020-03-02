@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.ProjectType;
-import org.appsec.securityRAT.repository.ProjectTypeRepository;
-import org.appsec.securityRAT.repository.search.ProjectTypeSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.ProjectType;
+import org.appsec.securityrat.repository.ProjectTypeRepository;
+import org.appsec.securityrat.repository.search.ProjectTypeSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,122 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing ProjectType.
+ * REST controller for managing {@link org.appsec.securityrat.domain.ProjectType}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class ProjectTypeResource {
 
     private final Logger log = LoggerFactory.getLogger(ProjectTypeResource.class);
 
-    @Inject
-    private ProjectTypeRepository projectTypeRepository;
+    private static final String ENTITY_NAME = "projectType";
 
-    @Inject
-    private ProjectTypeSearchRepository projectTypeSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final ProjectTypeRepository projectTypeRepository;
+
+    private final ProjectTypeSearchRepository projectTypeSearchRepository;
+
+    public ProjectTypeResource(ProjectTypeRepository projectTypeRepository, ProjectTypeSearchRepository projectTypeSearchRepository) {
+        this.projectTypeRepository = projectTypeRepository;
+        this.projectTypeSearchRepository = projectTypeSearchRepository;
+    }
 
     /**
-     * POST  /projectTypes -> Create a new projectType.
+     * {@code POST  /project-types} : Create a new projectType.
+     *
+     * @param projectType the projectType to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new projectType, or with status {@code 400 (Bad Request)} if the projectType has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/projectTypes",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<ProjectType> create(@RequestBody ProjectType projectType) throws URISyntaxException {
+    @PostMapping("/project-types")
+    public ResponseEntity<ProjectType> createProjectType(@RequestBody ProjectType projectType) throws URISyntaxException {
         log.debug("REST request to save ProjectType : {}", projectType);
         if (projectType.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new projectType cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new projectType cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ProjectType result = projectTypeRepository.save(projectType);
         projectTypeSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/projectTypes/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("projectType", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/project-types/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /projectTypes -> Updates an existing projectType.
+     * {@code PUT  /project-types} : Updates an existing projectType.
+     *
+     * @param projectType the projectType to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated projectType,
+     * or with status {@code 400 (Bad Request)} if the projectType is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the projectType couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/projectTypes",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<ProjectType> update(@RequestBody ProjectType projectType) throws URISyntaxException {
+    @PutMapping("/project-types")
+    public ResponseEntity<ProjectType> updateProjectType(@RequestBody ProjectType projectType) throws URISyntaxException {
         log.debug("REST request to update ProjectType : {}", projectType);
         if (projectType.getId() == null) {
-            return create(projectType);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ProjectType result = projectTypeRepository.save(projectType);
-        projectTypeSearchRepository.save(projectType);
+        projectTypeSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("projectType", projectType.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, projectType.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /projectTypes -> get all the projectTypes.
+     * {@code GET  /project-types} : get all the projectTypes.
+     *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of projectTypes in body.
      */
-    @RequestMapping(value = "/projectTypes",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<ProjectType> getAll() {
+    @GetMapping("/project-types")
+    public List<ProjectType> getAllProjectTypes(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all ProjectTypes");
         return projectTypeRepository.findAllWithEagerRelationships();
     }
 
     /**
-     * GET  /projectTypes/:id -> get the "id" projectType.
+     * {@code GET  /project-types/:id} : get the "id" projectType.
+     *
+     * @param id the id of the projectType to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the projectType, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/projectTypes/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<ProjectType> get(@PathVariable Long id) {
+    @GetMapping("/project-types/{id}")
+    public ResponseEntity<ProjectType> getProjectType(@PathVariable Long id) {
         log.debug("REST request to get ProjectType : {}", id);
-        return Optional.ofNullable(projectTypeRepository.findOneWithEagerRelationships(id))
-            .map(projectType -> new ResponseEntity<>(
-                projectType,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<ProjectType> projectType = projectTypeRepository.findOneWithEagerRelationships(id);
+        return ResponseUtil.wrapOrNotFound(projectType);
     }
 
     /**
-     * DELETE  /projectTypes/:id -> delete the "id" projectType.
+     * {@code DELETE  /project-types/:id} : delete the "id" projectType.
+     *
+     * @param id the id of the projectType to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/projectTypes/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/project-types/{id}")
+    public ResponseEntity<Void> deleteProjectType(@PathVariable Long id) {
         log.debug("REST request to delete ProjectType : {}", id);
-        return Optional.ofNullable(projectTypeRepository.findOne(id))
-                .map(projectType -> {
-                	projectTypeRepository.delete(id);
-                    projectTypeSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectType", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        projectTypeRepository.deleteById(id);
+        projectTypeSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/projectTypes/:query -> search for the projectType corresponding
+     * {@code SEARCH  /_search/project-types?query=:query} : search for the projectType corresponding
      * to the query.
+     *
+     * @param query the query of the projectType search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/projectTypes/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<ProjectType> search(@PathVariable String query) {
+    @GetMapping("/_search/project-types")
+    public List<ProjectType> searchProjectTypes(@RequestParam String query) {
+        log.debug("REST request to search ProjectTypes for query {}", query);
         return StreamSupport
-            .stream(projectTypeSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(projectTypeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity Training.
+    -->
+    <changeSet id="20170615124305-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="training_id"
+                                 baseTableName="training_opt_column"
+                                 constraintName="fk_training_opt_column_training_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="training"/>
+
+        <addForeignKeyConstraint baseColumnNames="opt_column_id"
+                                 baseTableName="training_opt_column"
+                                 constraintName="fk_training_opt_column_opt_column_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="opt_column"/>
+        
+        <addForeignKeyConstraint baseColumnNames="training_id"
+                                 baseTableName="training_collection"
+                                 constraintName="fk_training_collection_training_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="training"/>
+
+        <addForeignKeyConstraint baseColumnNames="collection_id"
+                                 baseTableName="training_collection"
+                                 constraintName="fk_training_collection_collection_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="collection_instance"/>
+        
+        <addForeignKeyConstraint baseColumnNames="training_id"
+                                 baseTableName="training_project_type"
+                                 constraintName="fk_training_project_type_training_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="training"/>
+
+        <addForeignKeyConstraint baseColumnNames="project_type_id"
+                                 baseTableName="training_project_type"
+                                 constraintName="fk_training_project_type_project_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="project_type"/>
+        
+    </changeSet>
+</databaseChangeLog>

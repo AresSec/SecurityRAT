@@ -1,11 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.AlternativeSet;
+import org.appsec.securityrat.domain.AlternativeSet;
+
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the AlternativeSet entity.
+ * Spring Data  repository for the AlternativeSet entity.
  */
-public interface AlternativeSetRepository extends JpaRepository<AlternativeSet,Long> {
+@SuppressWarnings("unused")
+@Repository
+public interface AlternativeSetRepository extends JpaRepository<AlternativeSet, Long> {
 
 }

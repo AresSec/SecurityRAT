@@ -1,126 +1,50 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.appsec.securityRAT.domain.enumeration.TrainingTreeNodeType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
+
+import org.appsec.securityrat.domain.enumeration.TrainingTreeNodeType;
 
 /**
  * A TrainingTreeNode.
  */
 @Entity
-@Table(name = "TRAININGTREENODE")
+@Table(name = "training_tree_node")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "trainingtreenode")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "trainingtreenode")
 public class TrainingTreeNode implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "node_type")
-    private TrainingTreeNodeType node_type;
+    private TrainingTreeNodeType nodeType;
 
     @Column(name = "sort_order")
-    private Integer sort_order;
+    private Integer sortOrder;
 
     @Column(name = "active")
     private Boolean active;
 
     @ManyToOne
-    @JsonIgnore
-    private TrainingTreeNode parent_id;
-
-    @Transient
-    private String content;
-
-    @Transient
-    private String name;
-
-    @Transient
-    private boolean opened;
-
-    @Transient
-    private List<TrainingTreeNode> children;
-
-    @Transient
-    private Integer anchor;
+    @JsonIgnoreProperties("trainingTreeNodes")
+    private TrainingTreeNode parentId;
 
     @ManyToOne
-    @JsonIgnore
-    private Training training_id;
+    @JsonIgnoreProperties("trainingTreeNodes")
+    private Training trainingId;
 
-    // JSON transfer attribute for training_id
-    @Transient
-    private Long json_training_id;
-
-    // JSON transfer attribute for database links
-    @Transient
-    private Long json_universal_id;
-
-    public Integer getAnchor() {
-        return anchor;
-    }
-
-    public void setAnchor(Integer anchor) {
-        this.anchor = anchor;
-    }
-
-    public Long getJson_universal_id() {
-        return json_universal_id;
-    }
-
-    public void setJson_universal_id(Long json_universal_id) {
-        this.json_universal_id = json_universal_id;
-    }
-
-    public Long getJson_training_id() {
-        return json_training_id;
-    }
-
-    public void setJson_training_id(Long json_training_id) {
-        this.json_training_id = json_training_id;
-    }
-
-    public boolean isOpened() {
-        return opened;
-    }
-
-    public void setOpened(boolean opened) {
-        this.opened = opened;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<TrainingTreeNode> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<TrainingTreeNode> children) {
-        this.children = children;
-    }
-
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -129,23 +53,23 @@ public class TrainingTreeNode implements Serializable {
         this.id = id;
     }
 
-    public TrainingTreeNodeType getNode_type() {
-        return node_type;
+    public TrainingTreeNodeType getNodeType() {
+        return nodeType;
     }
 
-    public void setNode_type(TrainingTreeNodeType node_type) {
-        this.node_type = node_type;
+    public void setNodeType(TrainingTreeNodeType nodeType) {
+        this.nodeType = nodeType;
     }
 
-    public Integer getSort_order() {
-        return sort_order;
+    public Integer getSortOrder() {
+        return sortOrder;
     }
 
-    public void setSort_order(Integer sort_order) {
-        this.sort_order = sort_order;
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
@@ -153,50 +77,46 @@ public class TrainingTreeNode implements Serializable {
         this.active = active;
     }
 
-    public TrainingTreeNode getParent_id() {
-        return parent_id;
+    public TrainingTreeNode getParentId() {
+        return parentId;
     }
 
-    public void setParent_id(TrainingTreeNode trainingTreeNode) {
-        this.parent_id = trainingTreeNode;
+    public void setParentId(TrainingTreeNode trainingTreeNode) {
+        this.parentId = trainingTreeNode;
     }
 
-    public Training getTraining_id() {
-        return training_id;
+    public Training getTrainingId() {
+        return trainingId;
     }
 
-    public void setTraining_id(Training training) {
-        this.training_id = training;
+    public void setTrainingId(Training training) {
+        this.trainingId = training;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TrainingTreeNode)) {
             return false;
         }
-
-        TrainingTreeNode trainingTreeNode = (TrainingTreeNode) o;
-
-        if (!Objects.equals(id, trainingTreeNode.id)) return false;
-
-        return true;
+        return id != null && id.equals(((TrainingTreeNode) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "TrainingTreeNode{" +
-            "id=" + id +
-            ", node_type='" + node_type + "'" +
-            ", sort_order='" + sort_order + "'" +
-            ", active='" + active + "'" +
-            '}';
+            "id=" + getId() +
+            ", nodeType='" + getNodeType() + "'" +
+            ", sortOrder=" + getSortOrder() +
+            ", active='" + isActive() + "'" +
+            "}";
     }
 }

@@ -1,0 +1,11 @@
+id;node_type;sort_order;active
+1;ContentNode;36505;true
+2;ContentNode;16726;false
+3;RootNode;47305;false
+4;RequirementNode;41542;true
+5;RequirementNode;57018;true
+6;BranchNode;77703;true
+7;GeneratedSlideNode;62054;false
+8;RequirementNode;41102;false
+9;RootNode;54134;true
+10;RootNode;78140;true

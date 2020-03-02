@@ -1,0 +1,27 @@
+{
+  "securityRatApp": {
+    "trainingTreeNode": {
+      "home": {
+        "title": "Training Tree Nodes",
+        "createLabel": "Create a new Training Tree Node",
+        "createOrEditLabel": "Create or edit a Training Tree Node",
+        "search": "Search for Training Tree Node",
+        "notFound": "No Training Tree Nodes found"
+      },
+      "created": "A new Training Tree Node is created with identifier {{ param }}",
+      "updated": "A Training Tree Node is updated with identifier {{ param }}",
+      "deleted": "A Training Tree Node is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Training Tree Node {{ id }}?"
+      },
+      "detail": {
+        "title": "Training Tree Node"
+      },
+      "nodeType": "Node Type",
+      "sortOrder": "Sort Order",
+      "active": "Active",
+      "parentId": "Parent Id",
+      "trainingId": "Training Id"
+    }
+  }
+}

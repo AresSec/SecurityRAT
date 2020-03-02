@@ -1,0 +1,48 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="collectionInstance">
+            <h2><span jhiTranslate="securityRatApp.collectionInstance.detail.title">Collection Instance</span> {{ collectionInstance.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="securityRatApp.collectionInstance.name">Name</span></dt>
+                <dd>
+                    <span>{{ collectionInstance.name }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.collectionInstance.description">Description</span></dt>
+                <dd>
+                    <span>{{ collectionInstance.description }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.collectionInstance.showOrder">Show Order</span></dt>
+                <dd>
+                    <span>{{ collectionInstance.showOrder }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.collectionInstance.active">Active</span></dt>
+                <dd>
+                    <span>{{ collectionInstance.active }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.collectionInstance.collectionCategory">Collection Category</span></dt>
+                <dd>
+                    <div *ngIf="collectionInstance.collectionCategory">
+                        <a [routerLink]="['/collection-category', collectionInstance.collectionCategory?.id, 'view']">{{ collectionInstance.collectionCategory?.name }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/collection-instance', collectionInstance.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+{
+  "securityRatApp": {
+    "statusColumnValue": {
+      "home": {
+        "title": "Status Column Values",
+        "createLabel": "Create a new Status Column Value",
+        "createOrEditLabel": "Create or edit a Status Column Value",
+        "search": "Search for Status Column Value",
+        "notFound": "No Status Column Values found"
+      },
+      "created": "A new Status Column Value is created with identifier {{ param }}",
+      "updated": "A Status Column Value is updated with identifier {{ param }}",
+      "deleted": "A Status Column Value is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Status Column Value {{ id }}?"
+      },
+      "detail": {
+        "title": "Status Column Value"
+      },
+      "name": "Name",
+      "description": "Description",
+      "showOrder": "Show Order",
+      "active": "Active",
+      "statusColumn": "Status Column"
+    }
+  }
+}

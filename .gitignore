@@ -1,18 +1,24 @@
 ######################
 # Project Specific
 ######################
-/src/main/webapp/dist
+/src/main/webapp/content/css/main.css
+/target/classes/static/**
+/src/test/javascript/coverage/
 
 ######################
 # Node
 ######################
-/node/**
-/node_modules/**
+/node/
+node_tmp/
+node_modules/
+npm-debug.log.*
+/.awcache/*
+/.cache-loader/*
 
 ######################
 # SASS
 ######################
-.sass-cache/**
+.sass-cache/
 
 ######################
 # Eclipse
@@ -20,17 +26,17 @@
 *.pydevproject
 .project
 .metadata
-/bin/**
-/tmp/**
-/tmp/**/*
+tmp/
+tmp/**/*
 *.tmp
 *.bak
 *.swp
 *~.nib
 local.properties
 .classpath
-.settings/**
+.settings/
 .loadpath
+.factorypath
 /src/main/resources/rebel.xml
 
 # External tool builders
@@ -45,26 +51,36 @@ local.properties
 # PDT-specific
 .buildpath
 
+# STS-specific
+/.sts4-cache/*
 ######################
 # Intellij
 ######################
-.idea/**
+.idea/
 *.iml
 *.iws
 *.ipr
 *.ids
 *.orig
+classes/
+out/
+
+######################
+# Visual Studio Code
+######################
+.vscode/
 
 ######################
 # Maven
 ######################
-/log/**
-/target/**
+/log/
+/target/
 
 ######################
 # Gradle
 ######################
-.gradle/**
+.gradle/
+/build/
 
 ######################
 # Package Files
@@ -99,15 +115,13 @@ Desktop.ini
 ######################
 # Directories
 ######################
-/build/**
-/bin/**
-/spring_loaded/**
-/deploy/**
+/bin/
+/deploy/
 
 ######################
 # Logs
 ######################
-*.log
+*.log*
 
 ######################
 # Others
@@ -121,19 +135,18 @@ Desktop.ini
 # Gradle Wrapper
 ######################
 !gradle/wrapper/gradle-wrapper.jar
-/target/
 
 ######################
-# DEV Config File
+# Maven Wrapper
 ######################
-#/src/main/resources/config/application-dev.yml
+!.mvn/wrapper/maven-wrapper.jar
 
 ######################
-# test config file
+# ESLint
 ######################
-src/test/javascript/spec/confToRun.js
+.eslintcache
 
-#keystore file
-keystore.p12
-
-.factorypath
+######################
+# Manually added
+######################
+proxy.conf.json

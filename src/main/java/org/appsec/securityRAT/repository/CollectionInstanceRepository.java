@@ -1,23 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.CollectionInstance;
-import org.appsec.securityRAT.domain.RequirementSkeleton;
+import org.appsec.securityrat.domain.CollectionInstance;
+
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
-
-import java.util.Set;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the CollectionInstance entity.
+ * Spring Data  repository for the CollectionInstance entity.
  */
-public interface CollectionInstanceRepository extends JpaRepository<CollectionInstance,Long> {
-
-
-
-	@Query("select distinct collectionInstance from CollectionInstance collectionInstance "
-			+ "left join collectionInstance.requirementSkeletons rs "
-			+ "where collectionInstance.active=true "
-			+ "and :skeleton in rs")
-	public Set<CollectionInstance> findActiveCollectionsForSkeleton(@Param("skeleton") RequirementSkeleton skeleton);
+@SuppressWarnings("unused")
+@Repository
+public interface CollectionInstanceRepository extends JpaRepository<CollectionInstance, Long> {
 
 }

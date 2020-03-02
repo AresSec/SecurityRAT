@@ -1,160 +1,144 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+import org.appsec.securityrat.domain.TagInstance;
+import org.appsec.securityrat.repository.TagInstanceRepository;
+import org.appsec.securityrat.repository.search.TagInstanceSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
 
-import org.appsec.securityRAT.domain.TagInstance;
-import org.appsec.securityRAT.repository.TagCategoryRepository;
-import org.appsec.securityRAT.repository.TagInstanceRepository;
-import org.appsec.securityRAT.repository.search.TagInstanceSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TagInstance.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TagInstance}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TagInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(TagInstanceResource.class);
 
-    @Inject
-    private TagInstanceRepository tagInstanceRepository;
+    private static final String ENTITY_NAME = "tagInstance";
 
-    @Inject
-    private TagCategoryRepository tagCategoryRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private TagInstanceSearchRepository tagInstanceSearchRepository;
+    private final TagInstanceRepository tagInstanceRepository;
+
+    private final TagInstanceSearchRepository tagInstanceSearchRepository;
+
+    public TagInstanceResource(TagInstanceRepository tagInstanceRepository, TagInstanceSearchRepository tagInstanceSearchRepository) {
+        this.tagInstanceRepository = tagInstanceRepository;
+        this.tagInstanceSearchRepository = tagInstanceSearchRepository;
+    }
 
     /**
-     * POST  /tagInstances -> Create a new tagInstance.
+     * {@code POST  /tag-instances} : Create a new tagInstance.
+     *
+     * @param tagInstance the tagInstance to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tagInstance, or with status {@code 400 (Bad Request)} if the tagInstance has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/tagInstances",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagInstance> create(@RequestBody TagInstance tagInstance) throws URISyntaxException {
+    @PostMapping("/tag-instances")
+    public ResponseEntity<TagInstance> createTagInstance(@RequestBody TagInstance tagInstance) throws URISyntaxException {
         log.debug("REST request to save TagInstance : {}", tagInstance);
         if (tagInstance.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new tagInstance cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new tagInstance cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TagInstance result = tagInstanceRepository.save(tagInstance);
         tagInstanceSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/tagInstances/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("tagInstance", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/tag-instances/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /tagInstances -> Updates an existing tagInstance.
+     * {@code PUT  /tag-instances} : Updates an existing tagInstance.
+     *
+     * @param tagInstance the tagInstance to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tagInstance,
+     * or with status {@code 400 (Bad Request)} if the tagInstance is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the tagInstance couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/tagInstances",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagInstance> update(@RequestBody TagInstance tagInstance) throws URISyntaxException {
+    @PutMapping("/tag-instances")
+    public ResponseEntity<TagInstance> updateTagInstance(@RequestBody TagInstance tagInstance) throws URISyntaxException {
         log.debug("REST request to update TagInstance : {}", tagInstance);
         if (tagInstance.getId() == null) {
-            return create(tagInstance);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TagInstance result = tagInstanceRepository.save(tagInstance);
-        tagInstanceSearchRepository.save(tagInstance);
+        tagInstanceSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("tagInstance", tagInstance.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, tagInstance.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /tagInstances -> get all the tagInstances.
+     * {@code GET  /tag-instances} : get all the tagInstances.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tagInstances in body.
      */
-    @RequestMapping(value = "/tagInstances",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TagInstance> getAll() {
+    @GetMapping("/tag-instances")
+    public List<TagInstance> getAllTagInstances() {
         log.debug("REST request to get all TagInstances");
         return tagInstanceRepository.findAll();
     }
 
     /**
-     * GET  /tagInstances/:id -> get the "id" tagInstance.
+     * {@code GET  /tag-instances/:id} : get the "id" tagInstance.
+     *
+     * @param id the id of the tagInstance to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tagInstance, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/tagInstances/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TagInstance> get(@PathVariable Long id) {
+    @GetMapping("/tag-instances/{id}")
+    public ResponseEntity<TagInstance> getTagInstance(@PathVariable Long id) {
         log.debug("REST request to get TagInstance : {}", id);
-        return Optional.ofNullable(tagInstanceRepository.findOne(id))
-            .map(tagInstance -> new ResponseEntity<>(
-                tagInstance,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TagInstance> tagInstance = tagInstanceRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(tagInstance);
     }
 
     /**
-     * GET  /tagInstances/tagCategory/:id -> get the "id" statusColumnValue.
+     * {@code DELETE  /tag-instances/:id} : delete the "id" tagInstance.
+     *
+     * @param id the id of the tagInstance to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/tagInstances/tagCategory/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Set<TagInstance>> getTagInstanceValues(@PathVariable Long id) {
-        log.debug("REST request to get TagInstanceValues for TagCategory : {}", id);
-        return Optional.ofNullable(tagCategoryRepository.findOne(id).getTagInstances())
-            .map(TagInstanceValue -> new ResponseEntity<>(
-            	 TagInstanceValue,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    /**
-     * DELETE  /tagInstances/:id -> delete the "id" tagInstance.
-     */
-    @RequestMapping(value = "/tagInstances/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/tag-instances/{id}")
+    public ResponseEntity<Void> deleteTagInstance(@PathVariable Long id) {
         log.debug("REST request to delete TagInstance : {}", id);
-        
-        return Optional.ofNullable(tagInstanceRepository.findOne(id))
-                .map(tagInstance -> {
-                	tagInstanceRepository.delete(id);
-                    tagInstanceSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("tagInstance", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        tagInstanceRepository.deleteById(id);
+        tagInstanceSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/tagInstances/:query -> search for the tagInstance corresponding
+     * {@code SEARCH  /_search/tag-instances?query=:query} : search for the tagInstance corresponding
      * to the query.
+     *
+     * @param query the query of the tagInstance search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/tagInstances/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TagInstance> search(@PathVariable String query) {
+    @GetMapping("/_search/tag-instances")
+    public List<TagInstance> searchTagInstances(@RequestParam String query) {
+        log.debug("REST request to search TagInstances for query {}", query);
         return StreamSupport
-            .stream(tagInstanceSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(tagInstanceSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

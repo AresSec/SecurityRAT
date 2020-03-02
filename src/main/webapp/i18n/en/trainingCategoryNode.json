@@ -1,0 +1,25 @@
+{
+  "securityRatApp": {
+    "trainingCategoryNode": {
+      "home": {
+        "title": "Training Category Nodes",
+        "createLabel": "Create a new Training Category Node",
+        "createOrEditLabel": "Create or edit a Training Category Node",
+        "search": "Search for Training Category Node",
+        "notFound": "No Training Category Nodes found"
+      },
+      "created": "A new Training Category Node is created with identifier {{ param }}",
+      "updated": "A Training Category Node is updated with identifier {{ param }}",
+      "deleted": "A Training Category Node is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Training Category Node {{ id }}?"
+      },
+      "detail": {
+        "title": "Training Category Node"
+      },
+      "name": "Name",
+      "node": "Node",
+      "category": "Category"
+    }
+  }
+}

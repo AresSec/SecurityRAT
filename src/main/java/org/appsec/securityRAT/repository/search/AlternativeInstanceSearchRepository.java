@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.AlternativeInstance;
+import org.appsec.securityrat.domain.AlternativeInstance;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the AlternativeInstance entity.
+ * Spring Data Elasticsearch repository for the {@link AlternativeInstance} entity.
  */
 public interface AlternativeInstanceSearchRepository extends ElasticsearchRepository<AlternativeInstance, Long> {
 }

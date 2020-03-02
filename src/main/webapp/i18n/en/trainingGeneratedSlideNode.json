@@ -1,0 +1,24 @@
+{
+  "securityRatApp": {
+    "trainingGeneratedSlideNode": {
+      "home": {
+        "title": "Training Generated Slide Nodes",
+        "createLabel": "Create a new Training Generated Slide Node",
+        "createOrEditLabel": "Create or edit a Training Generated Slide Node",
+        "search": "Search for Training Generated Slide Node",
+        "notFound": "No Training Generated Slide Nodes found"
+      },
+      "created": "A new Training Generated Slide Node is created with identifier {{ param }}",
+      "updated": "A Training Generated Slide Node is updated with identifier {{ param }}",
+      "deleted": "A Training Generated Slide Node is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Training Generated Slide Node {{ id }}?"
+      },
+      "detail": {
+        "title": "Training Generated Slide Node"
+      },
+      "node": "Node",
+      "optColumn": "Opt Column"
+    }
+  }
+}

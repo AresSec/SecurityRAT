@@ -1,13 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.SlideTemplate;
+import org.appsec.securityrat.domain.SlideTemplate;
+
 import org.springframework.data.jpa.repository.*;
-
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the SlideTemplate entity.
+ * Spring Data  repository for the SlideTemplate entity.
  */
-public interface SlideTemplateRepository extends JpaRepository<SlideTemplate,Long> {
+@SuppressWarnings("unused")
+@Repository
+public interface SlideTemplateRepository extends JpaRepository<SlideTemplate, Long> {
 
 }

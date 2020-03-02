@@ -1,18 +1,20 @@
-package org.appsec.securityRAT.security;
+package org.appsec.securityrat.security;
 
-import org.appsec.securityRAT.config.Constants;
+import org.appsec.securityrat.config.Constants;
+
+import java.util.Optional;
+
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementation of AuditorAware based on Spring Security.
+ * Implementation of {@link AuditorAware} based on Spring Security.
  */
 @Component
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
     @Override
-    public String getCurrentAuditor() {
-        String userName = SecurityUtils.getCurrentLogin();
-        return (userName != null ? userName : Constants.SYSTEM_ACCOUNT);
+    public Optional<String> getCurrentAuditor() {
+        return Optional.of(SecurityUtils.getCurrentUserLogin().orElse(Constants.SYSTEM_ACCOUNT));
     }
 }

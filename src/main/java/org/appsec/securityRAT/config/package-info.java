@@ -1,4 +1,4 @@
 /**
  * Spring Framework configuration files.
  */
-package org.appsec.securityRAT.config;
+package org.appsec.securityrat.config;

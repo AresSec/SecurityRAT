@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="trainingBranchNode">
+            <h2><span jhiTranslate="securityRatApp.trainingBranchNode.detail.title">Training Branch Node</span> {{ trainingBranchNode.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="securityRatApp.trainingBranchNode.name">Name</span></dt>
+                <dd>
+                    <span>{{ trainingBranchNode.name }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.trainingBranchNode.anchor">Anchor</span></dt>
+                <dd>
+                    <span>{{ trainingBranchNode.anchor }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.trainingBranchNode.node">Node</span></dt>
+                <dd>
+                    <div *ngIf="trainingBranchNode.node">
+                        <a [routerLink]="['/training-tree-node', trainingBranchNode.node?.id, 'view']">{{ trainingBranchNode.node?.id }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/training-branch-node', trainingBranchNode.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

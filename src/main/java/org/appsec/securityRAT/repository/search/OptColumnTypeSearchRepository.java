@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.OptColumnType;
+import org.appsec.securityrat.domain.OptColumnType;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the OptColumnType entity.
+ * Spring Data Elasticsearch repository for the {@link OptColumnType} entity.
  */
 public interface OptColumnTypeSearchRepository extends ElasticsearchRepository<OptColumnType, Long> {
 }

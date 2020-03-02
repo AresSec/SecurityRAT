@@ -1,21 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.TrainingRequirementNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
-import org.appsec.securityRAT.repository.TrainingRequirementNodeRepository;
-import org.appsec.securityRAT.repository.TrainingTreeNodeRepository;
-import org.appsec.securityRAT.repository.search.TrainingRequirementNodeSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.TrainingRequirementNode;
+import org.appsec.securityrat.repository.TrainingRequirementNodeRepository;
+import org.appsec.securityrat.repository.search.TrainingRequirementNodeSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,133 +21,124 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TrainingRequirementNode.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TrainingRequirementNode}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TrainingRequirementNodeResource {
 
     private final Logger log = LoggerFactory.getLogger(TrainingRequirementNodeResource.class);
 
-    @Inject
-    private TrainingRequirementNodeRepository trainingRequirementNodeRepository;
+    private static final String ENTITY_NAME = "trainingRequirementNode";
 
-    @Inject
-    private TrainingRequirementNodeSearchRepository trainingRequirementNodeSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private TrainingTreeNodeRepository trainingTreeNodeRepository;
+    private final TrainingRequirementNodeRepository trainingRequirementNodeRepository;
+
+    private final TrainingRequirementNodeSearchRepository trainingRequirementNodeSearchRepository;
+
+    public TrainingRequirementNodeResource(TrainingRequirementNodeRepository trainingRequirementNodeRepository, TrainingRequirementNodeSearchRepository trainingRequirementNodeSearchRepository) {
+        this.trainingRequirementNodeRepository = trainingRequirementNodeRepository;
+        this.trainingRequirementNodeSearchRepository = trainingRequirementNodeSearchRepository;
+    }
 
     /**
-     * POST  /trainingRequirementNodes -> Create a new trainingRequirementNode.
+     * {@code POST  /training-requirement-nodes} : Create a new trainingRequirementNode.
+     *
+     * @param trainingRequirementNode the trainingRequirementNode to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trainingRequirementNode, or with status {@code 400 (Bad Request)} if the trainingRequirementNode has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingRequirementNodes",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingRequirementNode> create(@RequestBody TrainingRequirementNode trainingRequirementNode) throws URISyntaxException {
+    @PostMapping("/training-requirement-nodes")
+    public ResponseEntity<TrainingRequirementNode> createTrainingRequirementNode(@RequestBody TrainingRequirementNode trainingRequirementNode) throws URISyntaxException {
         log.debug("REST request to save TrainingRequirementNode : {}", trainingRequirementNode);
         if (trainingRequirementNode.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new trainingRequirementNode cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new trainingRequirementNode cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TrainingRequirementNode result = trainingRequirementNodeRepository.save(trainingRequirementNode);
         trainingRequirementNodeSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/trainingRequirementNodes/" + result.getId()))
-                .headers(new HttpHeaders())
-                .body(result);
+        return ResponseEntity.created(new URI("/api/training-requirement-nodes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /trainingRequirementNodes -> Updates an existing trainingRequirementNode.
+     * {@code PUT  /training-requirement-nodes} : Updates an existing trainingRequirementNode.
+     *
+     * @param trainingRequirementNode the trainingRequirementNode to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trainingRequirementNode,
+     * or with status {@code 400 (Bad Request)} if the trainingRequirementNode is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trainingRequirementNode couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingRequirementNodes",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingRequirementNode> update(@RequestBody TrainingRequirementNode trainingRequirementNode) throws URISyntaxException {
+    @PutMapping("/training-requirement-nodes")
+    public ResponseEntity<TrainingRequirementNode> updateTrainingRequirementNode(@RequestBody TrainingRequirementNode trainingRequirementNode) throws URISyntaxException {
         log.debug("REST request to update TrainingRequirementNode : {}", trainingRequirementNode);
         if (trainingRequirementNode.getId() == null) {
-            return create(trainingRequirementNode);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TrainingRequirementNode result = trainingRequirementNodeRepository.save(trainingRequirementNode);
-        trainingRequirementNodeSearchRepository.save(trainingRequirementNode);
+        trainingRequirementNodeSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("trainingRequirementNode", trainingRequirementNode.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trainingRequirementNode.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /trainingRequirementNodes -> get all the trainingRequirementNodes.
+     * {@code GET  /training-requirement-nodes} : get all the trainingRequirementNodes.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trainingRequirementNodes in body.
      */
-    @RequestMapping(value = "/trainingRequirementNodes",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingRequirementNode> getAll() {
+    @GetMapping("/training-requirement-nodes")
+    public List<TrainingRequirementNode> getAllTrainingRequirementNodes() {
         log.debug("REST request to get all TrainingRequirementNodes");
         return trainingRequirementNodeRepository.findAll();
     }
 
     /**
-     * GET  /trainingRequirementNodes/:id -> get the "id" trainingRequirementNode.
+     * {@code GET  /training-requirement-nodes/:id} : get the "id" trainingRequirementNode.
+     *
+     * @param id the id of the trainingRequirementNode to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trainingRequirementNode, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/trainingRequirementNodes/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingRequirementNode> get(@PathVariable Long id) {
+    @GetMapping("/training-requirement-nodes/{id}")
+    public ResponseEntity<TrainingRequirementNode> getTrainingRequirementNode(@PathVariable Long id) {
         log.debug("REST request to get TrainingRequirementNode : {}", id);
-        return Optional.ofNullable(trainingRequirementNodeRepository.findOne(id))
-            .map(trainingRequirementNode -> new ResponseEntity<>(
-                trainingRequirementNode,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TrainingRequirementNode> trainingRequirementNode = trainingRequirementNodeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(trainingRequirementNode);
     }
 
     /**
-     * DELETE  /trainingRequirementNodes/:id -> delete the "id" trainingRequirementNode.
+     * {@code DELETE  /training-requirement-nodes/:id} : delete the "id" trainingRequirementNode.
+     *
+     * @param id the id of the trainingRequirementNode to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/trainingRequirementNodes/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/training-requirement-nodes/{id}")
+    public ResponseEntity<Void> deleteTrainingRequirementNode(@PathVariable Long id) {
         log.debug("REST request to delete TrainingRequirementNode : {}", id);
-        trainingRequirementNodeRepository.delete(id);
-        trainingRequirementNodeSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("trainingRequirementNode", id.toString())).build();
+        trainingRequirementNodeRepository.deleteById(id);
+        trainingRequirementNodeSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/trainingRequirementNodes/:query -> search for the trainingRequirementNode corresponding
+     * {@code SEARCH  /_search/training-requirement-nodes?query=:query} : search for the trainingRequirementNode corresponding
      * to the query.
+     *
+     * @param query the query of the trainingRequirementNode search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/trainingRequirementNodes/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingRequirementNode> search(@PathVariable String query) {
+    @GetMapping("/_search/training-requirement-nodes")
+    public List<TrainingRequirementNode> searchTrainingRequirementNodes(@RequestParam String query) {
+        log.debug("REST request to search TrainingRequirementNodes for query {}", query);
         return StreamSupport
-            .stream(trainingRequirementNodeSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(trainingRequirementNodeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * GET TrainingRequirementNode by its node_id
-     */
-    @RequestMapping(value = "/TrainingRequirementNodeByTrainingTreeNode/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingRequirementNode> getTrainingRequirementNodeByTrainingTreeNode(@PathVariable Long id) {
-        log.debug("REST request to get TrainingRequirementNode with node_id : {}", id);
-        TrainingTreeNode node = trainingTreeNodeRepository.getOne(id);
-        TrainingRequirementNode result = trainingRequirementNodeRepository.getTrainingRequirementNodeByTrainingTreeNode(node);
-        return ResponseEntity.ok()
-            .headers(new HttpHeaders())
-            .body(result);
     }
 }

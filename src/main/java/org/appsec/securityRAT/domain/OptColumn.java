@@ -1,36 +1,36 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
-
 
 /**
  * A OptColumn.
  */
 @Entity
-@Table(name = "OPTCOLUMN")
+@Table(name = "opt_column")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="optcolumn")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "optcolumn")
 public class OptColumn implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
-    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -39,27 +39,24 @@ public class OptColumn implements Serializable {
     @Column(name = "active")
     private Boolean active;
 
-    @Column(name = "isVisibleByDefault")
-    private Boolean isVisibleByDefault;
-
     @ManyToOne
+    @JsonIgnoreProperties("optColumns")
     private OptColumnType optColumnType;
 
     @OneToMany(mappedBy = "optColumn")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<AlternativeSet> alternativeSets = new HashSet<>();
 
     @OneToMany(mappedBy = "optColumn")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<OptColumnContent> optColumnContents = new HashSet<>();
 
     @ManyToMany(mappedBy = "optColumns")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<ProjectType> projectTypes = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -92,20 +89,12 @@ public class OptColumn implements Serializable {
         this.showOrder = showOrder;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public Boolean getIsVisibleByDefault() {
-        return this.isVisibleByDefault;
-    }
-
-    public void setIsVisibleByDefault(Boolean isVisibleByDefault) {
-        this.isVisibleByDefault = isVisibleByDefault;
     }
 
     public OptColumnType getOptColumnType() {
@@ -139,37 +128,32 @@ public class OptColumn implements Serializable {
     public void setProjectTypes(Set<ProjectType> projectTypes) {
         this.projectTypes = projectTypes;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof OptColumn)) {
             return false;
         }
-
-        OptColumn optColumn = (OptColumn) o;
-
-        if ( ! Objects.equals(id, optColumn.id)) return false;
-
-        return true;
+        return id != null && id.equals(((OptColumn) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "OptColumn{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", showOrder='" + showOrder + "'" +
-                ", active='" + active + "'" +
-                ", isVisibleByDefault='" + isVisibleByDefault + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", showOrder=" + getShowOrder() +
+            ", active='" + isActive() + "'" +
+            "}";
     }
 }

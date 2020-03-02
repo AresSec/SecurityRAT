@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.StatusColumn;
+import org.appsec.securityrat.domain.StatusColumn;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the StatusColumn entity.
+ * Spring Data Elasticsearch repository for the {@link StatusColumn} entity.
  */
 public interface StatusColumnSearchRepository extends ElasticsearchRepository<StatusColumn, Long> {
 }

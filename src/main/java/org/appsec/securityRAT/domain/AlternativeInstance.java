@@ -1,38 +1,41 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.io.Serializable;
 
 /**
  * A AlternativeInstance.
  */
 @Entity
-@Table(name = "ALTERNATIVEINSTANCE")
+@Table(name = "alternative_instance")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="alternativeinstance")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "alternativeinstance")
 public class AlternativeInstance implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "content")
-    @Lob
     private String content;
 
     @ManyToOne
+    @JsonIgnoreProperties("alternativeInstances")
     private AlternativeSet alternativeSet;
 
     @ManyToOne
+    @JsonIgnoreProperties("alternativeInstances")
     private RequirementSkeleton requirementSkeleton;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -64,33 +67,29 @@ public class AlternativeInstance implements Serializable {
     public void setRequirementSkeleton(RequirementSkeleton requirementSkeleton) {
         this.requirementSkeleton = requirementSkeleton;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof AlternativeInstance)) {
             return false;
         }
-
-        AlternativeInstance alternativeInstance = (AlternativeInstance) o;
-
-        if ( ! Objects.equals(id, alternativeInstance.id)) return false;
-
-        return true;
+        return id != null && id.equals(((AlternativeInstance) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "AlternativeInstance{" +
-                "id=" + id +
-                ", content='" + content + "'" +
-                '}';
+            "id=" + getId() +
+            ", content='" + getContent() + "'" +
+            "}";
     }
 }

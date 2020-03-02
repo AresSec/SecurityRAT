@@ -1,0 +1,14 @@
+{
+  "securityRatApp": {
+    "TrainingTreeNodeType": {
+      "null": "",
+      "RequirementNode": "RequirementNode",
+      "GeneratedSlideNode": "GeneratedSlideNode",
+      "CustomSlideNode": "CustomSlideNode",
+      "CategoryNode": "CategoryNode",
+      "BranchNode": "BranchNode",
+      "RootNode": "RootNode",
+      "ContentNode": "ContentNode"
+    }
+  }
+}

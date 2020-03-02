@@ -1,41 +1,43 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.io.Serializable;
 
 /**
  * A TrainingCustomSlideNode.
  */
 @Entity
-@Table(name = "TRAININGCUSTOMSLIDENODE")
+@Table(name = "training_custom_slide_node")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="trainingcustomslidenode")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "trainingcustomslidenode")
 public class TrainingCustomSlideNode implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "content")
-    @Lob
     private String content;
 
     @Column(name = "anchor")
     private Integer anchor;
 
     @ManyToOne
+    @JsonIgnoreProperties("trainingCustomSlideNodes")
     private TrainingTreeNode node;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -75,35 +77,31 @@ public class TrainingCustomSlideNode implements Serializable {
     public void setNode(TrainingTreeNode trainingTreeNode) {
         this.node = trainingTreeNode;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TrainingCustomSlideNode)) {
             return false;
         }
-
-        TrainingCustomSlideNode trainingCustomSlideNode = (TrainingCustomSlideNode) o;
-
-        if ( ! Objects.equals(id, trainingCustomSlideNode.id)) return false;
-
-        return true;
+        return id != null && id.equals(((TrainingCustomSlideNode) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "TrainingCustomSlideNode{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", content='" + content + "'" +
-                ", anchor='" + anchor + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", content='" + getContent() + "'" +
+            ", anchor=" + getAnchor() +
+            "}";
     }
 }

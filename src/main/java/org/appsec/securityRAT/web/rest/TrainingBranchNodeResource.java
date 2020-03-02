@@ -1,21 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.TrainingBranchNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
-import org.appsec.securityRAT.repository.TrainingBranchNodeRepository;
-import org.appsec.securityRAT.repository.TrainingTreeNodeRepository;
-import org.appsec.securityRAT.repository.search.TrainingBranchNodeSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.TrainingBranchNode;
+import org.appsec.securityrat.repository.TrainingBranchNodeRepository;
+import org.appsec.securityrat.repository.search.TrainingBranchNodeSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,133 +21,124 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TrainingBranchNode.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TrainingBranchNode}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TrainingBranchNodeResource {
 
     private final Logger log = LoggerFactory.getLogger(TrainingBranchNodeResource.class);
 
-    @Inject
-    private TrainingBranchNodeRepository trainingBranchNodeRepository;
+    private static final String ENTITY_NAME = "trainingBranchNode";
 
-    @Inject
-    private TrainingBranchNodeSearchRepository trainingBranchNodeSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private TrainingTreeNodeRepository trainingTreeNodeRepository;
+    private final TrainingBranchNodeRepository trainingBranchNodeRepository;
+
+    private final TrainingBranchNodeSearchRepository trainingBranchNodeSearchRepository;
+
+    public TrainingBranchNodeResource(TrainingBranchNodeRepository trainingBranchNodeRepository, TrainingBranchNodeSearchRepository trainingBranchNodeSearchRepository) {
+        this.trainingBranchNodeRepository = trainingBranchNodeRepository;
+        this.trainingBranchNodeSearchRepository = trainingBranchNodeSearchRepository;
+    }
 
     /**
-     * POST  /trainingBranchNodes -> Create a new trainingBranchNode.
+     * {@code POST  /training-branch-nodes} : Create a new trainingBranchNode.
+     *
+     * @param trainingBranchNode the trainingBranchNode to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trainingBranchNode, or with status {@code 400 (Bad Request)} if the trainingBranchNode has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingBranchNodes",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingBranchNode> create(@RequestBody TrainingBranchNode trainingBranchNode) throws URISyntaxException {
+    @PostMapping("/training-branch-nodes")
+    public ResponseEntity<TrainingBranchNode> createTrainingBranchNode(@RequestBody TrainingBranchNode trainingBranchNode) throws URISyntaxException {
         log.debug("REST request to save TrainingBranchNode : {}", trainingBranchNode);
         if (trainingBranchNode.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new trainingBranchNode cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new trainingBranchNode cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TrainingBranchNode result = trainingBranchNodeRepository.save(trainingBranchNode);
         trainingBranchNodeSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/trainingBranchNodes/" + result.getId()))
-                .headers(new HttpHeaders())
-                .body(result);
+        return ResponseEntity.created(new URI("/api/training-branch-nodes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /trainingBranchNodes -> Updates an existing trainingBranchNode.
+     * {@code PUT  /training-branch-nodes} : Updates an existing trainingBranchNode.
+     *
+     * @param trainingBranchNode the trainingBranchNode to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trainingBranchNode,
+     * or with status {@code 400 (Bad Request)} if the trainingBranchNode is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trainingBranchNode couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingBranchNodes",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingBranchNode> update(@RequestBody TrainingBranchNode trainingBranchNode) throws URISyntaxException {
+    @PutMapping("/training-branch-nodes")
+    public ResponseEntity<TrainingBranchNode> updateTrainingBranchNode(@RequestBody TrainingBranchNode trainingBranchNode) throws URISyntaxException {
         log.debug("REST request to update TrainingBranchNode : {}", trainingBranchNode);
         if (trainingBranchNode.getId() == null) {
-            return create(trainingBranchNode);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TrainingBranchNode result = trainingBranchNodeRepository.save(trainingBranchNode);
-        trainingBranchNodeSearchRepository.save(trainingBranchNode);
+        trainingBranchNodeSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("trainingBranchNode", trainingBranchNode.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trainingBranchNode.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /trainingBranchNodes -> get all the trainingBranchNodes.
+     * {@code GET  /training-branch-nodes} : get all the trainingBranchNodes.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trainingBranchNodes in body.
      */
-    @RequestMapping(value = "/trainingBranchNodes",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingBranchNode> getAll() {
+    @GetMapping("/training-branch-nodes")
+    public List<TrainingBranchNode> getAllTrainingBranchNodes() {
         log.debug("REST request to get all TrainingBranchNodes");
         return trainingBranchNodeRepository.findAll();
     }
 
     /**
-     * GET  /trainingBranchNodes/:id -> get the "id" trainingBranchNode.
+     * {@code GET  /training-branch-nodes/:id} : get the "id" trainingBranchNode.
+     *
+     * @param id the id of the trainingBranchNode to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trainingBranchNode, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/trainingBranchNodes/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingBranchNode> get(@PathVariable Long id) {
+    @GetMapping("/training-branch-nodes/{id}")
+    public ResponseEntity<TrainingBranchNode> getTrainingBranchNode(@PathVariable Long id) {
         log.debug("REST request to get TrainingBranchNode : {}", id);
-        return Optional.ofNullable(trainingBranchNodeRepository.findOne(id))
-            .map(trainingBranchNode -> new ResponseEntity<>(
-                trainingBranchNode,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TrainingBranchNode> trainingBranchNode = trainingBranchNodeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(trainingBranchNode);
     }
 
     /**
-     * DELETE  /trainingBranchNodes/:id -> delete the "id" trainingBranchNode.
+     * {@code DELETE  /training-branch-nodes/:id} : delete the "id" trainingBranchNode.
+     *
+     * @param id the id of the trainingBranchNode to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/trainingBranchNodes/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/training-branch-nodes/{id}")
+    public ResponseEntity<Void> deleteTrainingBranchNode(@PathVariable Long id) {
         log.debug("REST request to delete TrainingBranchNode : {}", id);
-        trainingBranchNodeRepository.delete(id);
-        trainingBranchNodeSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("trainingBranchNode", id.toString())).build();
+        trainingBranchNodeRepository.deleteById(id);
+        trainingBranchNodeSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/trainingBranchNodes/:query -> search for the trainingBranchNode corresponding
+     * {@code SEARCH  /_search/training-branch-nodes?query=:query} : search for the trainingBranchNode corresponding
      * to the query.
+     *
+     * @param query the query of the trainingBranchNode search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/trainingBranchNodes/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingBranchNode> search(@PathVariable String query) {
+    @GetMapping("/_search/training-branch-nodes")
+    public List<TrainingBranchNode> searchTrainingBranchNodes(@RequestParam String query) {
+        log.debug("REST request to search TrainingBranchNodes for query {}", query);
         return StreamSupport
-            .stream(trainingBranchNodeSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(trainingBranchNodeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * GET TrainingBranchNode by its node_id
-     */
-    @RequestMapping(value = "/TrainingBranchNodeByTrainingTreeNode/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingBranchNode> getTrainingBranchNodeByTrainingTreeNode(@PathVariable Long id) {
-        log.debug("REST request to get TrainingBranchNode with node_id : {}", id);
-        TrainingTreeNode node = trainingTreeNodeRepository.getOne(id);
-        TrainingBranchNode result = trainingBranchNodeRepository.getTrainingBranchNodeByTrainingTreeNode(node);
-        return ResponseEntity.ok()
-            .headers(new HttpHeaders())
-            .body(result);
     }
 }

@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.CollectionCategory;
+import org.appsec.securityrat.domain.CollectionCategory;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the CollectionCategory entity.
+ * Spring Data Elasticsearch repository for the {@link CollectionCategory} entity.
  */
 public interface CollectionCategorySearchRepository extends ElasticsearchRepository<CollectionCategory, Long> {
 }

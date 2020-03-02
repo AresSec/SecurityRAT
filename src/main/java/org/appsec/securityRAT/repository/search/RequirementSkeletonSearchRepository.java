@@ -1,10 +1,10 @@
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;
 
-import org.appsec.securityRAT.domain.RequirementSkeleton;
+import org.appsec.securityrat.domain.RequirementSkeleton;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the RequirementSkeleton entity.
+ * Spring Data Elasticsearch repository for the {@link RequirementSkeleton} entity.
  */
 public interface RequirementSkeletonSearchRepository extends ElasticsearchRepository<RequirementSkeleton, Long> {
 }

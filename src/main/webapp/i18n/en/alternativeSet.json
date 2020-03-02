@@ -1,0 +1,28 @@
+{
+  "securityRatApp": {
+    "alternativeSet": {
+      "home": {
+        "title": "Alternative Sets",
+        "createLabel": "Create a new Alternative Set",
+        "createOrEditLabel": "Create or edit a Alternative Set",
+        "search": "Search for Alternative Set",
+        "notFound": "No Alternative Sets found"
+      },
+      "created": "A new Alternative Set is created with identifier {{ param }}",
+      "updated": "A Alternative Set is updated with identifier {{ param }}",
+      "deleted": "A Alternative Set is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Alternative Set {{ id }}?"
+      },
+      "detail": {
+        "title": "Alternative Set"
+      },
+      "name": "Name",
+      "description": "Description",
+      "showOrder": "Show Order",
+      "active": "Active",
+      "optColumn": "Opt Column",
+      "alternativeInstance": "Alternative Instance"
+    }
+  }
+}

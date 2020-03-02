@@ -1,38 +1,34 @@
-package org.appsec.securityRAT.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package org.appsec.securityrat.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
-
 
 /**
  * A TagCategory.
  */
 @Entity
-@Table(name = "TAGCATEGORY")
+@Table(name = "tag_category")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="tagcategory")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "tagcategory")
 public class TagCategory implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
-    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -42,10 +38,10 @@ public class TagCategory implements Serializable {
     private Boolean active;
 
     @OneToMany(mappedBy = "tagCategory")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<TagInstance> tagInstances = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -78,7 +74,7 @@ public class TagCategory implements Serializable {
         this.showOrder = showOrder;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
@@ -93,36 +89,32 @@ public class TagCategory implements Serializable {
     public void setTagInstances(Set<TagInstance> tagInstances) {
         this.tagInstances = tagInstances;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TagCategory)) {
             return false;
         }
-
-        TagCategory tagCategory = (TagCategory) o;
-
-        if ( ! Objects.equals(id, tagCategory.id)) return false;
-
-        return true;
+        return id != null && id.equals(((TagCategory) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "TagCategory{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", showOrder='" + showOrder + "'" +
-                ", active='" + active + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", showOrder=" + getShowOrder() +
+            ", active='" + isActive() + "'" +
+            "}";
     }
 }

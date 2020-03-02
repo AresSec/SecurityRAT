@@ -1,4 +1,4 @@
 /**
  * Audit specific code.
  */
-package org.appsec.securityRAT.config.audit;
+package org.appsec.securityrat.config.audit;

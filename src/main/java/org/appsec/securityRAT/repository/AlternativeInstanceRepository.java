@@ -1,19 +1,15 @@
-package org.appsec.securityRAT.repository;
+package org.appsec.securityrat.repository;
 
-import org.appsec.securityRAT.domain.AlternativeInstance;
-import org.appsec.securityRAT.domain.AlternativeSet;
+import org.appsec.securityrat.domain.AlternativeInstance;
+
 import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
-
-import java.util.Set;
+import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for the AlternativeInstance entity.
+ * Spring Data  repository for the AlternativeInstance entity.
  */
-public interface AlternativeInstanceRepository extends JpaRepository<AlternativeInstance,Long> {
+@SuppressWarnings("unused")
+@Repository
+public interface AlternativeInstanceRepository extends JpaRepository<AlternativeInstance, Long> {
 
-	@Query("select distinct alternativeInstance from AlternativeInstance alternativeInstance "
-			+ "left join fetch alternativeInstance.requirementSkeleton rs "
-			+ "where alternativeInstance.alternativeSet=:alternativeSet")
-	public Set<AlternativeInstance> getActiveAlternativeInstancesForAlternativeSet(@Param("alternativeSet") AlternativeSet alternativeSet);
 }

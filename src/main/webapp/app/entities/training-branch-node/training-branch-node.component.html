@@ -1,0 +1,87 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="securityRatApp.trainingBranchNode.home.title">Training Branch Nodes</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-training-branch-node" [routerLink]="['/training-branch-node/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span class="hidden-sm-down"  jhiTranslate="securityRatApp.trainingBranchNode.home.createLabel">
+            Create a new Training Branch Node
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'securityRatApp.trainingBranchNode.home.search' | translate }}">
+
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon icon="search"></fa-icon>
+                    </button>
+
+                    <button class="input-group-append btn btn-danger" (click)="search('')" *ngIf="currentSearch">
+                        <fa-icon icon="trash-alt"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="trainingBranchNodes?.length === 0">
+        <span jhiTranslate="securityRatApp.trainingBranchNode.home.notFound">No trainingBranchNodes found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="trainingBranchNodes?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr>
+                    <th scope="col" ><span jhiTranslate="global.field.id">ID</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.trainingBranchNode.name">Name</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.trainingBranchNode.anchor">Anchor</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.trainingBranchNode.node">Node</span></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let trainingBranchNode of trainingBranchNodes ;trackBy: trackId">
+                    <td><a [routerLink]="['/training-branch-node', trainingBranchNode.id, 'view']">{{ trainingBranchNode.id }}</a></td>
+                    <td>{{ trainingBranchNode.name }}</td>
+                    <td>{{ trainingBranchNode.anchor }}</td>
+                    <td>
+                        <div *ngIf="trainingBranchNode.node">
+                            <a [routerLink]="['/training-tree-node', trainingBranchNode.node?.id, 'view']" >{{ trainingBranchNode.node?.id }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/training-branch-node', trainingBranchNode.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/training-branch-node', trainingBranchNode.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(trainingBranchNode)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

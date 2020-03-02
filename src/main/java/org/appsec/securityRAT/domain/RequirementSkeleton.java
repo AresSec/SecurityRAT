@@ -1,28 +1,30 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.elasticsearch.annotations.Document;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
-
 
 /**
  * A RequirementSkeleton.
  */
 @Entity
-@Table(name = "REQUIREMENTSKELETON")
-//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="requirementskeleton")
+@Table(name = "requirement_skeleton")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "requirementskeleton")
 public class RequirementSkeleton implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "universal_id")
     private String universalId;
@@ -31,7 +33,6 @@ public class RequirementSkeleton implements Serializable {
     private String shortName;
 
     @Column(name = "description")
-    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -41,39 +42,39 @@ public class RequirementSkeleton implements Serializable {
     private Boolean active;
 
     @OneToMany(mappedBy = "requirementSkeleton")
-    @JsonIgnore
-    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<OptColumnContent> optColumnContents = new HashSet<>();
 
     @OneToMany(mappedBy = "requirementSkeleton")
-    @JsonIgnore
-    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<AlternativeInstance> alternativeInstances = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnoreProperties("requirementSkeletons")
     private ReqCategory reqCategory;
 
     @ManyToMany
-    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "REQUIREMENTSKELETON_TAGINSTANCE",
-               joinColumns = @JoinColumn(name="requirementskeletons_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="taginstances_id", referencedColumnName="ID"))
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "requirement_skeleton_tag_instance",
+               joinColumns = @JoinColumn(name = "requirement_skeleton_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "tag_instance_id", referencedColumnName = "id"))
     private Set<TagInstance> tagInstances = new HashSet<>();
 
     @ManyToMany
-    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "REQUIREMENTSKELETON_COLLECTIONINSTANCE",
-               joinColumns = @JoinColumn(name="requirementskeletons_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="collectioninstances_id", referencedColumnName="ID"))
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "requirement_skeleton_collection_instance",
+               joinColumns = @JoinColumn(name = "requirement_skeleton_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "collection_instance_id", referencedColumnName = "id"))
     private Set<CollectionInstance> collectionInstances = new HashSet<>();
 
     @ManyToMany
-    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "REQUIREMENTSKELETON_PROJECTTYPE",
-               joinColumns = @JoinColumn(name="requirementskeletons_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="projecttypes_id", referencedColumnName="ID"))
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "requirement_skeleton_project_type",
+               joinColumns = @JoinColumn(name = "requirement_skeleton_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "project_type_id", referencedColumnName = "id"))
     private Set<ProjectType> projectTypes = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -114,7 +115,7 @@ public class RequirementSkeleton implements Serializable {
         this.showOrder = showOrder;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
@@ -169,37 +170,33 @@ public class RequirementSkeleton implements Serializable {
     public void setProjectTypes(Set<ProjectType> projectTypes) {
         this.projectTypes = projectTypes;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof RequirementSkeleton)) {
             return false;
         }
-
-        RequirementSkeleton requirementSkeleton = (RequirementSkeleton) o;
-
-        if ( ! Objects.equals(id, requirementSkeleton.id)) return false;
-
-        return true;
+        return id != null && id.equals(((RequirementSkeleton) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "RequirementSkeleton{" +
-                "id=" + id +
-                ", universalId='" + universalId + "'" +
-                ", shortName='" + shortName + "'" +
-                ", description='" + description + "'" +
-                ", showOrder='" + showOrder + "'" +
-                ", active='" + active + "'" +
-                '}';
+            "id=" + getId() +
+            ", universalId='" + getUniversalId() + "'" +
+            ", shortName='" + getShortName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", showOrder=" + getShowOrder() +
+            ", active='" + isActive() + "'" +
+            "}";
     }
 }

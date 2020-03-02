@@ -1,79 +1,119 @@
-server:
-    port: 10344
-    address: localhost
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration is used for unit/integration tests.
+#
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
 
-
-# security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: c271d2839bfc8084e87cdbc4ef2982f431ad078e
-
-authentication:
-    type: FORM
-    registration: true
-    
-async:
-    corePoolSize: 2
-    maxPoolSize: 50
-    queueCapacity: 10000
-
-liquibase:
-    context: test
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
 
 spring:
-    datasource:
-        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
-        url: jdbc:h2:mem:securityrat;DB_CLOSE_DELAY=-1
-        databaseName:
-        serverName:
-        username: 
-        password: 
-
-    jpa:
-        database-platform: org.appsec.securityRAT.domain.util.FixedH2Dialect
-        database: H2
-        openInView: false
-        show_sql: true
-        generate-ddl: false
-        hibernate:
-            ddl-auto: none
-            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
-        properties:
-            hibernate.cache.use_second_level_cache: false
-            hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: true
-            hibernate.hbm2ddl.auto: validate
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
-    messages:
-        cache-seconds: 1
-    thymeleaf:
-        mode: XHTML
-        cache: false
-
-mail:
-    host: localhost
-    port: 25
+  application:
+    name: SecurityRAT
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:SecurityRAT;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    name:
     username:
     password:
-    protocol: smtp
-    tls: false
-    auth: false
-    from: securityrat@localhost # from email address
+    hikari:
+      auto-commit: false
+  jackson:
+    serialization:
+      write-durations-as-timestamps: false
+  jpa:
+    database-platform: io.github.jhipster.domain.util.FixedH2Dialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.hbm2ddl.auto: validate
+      hibernate.jdbc.time_zone: UTC
+  data:
+    elasticsearch:
+      properties:
+        path:
+          home: target/elasticsearch
+  liquibase:
+    contexts: test
+  mail:
+    host: localhost
+  main:
+    allow-bean-definition-overriding: true
+  messages:
+    basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
+  task:
+    execution:
+      thread-name-prefix: security-rat-task-
+      pool:
+        core-size: 1
+        max-size: 50
+        queue-capacity: 10000
+    scheduling:
+      thread-name-prefix: security-rat-scheduling-
+      pool:
+        size: 1
+  thymeleaf:
+    mode: HTML
 
-metrics:
-    jmx.enabled: false
+server:
+  port: 10344
+  address: localhost
 
-swagger:
-    apiDocsLocation: http://localhost:8080
-    title: jhipster API
-    version: 0.0.1
-    description: jhipster applications and beyond!
-    termsOfServiceUrl: http://jhipster.github.io/
-    contact:
-    license: Apache 2.0
-    licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+# ===================================================================
+# JHipster specific properties
+#
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+jhipster:
+  clientApp:
+    name: 'securityRatApp'
+  logging:
+    # To test json console appender
+    use-json-format: true # By default, logs are in Json format
+    logstash:
+      enabled: false
+      host: localhost
+      port: 5000
+      queue-size: 512
+  mail:
+    from: test@localhost
+    base-url: http://127.0.0.1:8080
+  security:
+    remember-me:
+      # security key (this key should be unique for your application, and kept secret)
+      key: 757e280f6425411f51ef286afac3b475fe0b46219380fe3aebe8cbd2f17eea4bb25b1fe52f9015012afd89f78a4970f298bf
+  metrics:
+    logs: # Reports metrics in the logs
+      enabled: true
+      report-frequency: 60 # in seconds
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# to have type-safe configuration, like in the JHipsterProperties above
+#
+# More documentation is available at:
+# https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# application:

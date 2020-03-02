@@ -1,18 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.CollectionInstance;
-import org.appsec.securityRAT.repository.CollectionInstanceRepository;
-import org.appsec.securityRAT.repository.search.CollectionInstanceSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.CollectionInstance;
+import org.appsec.securityrat.repository.CollectionInstanceRepository;
+import org.appsec.securityrat.repository.search.CollectionInstanceSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -23,114 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing CollectionInstance.
+ * REST controller for managing {@link org.appsec.securityrat.domain.CollectionInstance}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class CollectionInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(CollectionInstanceResource.class);
 
-    @Inject
-    private CollectionInstanceRepository collectionInstanceRepository;
+    private static final String ENTITY_NAME = "collectionInstance";
 
-    @Inject
-    private CollectionInstanceSearchRepository collectionInstanceSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final CollectionInstanceRepository collectionInstanceRepository;
+
+    private final CollectionInstanceSearchRepository collectionInstanceSearchRepository;
+
+    public CollectionInstanceResource(CollectionInstanceRepository collectionInstanceRepository, CollectionInstanceSearchRepository collectionInstanceSearchRepository) {
+        this.collectionInstanceRepository = collectionInstanceRepository;
+        this.collectionInstanceSearchRepository = collectionInstanceSearchRepository;
+    }
 
     /**
-     * POST  /collectionInstances -> Create a new collectionInstance.
+     * {@code POST  /collection-instances} : Create a new collectionInstance.
+     *
+     * @param collectionInstance the collectionInstance to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new collectionInstance, or with status {@code 400 (Bad Request)} if the collectionInstance has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/collectionInstances",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionInstance> create(@RequestBody CollectionInstance collectionInstance) throws URISyntaxException {
+    @PostMapping("/collection-instances")
+    public ResponseEntity<CollectionInstance> createCollectionInstance(@RequestBody CollectionInstance collectionInstance) throws URISyntaxException {
         log.debug("REST request to save CollectionInstance : {}", collectionInstance);
         if (collectionInstance.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new collectionInstance cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new collectionInstance cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CollectionInstance result = collectionInstanceRepository.save(collectionInstance);
         collectionInstanceSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/collectionInstances/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("collectionInstance", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/collection-instances/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /collectionInstances -> Updates an existing collectionInstance.
+     * {@code PUT  /collection-instances} : Updates an existing collectionInstance.
+     *
+     * @param collectionInstance the collectionInstance to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated collectionInstance,
+     * or with status {@code 400 (Bad Request)} if the collectionInstance is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the collectionInstance couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/collectionInstances",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionInstance> update(@RequestBody CollectionInstance collectionInstance) throws URISyntaxException {
+    @PutMapping("/collection-instances")
+    public ResponseEntity<CollectionInstance> updateCollectionInstance(@RequestBody CollectionInstance collectionInstance) throws URISyntaxException {
         log.debug("REST request to update CollectionInstance : {}", collectionInstance);
         if (collectionInstance.getId() == null) {
-            return create(collectionInstance);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CollectionInstance result = collectionInstanceRepository.save(collectionInstance);
-        collectionInstanceSearchRepository.save(collectionInstance);
+        collectionInstanceSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("collectionInstance", collectionInstance.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, collectionInstance.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /collectionInstances -> get all the collectionInstances.
+     * {@code GET  /collection-instances} : get all the collectionInstances.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of collectionInstances in body.
      */
-    @RequestMapping(value = "/collectionInstances",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<CollectionInstance> getAll() {
+    @GetMapping("/collection-instances")
+    public List<CollectionInstance> getAllCollectionInstances() {
         log.debug("REST request to get all CollectionInstances");
         return collectionInstanceRepository.findAll();
     }
 
     /**
-     * GET  /collectionInstances/:id -> get the "id" collectionInstance.
+     * {@code GET  /collection-instances/:id} : get the "id" collectionInstance.
+     *
+     * @param id the id of the collectionInstance to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the collectionInstance, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/collectionInstances/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<CollectionInstance> get(@PathVariable Long id) {
+    @GetMapping("/collection-instances/{id}")
+    public ResponseEntity<CollectionInstance> getCollectionInstance(@PathVariable Long id) {
         log.debug("REST request to get CollectionInstance : {}", id);
-        return Optional.ofNullable(collectionInstanceRepository.findOne(id))
-            .map(collectionInstance -> new ResponseEntity<>(
-                collectionInstance,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<CollectionInstance> collectionInstance = collectionInstanceRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(collectionInstance);
     }
 
     /**
-     * DELETE  /collectionInstances/:id -> delete the "id" collectionInstance.
+     * {@code DELETE  /collection-instances/:id} : delete the "id" collectionInstance.
+     *
+     * @param id the id of the collectionInstance to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/collectionInstances/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/collection-instances/{id}")
+    public ResponseEntity<Void> deleteCollectionInstance(@PathVariable Long id) {
         log.debug("REST request to delete CollectionInstance : {}", id);
-        return Optional.ofNullable(collectionInstanceRepository.findOne(id))
-                .map(collectionInstance -> {
-                	collectionInstanceRepository.delete(id);
-                    collectionInstanceSearchRepository.delete(id);
-                    return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("collectionInstance", id.toString())).build();
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        collectionInstanceRepository.deleteById(id);
+        collectionInstanceSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/collectionInstances/:query -> search for the collectionInstance corresponding
+     * {@code SEARCH  /_search/collection-instances?query=:query} : search for the collectionInstance corresponding
      * to the query.
+     *
+     * @param query the query of the collectionInstance search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/collectionInstances/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<CollectionInstance> search(@PathVariable String query) {
+    @GetMapping("/_search/collection-instances")
+    public List<CollectionInstance> searchCollectionInstances(@RequestParam String query) {
+        log.debug("REST request to search CollectionInstances for query {}", query);
         return StreamSupport
-            .stream(collectionInstanceSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(collectionInstanceSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

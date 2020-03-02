@@ -1,19 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.SlideTemplate;
-import org.appsec.securityRAT.repository.SlideTemplateRepository;
-import org.appsec.securityRAT.repository.search.SlideTemplateSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.SlideTemplate;
+import org.appsec.securityrat.repository.SlideTemplateRepository;
+import org.appsec.securityrat.repository.search.SlideTemplateSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -24,111 +24,121 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing SlideTemplate.
+ * REST controller for managing {@link org.appsec.securityrat.domain.SlideTemplate}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class SlideTemplateResource {
 
     private final Logger log = LoggerFactory.getLogger(SlideTemplateResource.class);
 
-    @Inject
-    private SlideTemplateRepository slideTemplateRepository;
+    private static final String ENTITY_NAME = "slideTemplate";
 
-    @Inject
-    private SlideTemplateSearchRepository slideTemplateSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final SlideTemplateRepository slideTemplateRepository;
+
+    private final SlideTemplateSearchRepository slideTemplateSearchRepository;
+
+    public SlideTemplateResource(SlideTemplateRepository slideTemplateRepository, SlideTemplateSearchRepository slideTemplateSearchRepository) {
+        this.slideTemplateRepository = slideTemplateRepository;
+        this.slideTemplateSearchRepository = slideTemplateSearchRepository;
+    }
 
     /**
-     * POST  /slideTemplates -> Create a new slideTemplate.
+     * {@code POST  /slide-templates} : Create a new slideTemplate.
+     *
+     * @param slideTemplate the slideTemplate to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new slideTemplate, or with status {@code 400 (Bad Request)} if the slideTemplate has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/slideTemplates",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<SlideTemplate> create(@RequestBody SlideTemplate slideTemplate) throws URISyntaxException {
+    @PostMapping("/slide-templates")
+    public ResponseEntity<SlideTemplate> createSlideTemplate(@RequestBody SlideTemplate slideTemplate) throws URISyntaxException {
         log.debug("REST request to save SlideTemplate : {}", slideTemplate);
         if (slideTemplate.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new slideTemplate cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new slideTemplate cannot already have an ID", ENTITY_NAME, "idexists");
         }
         SlideTemplate result = slideTemplateRepository.save(slideTemplate);
         slideTemplateSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/slideTemplates/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("slideTemplate", result.getId().toString()))
-                .body(result);
+        return ResponseEntity.created(new URI("/api/slide-templates/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /slideTemplates -> Updates an existing slideTemplate.
+     * {@code PUT  /slide-templates} : Updates an existing slideTemplate.
+     *
+     * @param slideTemplate the slideTemplate to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated slideTemplate,
+     * or with status {@code 400 (Bad Request)} if the slideTemplate is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the slideTemplate couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/slideTemplates",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<SlideTemplate> update(@RequestBody SlideTemplate slideTemplate) throws URISyntaxException {
+    @PutMapping("/slide-templates")
+    public ResponseEntity<SlideTemplate> updateSlideTemplate(@RequestBody SlideTemplate slideTemplate) throws URISyntaxException {
         log.debug("REST request to update SlideTemplate : {}", slideTemplate);
         if (slideTemplate.getId() == null) {
-            return create(slideTemplate);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         SlideTemplate result = slideTemplateRepository.save(slideTemplate);
-        slideTemplateSearchRepository.save(slideTemplate);
+        slideTemplateSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("slideTemplate", slideTemplate.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, slideTemplate.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /slideTemplates -> get all the slideTemplates.
+     * {@code GET  /slide-templates} : get all the slideTemplates.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of slideTemplates in body.
      */
-    @RequestMapping(value = "/slideTemplates",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<SlideTemplate> getAll() {
+    @GetMapping("/slide-templates")
+    public List<SlideTemplate> getAllSlideTemplates() {
         log.debug("REST request to get all SlideTemplates");
         return slideTemplateRepository.findAll();
     }
 
     /**
-     * GET  /slideTemplates/:id -> get the "id" slideTemplate.
+     * {@code GET  /slide-templates/:id} : get the "id" slideTemplate.
+     *
+     * @param id the id of the slideTemplate to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the slideTemplate, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/slideTemplates/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<SlideTemplate> get(@PathVariable Long id) {
+    @GetMapping("/slide-templates/{id}")
+    public ResponseEntity<SlideTemplate> getSlideTemplate(@PathVariable Long id) {
         log.debug("REST request to get SlideTemplate : {}", id);
-        return Optional.ofNullable(slideTemplateRepository.findOne(id))
-            .map(slideTemplate -> new ResponseEntity<>(
-                slideTemplate,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<SlideTemplate> slideTemplate = slideTemplateRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(slideTemplate);
     }
 
     /**
-     * DELETE  /slideTemplates/:id -> delete the "id" slideTemplate.
+     * {@code DELETE  /slide-templates/:id} : delete the "id" slideTemplate.
+     *
+     * @param id the id of the slideTemplate to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/slideTemplates/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/slide-templates/{id}")
+    public ResponseEntity<Void> deleteSlideTemplate(@PathVariable Long id) {
         log.debug("REST request to delete SlideTemplate : {}", id);
-        slideTemplateRepository.delete(id);
-        slideTemplateSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("slideTemplate", id.toString())).build();
+        slideTemplateRepository.deleteById(id);
+        slideTemplateSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/slideTemplates/:query -> search for the slideTemplate corresponding
+     * {@code SEARCH  /_search/slide-templates?query=:query} : search for the slideTemplate corresponding
      * to the query.
+     *
+     * @param query the query of the slideTemplate search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/slideTemplates/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<SlideTemplate> search(@PathVariable String query) {
+    @GetMapping("/_search/slide-templates")
+    public List<SlideTemplate> searchSlideTemplates(@RequestParam String query) {
+        log.debug("REST request to search SlideTemplates for query {}", query);
         return StreamSupport
-            .stream(slideTemplateSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(slideTemplateSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
 }

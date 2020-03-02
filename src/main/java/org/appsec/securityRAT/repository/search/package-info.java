@@ -1,4 +1,4 @@
 /**
- * Spring Data ElasticSearch repositories.
+ * Spring Data Elasticsearch repositories.
  */
-package org.appsec.securityRAT.repository.search;
+package org.appsec.securityrat.repository.search;

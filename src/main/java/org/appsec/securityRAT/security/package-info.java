@@ -1,4 +1,4 @@
 /**
  * Spring Security configuration.
  */
-package org.appsec.securityRAT.security;
+package org.appsec.securityrat.security;

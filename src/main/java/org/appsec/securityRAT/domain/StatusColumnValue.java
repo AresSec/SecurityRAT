@@ -1,34 +1,33 @@
-package org.appsec.securityRAT.domain;
+package org.appsec.securityrat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.util.Objects;
-
 
 /**
  * A StatusColumnValue.
  */
 @Entity
-@Table(name = "STATUSCOLUMNVALUE")
+@Table(name = "status_column_value")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName="statuscolumnvalue")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "statuscolumnvalue")
 public class StatusColumnValue implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
-    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -38,8 +37,10 @@ public class StatusColumnValue implements Serializable {
     private Boolean active;
 
     @ManyToOne
+    @JsonIgnoreProperties("statusColumnValues")
     private StatusColumn statusColumn;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -72,7 +73,7 @@ public class StatusColumnValue implements Serializable {
         this.showOrder = showOrder;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
@@ -87,36 +88,32 @@ public class StatusColumnValue implements Serializable {
     public void setStatusColumn(StatusColumn statusColumn) {
         this.statusColumn = statusColumn;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof StatusColumnValue)) {
             return false;
         }
-
-        StatusColumnValue statusColumnValue = (StatusColumnValue) o;
-
-        if ( ! Objects.equals(id, statusColumnValue.id)) return false;
-
-        return true;
+        return id != null && id.equals(((StatusColumnValue) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return 31;
     }
 
     @Override
     public String toString() {
         return "StatusColumnValue{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", showOrder='" + showOrder + "'" +
-                ", active='" + active + "'" +
-                '}';
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", showOrder=" + getShowOrder() +
+            ", active='" + isActive() + "'" +
+            "}";
     }
 }

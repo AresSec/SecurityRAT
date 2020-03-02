@@ -1,0 +1,48 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="optColumn">
+            <h2><span jhiTranslate="securityRatApp.optColumn.detail.title">Opt Column</span> {{ optColumn.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="securityRatApp.optColumn.name">Name</span></dt>
+                <dd>
+                    <span>{{ optColumn.name }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.optColumn.description">Description</span></dt>
+                <dd>
+                    <span>{{ optColumn.description }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.optColumn.showOrder">Show Order</span></dt>
+                <dd>
+                    <span>{{ optColumn.showOrder }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.optColumn.active">Active</span></dt>
+                <dd>
+                    <span>{{ optColumn.active }}</span>
+                </dd>
+                <dt><span jhiTranslate="securityRatApp.optColumn.optColumnType">Opt Column Type</span></dt>
+                <dd>
+                    <div *ngIf="optColumn.optColumnType">
+                        <a [routerLink]="['/opt-column-type', optColumn.optColumnType?.id, 'view']">{{ optColumn.optColumnType?.name }}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/opt-column', optColumn.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

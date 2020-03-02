@@ -1,22 +1,19 @@
-package org.appsec.securityRAT.web.rest;
+package org.appsec.securityrat.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.appsec.securityRAT.domain.TrainingGeneratedSlideNode;
-import org.appsec.securityRAT.domain.TrainingRequirementNode;
-import org.appsec.securityRAT.domain.TrainingTreeNode;
-import org.appsec.securityRAT.repository.TrainingGeneratedSlideNodeRepository;
-import org.appsec.securityRAT.repository.TrainingTreeNodeRepository;
-import org.appsec.securityRAT.repository.search.TrainingGeneratedSlideNodeSearchRepository;
-import org.appsec.securityRAT.web.rest.util.HeaderUtil;
+import org.appsec.securityrat.domain.TrainingGeneratedSlideNode;
+import org.appsec.securityrat.repository.TrainingGeneratedSlideNodeRepository;
+import org.appsec.securityrat.repository.search.TrainingGeneratedSlideNodeSearchRepository;
+import org.appsec.securityrat.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -24,133 +21,124 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryString;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing TrainingGeneratedSlideNode.
+ * REST controller for managing {@link org.appsec.securityrat.domain.TrainingGeneratedSlideNode}.
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class TrainingGeneratedSlideNodeResource {
 
     private final Logger log = LoggerFactory.getLogger(TrainingGeneratedSlideNodeResource.class);
 
-    @Inject
-    private TrainingGeneratedSlideNodeRepository trainingGeneratedSlideNodeRepository;
+    private static final String ENTITY_NAME = "trainingGeneratedSlideNode";
 
-    @Inject
-    private TrainingGeneratedSlideNodeSearchRepository trainingGeneratedSlideNodeSearchRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    @Inject
-    private TrainingTreeNodeRepository trainingTreeNodeRepository;
+    private final TrainingGeneratedSlideNodeRepository trainingGeneratedSlideNodeRepository;
+
+    private final TrainingGeneratedSlideNodeSearchRepository trainingGeneratedSlideNodeSearchRepository;
+
+    public TrainingGeneratedSlideNodeResource(TrainingGeneratedSlideNodeRepository trainingGeneratedSlideNodeRepository, TrainingGeneratedSlideNodeSearchRepository trainingGeneratedSlideNodeSearchRepository) {
+        this.trainingGeneratedSlideNodeRepository = trainingGeneratedSlideNodeRepository;
+        this.trainingGeneratedSlideNodeSearchRepository = trainingGeneratedSlideNodeSearchRepository;
+    }
 
     /**
-     * POST  /trainingGeneratedSlideNodes -> Create a new trainingGeneratedSlideNode.
+     * {@code POST  /training-generated-slide-nodes} : Create a new trainingGeneratedSlideNode.
+     *
+     * @param trainingGeneratedSlideNode the trainingGeneratedSlideNode to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trainingGeneratedSlideNode, or with status {@code 400 (Bad Request)} if the trainingGeneratedSlideNode has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingGeneratedSlideNodes",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingGeneratedSlideNode> create(@RequestBody TrainingGeneratedSlideNode trainingGeneratedSlideNode) throws URISyntaxException {
+    @PostMapping("/training-generated-slide-nodes")
+    public ResponseEntity<TrainingGeneratedSlideNode> createTrainingGeneratedSlideNode(@RequestBody TrainingGeneratedSlideNode trainingGeneratedSlideNode) throws URISyntaxException {
         log.debug("REST request to save TrainingGeneratedSlideNode : {}", trainingGeneratedSlideNode);
         if (trainingGeneratedSlideNode.getId() != null) {
-            return ResponseEntity.badRequest().header("Failure", "A new trainingGeneratedSlideNode cannot already have an ID").body(null);
+            throw new BadRequestAlertException("A new trainingGeneratedSlideNode cannot already have an ID", ENTITY_NAME, "idexists");
         }
         TrainingGeneratedSlideNode result = trainingGeneratedSlideNodeRepository.save(trainingGeneratedSlideNode);
         trainingGeneratedSlideNodeSearchRepository.save(result);
-        return ResponseEntity.created(new URI("/api/trainingGeneratedSlideNodes/" + result.getId()))
-                .headers(new HttpHeaders())
-                .body(result);
+        return ResponseEntity.created(new URI("/api/training-generated-slide-nodes/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
-     * PUT  /trainingGeneratedSlideNodes -> Updates an existing trainingGeneratedSlideNode.
+     * {@code PUT  /training-generated-slide-nodes} : Updates an existing trainingGeneratedSlideNode.
+     *
+     * @param trainingGeneratedSlideNode the trainingGeneratedSlideNode to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trainingGeneratedSlideNode,
+     * or with status {@code 400 (Bad Request)} if the trainingGeneratedSlideNode is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trainingGeneratedSlideNode couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @RequestMapping(value = "/trainingGeneratedSlideNodes",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingGeneratedSlideNode> update(@RequestBody TrainingGeneratedSlideNode trainingGeneratedSlideNode) throws URISyntaxException {
+    @PutMapping("/training-generated-slide-nodes")
+    public ResponseEntity<TrainingGeneratedSlideNode> updateTrainingGeneratedSlideNode(@RequestBody TrainingGeneratedSlideNode trainingGeneratedSlideNode) throws URISyntaxException {
         log.debug("REST request to update TrainingGeneratedSlideNode : {}", trainingGeneratedSlideNode);
         if (trainingGeneratedSlideNode.getId() == null) {
-            return create(trainingGeneratedSlideNode);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TrainingGeneratedSlideNode result = trainingGeneratedSlideNodeRepository.save(trainingGeneratedSlideNode);
-        trainingGeneratedSlideNodeSearchRepository.save(trainingGeneratedSlideNode);
+        trainingGeneratedSlideNodeSearchRepository.save(result);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("trainingGeneratedSlideNode", trainingGeneratedSlideNode.getId().toString()))
-                .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trainingGeneratedSlideNode.getId().toString()))
+            .body(result);
     }
 
     /**
-     * GET  /trainingGeneratedSlideNodes -> get all the trainingGeneratedSlideNodes.
+     * {@code GET  /training-generated-slide-nodes} : get all the trainingGeneratedSlideNodes.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trainingGeneratedSlideNodes in body.
      */
-    @RequestMapping(value = "/trainingGeneratedSlideNodes",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingGeneratedSlideNode> getAll() {
+    @GetMapping("/training-generated-slide-nodes")
+    public List<TrainingGeneratedSlideNode> getAllTrainingGeneratedSlideNodes() {
         log.debug("REST request to get all TrainingGeneratedSlideNodes");
         return trainingGeneratedSlideNodeRepository.findAll();
     }
 
     /**
-     * GET  /trainingGeneratedSlideNodes/:id -> get the "id" trainingGeneratedSlideNode.
+     * {@code GET  /training-generated-slide-nodes/:id} : get the "id" trainingGeneratedSlideNode.
+     *
+     * @param id the id of the trainingGeneratedSlideNode to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trainingGeneratedSlideNode, or with status {@code 404 (Not Found)}.
      */
-    @RequestMapping(value = "/trainingGeneratedSlideNodes/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingGeneratedSlideNode> get(@PathVariable Long id) {
+    @GetMapping("/training-generated-slide-nodes/{id}")
+    public ResponseEntity<TrainingGeneratedSlideNode> getTrainingGeneratedSlideNode(@PathVariable Long id) {
         log.debug("REST request to get TrainingGeneratedSlideNode : {}", id);
-        return Optional.ofNullable(trainingGeneratedSlideNodeRepository.findOne(id))
-            .map(trainingGeneratedSlideNode -> new ResponseEntity<>(
-                trainingGeneratedSlideNode,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<TrainingGeneratedSlideNode> trainingGeneratedSlideNode = trainingGeneratedSlideNodeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(trainingGeneratedSlideNode);
     }
 
     /**
-     * DELETE  /trainingGeneratedSlideNodes/:id -> delete the "id" trainingGeneratedSlideNode.
+     * {@code DELETE  /training-generated-slide-nodes/:id} : delete the "id" trainingGeneratedSlideNode.
+     *
+     * @param id the id of the trainingGeneratedSlideNode to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @RequestMapping(value = "/trainingGeneratedSlideNodes/{id}",
-            method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/training-generated-slide-nodes/{id}")
+    public ResponseEntity<Void> deleteTrainingGeneratedSlideNode(@PathVariable Long id) {
         log.debug("REST request to delete TrainingGeneratedSlideNode : {}", id);
-        trainingGeneratedSlideNodeRepository.delete(id);
-        trainingGeneratedSlideNodeSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("trainingGeneratedSlideNode", id.toString())).build();
+        trainingGeneratedSlideNodeRepository.deleteById(id);
+        trainingGeneratedSlideNodeSearchRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/trainingGeneratedSlideNodes/:query -> search for the trainingGeneratedSlideNode corresponding
+     * {@code SEARCH  /_search/training-generated-slide-nodes?query=:query} : search for the trainingGeneratedSlideNode corresponding
      * to the query.
+     *
+     * @param query the query of the trainingGeneratedSlideNode search.
+     * @return the result of the search.
      */
-    @RequestMapping(value = "/_search/trainingGeneratedSlideNodes/{query}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public List<TrainingGeneratedSlideNode> search(@PathVariable String query) {
+    @GetMapping("/_search/training-generated-slide-nodes")
+    public List<TrainingGeneratedSlideNode> searchTrainingGeneratedSlideNodes(@RequestParam String query) {
+        log.debug("REST request to search TrainingGeneratedSlideNodes for query {}", query);
         return StreamSupport
-            .stream(trainingGeneratedSlideNodeSearchRepository.search(queryString(query)).spliterator(), false)
+            .stream(trainingGeneratedSlideNodeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * GET TrainingGeneratedSlideNode by its node_id
-     */
-    @RequestMapping(value = "/TrainingGeneratedSlideNodeByTrainingTreeNode/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @Timed
-    public ResponseEntity<TrainingGeneratedSlideNode> getTrainingGeneratedSlideNodeByTrainingTreeNode(@PathVariable Long id) {
-        log.debug("REST request to get TrainingGeneratedSlideNode with node_id : {}", id);
-        TrainingTreeNode node = trainingTreeNodeRepository.getOne(id);
-        TrainingGeneratedSlideNode result = trainingGeneratedSlideNodeRepository.getTrainingGeneratedSlideNodeByTrainingTreeNode(node);
-        return ResponseEntity.ok()
-            .headers(new HttpHeaders())
-            .body(result);
     }
 }
