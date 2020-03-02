@@ -2,14 +2,14 @@
     "relationships": [
         {
             "relationshipId": 1,
-            "relationshipName": "parent_id",
+            "relationshipName": "parentId",
             "otherEntityName": "trainingTreeNode",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
         },
         {
             "relationshipId": 2,
-            "relationshipName": "training_id",
+            "relationshipName": "trainingId",
             "otherEntityName": "training",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
@@ -18,13 +18,13 @@
     "fields": [
         {
             "fieldId": 1,
-            "fieldName": "node_type",
+            "fieldName": "nodeType",
             "fieldType": "TrainingTreeNodeType",
             "fieldValues": "RequirementNode,GeneratedSlideNode,CustomSlideNode,CategoryNode,BranchNode,RootNode,ContentNode"
         },
         {
             "fieldId": 2,
-            "fieldName": "sort_order",
+            "fieldName": "sortOrder",
             "fieldType": "Integer"
         },
         {
