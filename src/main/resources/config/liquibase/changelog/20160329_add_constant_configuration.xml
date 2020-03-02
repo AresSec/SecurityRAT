@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -15,29 +15,19 @@
     <property name="floatType" value="float" dbms="mysql,oracle,mariadb"/>
 
     <!--
-        Added the entity TrainingCategoryNode.
+        Adds the configuration table .
     -->
-    <changeSet id="20170728121233" author="jhipster">
-        <createTable tableName="TRAININGCATEGORYNODE">
+    <changeSet id="add_constantconfig" author="jmboldayamdjeu">
+        <createTable tableName="CONFIGCONSTANT">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)"/>
-            <column name="node_id" type="bigint"/>
-            <column name="category_id" type="bigint"/>
+            <column name="value" type="varchar(255)">
+            	<constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)"/>
         </createTable>
         
-        <addForeignKeyConstraint baseColumnNames="node_id"
-                                 baseTableName="TRAININGCATEGORYNODE"
-                                 constraintName="fk_trainingcategorynode_node_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="TRAININGTREENODE"/>
-
-        <addForeignKeyConstraint baseColumnNames="category_id"
-                                 baseTableName="TRAININGCATEGORYNODE"
-                                 constraintName="fk_trainingcategorynode_category_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="REQCATEGORY"/>
-
     </changeSet>
 </databaseChangeLog>

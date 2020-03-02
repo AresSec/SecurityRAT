@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Table(name = "slide_template")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @org.springframework.data.elasticsearch.annotations.Document(indexName = "slidetemplate")
-public class SlideTemplate implements Serializable {
+public class SlideTemplate extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,9 +27,11 @@ public class SlideTemplate implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "content")
+    @Lob
     private String content;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

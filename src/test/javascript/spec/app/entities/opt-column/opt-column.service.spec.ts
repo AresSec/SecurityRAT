@@ -20,7 +20,7 @@ describe('Service Tests', () => {
       service = injector.get(OptColumnService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new OptColumn(0, 'AAAAAAA', 'AAAAAAA', 0, false);
+      elemDefault = new OptColumn(0, 'AAAAAAA', 'AAAAAAA', 0, false, false);
     });
 
     describe('Service methods', () => {
@@ -57,7 +57,8 @@ describe('Service Tests', () => {
             name: 'BBBBBB',
             description: 'BBBBBB',
             showOrder: 1,
-            active: true
+            active: true,
+            isVisibleByDefault: true
           },
           elemDefault
         );
@@ -77,7 +78,8 @@ describe('Service Tests', () => {
             name: 'BBBBBB',
             description: 'BBBBBB',
             showOrder: 1,
-            active: true
+            active: true,
+            isVisibleByDefault: true
           },
           elemDefault
         );

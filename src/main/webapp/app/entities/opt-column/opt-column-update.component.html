@@ -36,6 +36,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="securityRatApp.optColumn.isVisibleByDefault" for="field_isVisibleByDefault">Is Visible By Default</label>
+                    <input type="checkbox" class="form-control" name="isVisibleByDefault" id="field_isVisibleByDefault"
+                           formControlName="isVisibleByDefault"/>
+                </div>
+
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="securityRatApp.optColumn.optColumnType" for="field_optColumnType">Opt Column Type</label>
                     <select class="form-control" id="field_optColumnType" name="optColumnType" formControlName="optColumnType">
                         <option [ngValue]="null"></option>

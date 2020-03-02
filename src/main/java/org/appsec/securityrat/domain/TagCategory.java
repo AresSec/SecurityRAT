@@ -29,6 +29,7 @@ public class TagCategory implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "show_order")

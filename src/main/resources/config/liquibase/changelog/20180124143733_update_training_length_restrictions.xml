@@ -15,19 +15,10 @@
     <property name="floatType" value="float" dbms="mysql,oracle,mariadb"/>
 
     <!--
-        Added the entity StatusColumn.
+        Changed datatype to 'text' for training description and custom slide content.
     -->
-    <changeSet id="20150902171515" author="jhipster">
-        <createTable tableName="STATUSCOLUMN">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(255)"/>
-            <column name="description" type="varchar(255)"/>
-            <column name="is_enum" type="bit"/>
-            <column name="show_order" type="integer"/>
-            <column name="active" type="bit"/>
-        </createTable>
-        
+    <changeSet id="20180124143733" author="pzschumme">
+        <modifyDataType columnName="description" newDataType="text" tableName="TRAINING"/>
+        <modifyDataType columnName="content" newDataType="text" tableName="TRAININGCUSTOMSLIDENODE"/>
     </changeSet>
 </databaseChangeLog>

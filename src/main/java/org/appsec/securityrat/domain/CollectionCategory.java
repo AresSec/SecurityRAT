@@ -29,6 +29,7 @@ public class CollectionCategory implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -37,7 +38,7 @@ public class CollectionCategory implements Serializable {
     @Column(name = "active")
     private Boolean active;
 
-    @OneToMany(mappedBy = "collectionCategory")
+    @OneToMany(mappedBy = "collectionCategory", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<CollectionInstance> collectionInstances = new HashSet<>();
 

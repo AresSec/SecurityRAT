@@ -5,7 +5,8 @@
             "relationshipName": "optColumnType",
             "otherEntityName": "optColumnType",
             "relationshipType": "many-to-one",
-            "otherEntityField": "name"
+            "otherEntityField": "name",
+            "otherEntityRelationshipName": "optColumn"
         },
         {
             "relationshipId": 2,
@@ -50,9 +51,19 @@
             "fieldId": 4,
             "fieldName": "active",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "isVisibleByDefault",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20150902172427",
     "dto": "no",
-    "pagination": "no"
+    "pagination": "no",
+    "searchEngine": "elasticsearch",
+    "service": "no",
+    "entityTableName": "opt_column",
+    "databaseType": "sql",
+    "readOnly": false,
+    "jpaMetamodelFiltering": false
 }

@@ -29,6 +29,7 @@ public class OptColumnType implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @OneToMany(mappedBy = "optColumnType")

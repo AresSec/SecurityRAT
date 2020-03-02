@@ -49,6 +49,9 @@ public class OptColumnResourceIT {
     private static final Boolean DEFAULT_ACTIVE = false;
     private static final Boolean UPDATED_ACTIVE = true;
 
+    private static final Boolean DEFAULT_IS_VISIBLE_BY_DEFAULT = false;
+    private static final Boolean UPDATED_IS_VISIBLE_BY_DEFAULT = true;
+
     @Autowired
     private OptColumnRepository optColumnRepository;
 
@@ -103,6 +106,7 @@ public class OptColumnResourceIT {
         optColumn.setDescription(DEFAULT_DESCRIPTION);
         optColumn.setShowOrder(DEFAULT_SHOW_ORDER);
         optColumn.setActive(DEFAULT_ACTIVE);
+        optColumn.setIsVisibleByDefault(DEFAULT_IS_VISIBLE_BY_DEFAULT);
         return optColumn;
     }
     /**
@@ -117,6 +121,7 @@ public class OptColumnResourceIT {
         optColumn.setDescription(UPDATED_DESCRIPTION);
         optColumn.setShowOrder(UPDATED_SHOW_ORDER);
         optColumn.setActive(UPDATED_ACTIVE);
+        optColumn.setIsVisibleByDefault(UPDATED_IS_VISIBLE_BY_DEFAULT);
         return optColumn;
     }
 
@@ -144,6 +149,7 @@ public class OptColumnResourceIT {
         assertThat(testOptColumn.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testOptColumn.getShowOrder()).isEqualTo(DEFAULT_SHOW_ORDER);
         assertThat(testOptColumn.isActive()).isEqualTo(DEFAULT_ACTIVE);
+        assertThat(testOptColumn.isIsVisibleByDefault()).isEqualTo(DEFAULT_IS_VISIBLE_BY_DEFAULT);
 
         // Validate the OptColumn in Elasticsearch
         verify(mockOptColumnSearchRepository, times(1)).save(testOptColumn);
@@ -186,7 +192,8 @@ public class OptColumnResourceIT {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].showOrder").value(hasItem(DEFAULT_SHOW_ORDER)))
-            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())))
+            .andExpect(jsonPath("$.[*].isVisibleByDefault").value(hasItem(DEFAULT_IS_VISIBLE_BY_DEFAULT.booleanValue())));
     }
     
     @Test
@@ -203,7 +210,8 @@ public class OptColumnResourceIT {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.showOrder").value(DEFAULT_SHOW_ORDER))
-            .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()));
+            .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
+            .andExpect(jsonPath("$.isVisibleByDefault").value(DEFAULT_IS_VISIBLE_BY_DEFAULT.booleanValue()));
     }
 
     @Test
@@ -230,6 +238,7 @@ public class OptColumnResourceIT {
         updatedOptColumn.setDescription(UPDATED_DESCRIPTION);
         updatedOptColumn.setShowOrder(UPDATED_SHOW_ORDER);
         updatedOptColumn.setActive(UPDATED_ACTIVE);
+        updatedOptColumn.setIsVisibleByDefault(UPDATED_IS_VISIBLE_BY_DEFAULT);
 
         restOptColumnMockMvc.perform(put("/api/opt-columns")
             .contentType(TestUtil.APPLICATION_JSON)
@@ -244,6 +253,7 @@ public class OptColumnResourceIT {
         assertThat(testOptColumn.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testOptColumn.getShowOrder()).isEqualTo(UPDATED_SHOW_ORDER);
         assertThat(testOptColumn.isActive()).isEqualTo(UPDATED_ACTIVE);
+        assertThat(testOptColumn.isIsVisibleByDefault()).isEqualTo(UPDATED_IS_VISIBLE_BY_DEFAULT);
 
         // Validate the OptColumn in Elasticsearch
         verify(mockOptColumnSearchRepository, times(1)).save(testOptColumn);
@@ -306,6 +316,7 @@ public class OptColumnResourceIT {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].showOrder").value(hasItem(DEFAULT_SHOW_ORDER)))
-            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())))
+            .andExpect(jsonPath("$.[*].isVisibleByDefault").value(hasItem(DEFAULT_IS_VISIBLE_BY_DEFAULT.booleanValue())));
     }
 }

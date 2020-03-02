@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "training")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @org.springframework.data.elasticsearch.annotations.Document(indexName = "training")
-public class Training implements Serializable {
+public class Training extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,6 +29,7 @@ public class Training implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "all_requirements_selected")

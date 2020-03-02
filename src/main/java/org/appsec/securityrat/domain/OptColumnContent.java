@@ -25,6 +25,7 @@ public class OptColumnContent implements Serializable {
     private Long id;
 
     @Column(name = "content")
+    @Lob
     private String content;
 
     @ManyToOne

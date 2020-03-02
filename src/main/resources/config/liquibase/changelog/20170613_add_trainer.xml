@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -15,19 +14,11 @@
     <property name="floatType" value="float" dbms="mysql,oracle,mariadb"/>
 
     <!--
-        Added the entity StatusColumn.
+        Adding the ROLE_TRAINER for users who have permissions to generate and manage trainings
     -->
-    <changeSet id="20150902171515" author="jhipster">
-        <createTable tableName="STATUSCOLUMN">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(255)"/>
-            <column name="description" type="varchar(255)"/>
-            <column name="is_enum" type="bit"/>
-            <column name="show_order" type="integer"/>
-            <column name="active" type="bit"/>
-        </createTable>
-        
-    </changeSet>
+	<changeSet author="pzschumme" id="add_trainer_role">
+    	<insert tableName="JHI_AUTHORITY">
+        	<column name="name" value="ROLE_TRAINER"/>
+    	</insert>
+	</changeSet>
 </databaseChangeLog>

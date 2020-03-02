@@ -1,0 +1,105 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2,mariadb"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,mariadb"/>
+    <property name="autoIncrement" value="false" dbms="oracle"/>
+
+    <property name="floatType" value="real" dbms="postgresql,h2"/>
+    <property name="floatType" value="float" dbms="mysql,oracle,mariadb"/>
+
+    <!--
+        Migration to JHipster 6.
+    -->
+	<changeSet author="0x33C0" id="jhipster6_migration">
+        <renameTable newTableName="alternative_instance" oldTableName="ALTERNATIVEINSTANCE" />
+        <renameTable newTableName="alternative_set" oldTableName="ALTERNATIVESET" />
+        <renameTable newTableName="collection_category" oldTableName="COLLECTIONCATEGORY" />
+        <renameTable newTableName="collection_instance" oldTableName="COLLECTIONINSTANCE" />
+        <renameTable newTableName="jhi_authority" oldTableName="JHI_AUTHORITY" />
+        <renameTable newTableName="jhi_persistent_audit_event" oldTableName="JHI_PERSISTENT_AUDIT_EVENT" />
+        <renameTable newTableName="jhi_persistent_audit_evt_data" oldTableName="JHI_PERSISTENT_AUDIT_EVT_DATA" />
+        <renameTable newTableName="jhi_persistent_token" oldTableName="JHI_PERSISTENT_TOKEN" />
+        <renameTable newTableName="jhi_user" oldTableName="JHI_USER" />
+        <renameTable newTableName="jhi_user_authority" oldTableName="JHI_USER_AUTHORITY" />
+        <renameTable newTableName="opt_column" oldTableName="OPTCOLUMN" />
+        <renameTable newTableName="opt_column_content" oldTableName="OPTCOLUMNCONTENT" />
+        <renameTable newTableName="opt_column_type" oldTableName="OPTCOLUMNTYPE" />
+        <renameTable newTableName="project_type" oldTableName="PROJECTTYPE" />
+        <renameTable newTableName="project_type_opt_column" oldTableName="PROJECTTYPE_OPTCOLUMN" />
+        <renameTable newTableName="project_type_status_column" oldTableName="PROJECTTYPE_STATUSCOLUMN" />
+        <renameTable newTableName="req_category" oldTableName="REQCATEGORY" />
+        <renameTable newTableName="requirement_skeleton" oldTableName="REQUIREMENTSKELETON" />
+        <renameTable newTableName="requirement_skeleton_collection_instance" oldTableName="REQUIREMENTSKELETON_COLLECTIONINSTANCE" />
+        <renameTable newTableName="requirement_skeleton_project_type" oldTableName="REQUIREMENTSKELETON_PROJECTTYPE" />
+        <renameTable newTableName="requirement_skeleton_tag_instance" oldTableName="REQUIREMENTSKELETON_TAGINSTANCE" />
+        <renameTable newTableName="slide_template" oldTableName="SLIDETEMPLATE" />
+        <renameTable newTableName="status_column" oldTableName="STATUSCOLUMN" />
+        <renameTable newTableName="status_column_value" oldTableName="STATUSCOLUMNVALUE" />
+        <renameTable newTableName="tag_category" oldTableName="TAGCATEGORY" />
+        <renameTable newTableName="tag_instance" oldTableName="TAGINSTANCE" />
+        <renameTable newTableName="training" oldTableName="TRAINING" />
+        <renameTable newTableName="training_collection" oldTableName="TRAINING_COLLECTION" />
+        <renameTable newTableName="training_opt_column" oldTableName="TRAINING_OPTCOLUMN" />
+        <renameTable newTableName="training_project_type" oldTableName="TRAINING_PROJECTTYPE" />
+        <renameTable newTableName="training_branch_node" oldTableName="TRAININGBRANCHNODE" />
+        <renameTable newTableName="training_category_node" oldTableName="TRAININGCATEGORYNODE" />
+        <renameTable newTableName="training_custom_slide_node" oldTableName="TRAININGCUSTOMSLIDENODE" />
+        <renameTable newTableName="training_generated_slide_node" oldTableName="TRAININGGENERATEDSLIDENODE" />
+        <renameTable newTableName="training_requirement_node" oldTableName="TRAININGREQUIREMENTNODE" />
+        <renameTable newTableName="training_tree_node" oldTableName="TRAININGTREENODE" />
+
+        <createTable tableName="jhi_date_time_wrapper">
+            <column autoIncrement="${autoIncrement}" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="jhi_date_time_wrapperPK"/>
+            </column>
+            <column name="instant" type="timestamp"/>
+            <column name="local_date_time" type="timestamp"/>
+            <column name="offset_date_time" type="timestamp"/>
+            <column name="zoned_date_time" type="timestamp"/>
+            <column name="local_time" type="time"/>
+            <column name="offset_time" type="time"/>
+            <column name="local_date" type="date"/>
+        </createTable>
+
+        <renameColumn columnDataType="bigint" newColumnName="alternative_set_id" oldColumnName="alternativeset_id" tableName="alternative_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeleton_id" tableName="alternative_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_id" oldColumnName="optcolumn_id" tableName="alternative_set" />
+        <renameColumn columnDataType="bigint" newColumnName="collection_category_id" oldColumnName="collectioncategory_id" tableName="collection_instance" />
+        <renameColumn columnDataType="varchar(60)" newColumnName="password_hash" oldColumnName="PASSWORD" tableName="jhi_user" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_type_id" oldColumnName="optcolumntype_id" tableName="opt_column" />
+        <renameColumn columnDataType="bit" newColumnName="is_visible_by_default" oldColumnName="isVisibleByDefault" tableName="opt_column" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_id" oldColumnName="optcolumn_id" tableName="opt_column_content" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeleton_id" tableName="opt_column_content" />
+        <renameColumn columnDataType="bigint" newColumnName="project_type_id" oldColumnName="projecttypes_id" tableName="project_type_opt_column" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_id" oldColumnName="optcolumns_id" tableName="project_type_opt_column" />
+        <renameColumn columnDataType="bigint" newColumnName="status_column_id" oldColumnName="statuscolumns_id" tableName="project_type_status_column" />
+        <renameColumn columnDataType="bigint" newColumnName="project_type_id" oldColumnName="projecttypes_id" tableName="project_type_status_column" />
+        <renameColumn columnDataType="bigint" newColumnName="req_category_id" oldColumnName="reqcategory_id" tableName="requirement_skeleton" />
+        <renameColumn columnDataType="bigint" newColumnName="collection_instance_id" oldColumnName="collectioninstances_id" tableName="requirement_skeleton_collection_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeletons_id" tableName="requirement_skeleton_collection_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="project_type_id" oldColumnName="projecttypes_id" tableName="requirement_skeleton_project_type" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeletons_id" tableName="requirement_skeleton_project_type" />
+        <renameColumn columnDataType="bigint" newColumnName="tag_instance_id" oldColumnName="taginstances_id" tableName="requirement_skeleton_tag_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeletons_id" tableName="requirement_skeleton_tag_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="status_column_id" oldColumnName="statuscolumn_id" tableName="status_column_value" />
+        <renameColumn columnDataType="bigint" newColumnName="tag_category_id" oldColumnName="tagcategory_id" tableName="tag_instance" />
+        <renameColumn columnDataType="bigint" newColumnName="training_id" oldColumnName="trainings_id" tableName="training_project_type" />
+        <renameColumn columnDataType="bigint" newColumnName="project_type_id" oldColumnName="projecttypes_id" tableName="training_project_type" />
+        <renameColumn columnDataType="bigint" newColumnName="training_id" oldColumnName="trainings_id" tableName="training_collection" />
+        <renameColumn columnDataType="bigint" newColumnName="collection_id" oldColumnName="collections_id" tableName="training_collection" />
+        <renameColumn columnDataType="bigint" newColumnName="training_id" oldColumnName="trainings_id" tableName="training_opt_column" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_id" oldColumnName="optcolumns_id" tableName="training_opt_column" />
+        <renameColumn columnDataType="bigint" newColumnName="opt_column_id" oldColumnName="optcolumn_id" tableName="training_generated_slide_node" />
+        <renameColumn columnDataType="bigint" newColumnName="requirement_skeleton_id" oldColumnName="requirementskeleton_id" tableName="training_requirement_node" />
+
+        <addColumn tableName="jhi_user">
+            <column name="image_url" type="varchar(256)"/>
+        </addColumn>
+	</changeSet>
+</databaseChangeLog>

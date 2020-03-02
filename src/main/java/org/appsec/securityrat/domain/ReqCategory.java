@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "req_category")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @org.springframework.data.elasticsearch.annotations.Document(indexName = "reqcategory")
 public class ReqCategory implements Serializable {
 
@@ -32,6 +32,7 @@ public class ReqCategory implements Serializable {
     private String shortcut;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -41,7 +42,7 @@ public class ReqCategory implements Serializable {
     private Boolean active;
 
     @OneToMany(mappedBy = "reqCategory")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<RequirementSkeleton> requirementSkeletons = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

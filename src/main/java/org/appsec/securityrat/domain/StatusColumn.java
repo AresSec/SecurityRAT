@@ -30,6 +30,7 @@ public class StatusColumn implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "is_enum")

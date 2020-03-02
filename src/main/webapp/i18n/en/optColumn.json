@@ -21,6 +21,7 @@
       "description": "Description",
       "showOrder": "Show Order",
       "active": "Active",
+      "isVisibleByDefault": "Is Visible By Default",
       "optColumnType": "Opt Column Type",
       "alternativeSet": "Alternative Set",
       "optColumnContent": "Opt Column Content",

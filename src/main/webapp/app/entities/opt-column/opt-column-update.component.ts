@@ -24,6 +24,7 @@ export class OptColumnUpdateComponent implements OnInit {
     description: [],
     showOrder: [],
     active: [],
+    isVisibleByDefault: [],
     optColumnType: []
   });
 
@@ -49,6 +50,7 @@ export class OptColumnUpdateComponent implements OnInit {
       description: optColumn.description,
       showOrder: optColumn.showOrder,
       active: optColumn.active,
+      isVisibleByDefault: optColumn.isVisibleByDefault,
       optColumnType: optColumn.optColumnType
     });
   }
@@ -75,6 +77,7 @@ export class OptColumnUpdateComponent implements OnInit {
       description: this.editForm.get(['description'])!.value,
       showOrder: this.editForm.get(['showOrder'])!.value,
       active: this.editForm.get(['active'])!.value,
+      isVisibleByDefault: this.editForm.get(['isVisibleByDefault'])!.value,
       optColumnType: this.editForm.get(['optColumnType'])!.value
     };
   }

@@ -45,6 +45,7 @@
                     <th scope="col" ><span jhiTranslate="securityRatApp.optColumn.description">Description</span></th>
                     <th scope="col" ><span jhiTranslate="securityRatApp.optColumn.showOrder">Show Order</span></th>
                     <th scope="col" ><span jhiTranslate="securityRatApp.optColumn.active">Active</span></th>
+                    <th scope="col" ><span jhiTranslate="securityRatApp.optColumn.isVisibleByDefault">Is Visible By Default</span></th>
                     <th scope="col" ><span jhiTranslate="securityRatApp.optColumn.optColumnType">Opt Column Type</span></th>
                     <th scope="col"></th>
                 </tr>
@@ -56,6 +57,7 @@
                     <td>{{ optColumn.description }}</td>
                     <td>{{ optColumn.showOrder }}</td>
                     <td>{{ optColumn.active }}</td>
+                    <td>{{ optColumn.isVisibleByDefault }}</td>
                     <td>
                         <div *ngIf="optColumn.optColumnType">
                             <a [routerLink]="['/opt-column-type', optColumn.optColumnType?.id, 'view']" >{{ optColumn.optColumnType?.name }}</a>

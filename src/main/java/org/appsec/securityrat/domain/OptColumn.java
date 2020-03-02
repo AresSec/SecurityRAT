@@ -31,6 +31,7 @@ public class OptColumn implements Serializable {
     private String name;
 
     @Column(name = "description")
+    @Lob
     private String description;
 
     @Column(name = "show_order")
@@ -38,6 +39,9 @@ public class OptColumn implements Serializable {
 
     @Column(name = "active")
     private Boolean active;
+
+    @Column(name = "is_visible_by_default")
+    private Boolean isVisibleByDefault;
 
     @ManyToOne
     @JsonIgnoreProperties("optColumns")
@@ -97,6 +101,14 @@ public class OptColumn implements Serializable {
         this.active = active;
     }
 
+    public Boolean isIsVisibleByDefault() {
+        return isVisibleByDefault;
+    }
+
+    public void setIsVisibleByDefault(Boolean isVisibleByDefault) {
+        this.isVisibleByDefault = isVisibleByDefault;
+    }
+
     public OptColumnType getOptColumnType() {
         return optColumnType;
     }
@@ -154,6 +166,7 @@ public class OptColumn implements Serializable {
             ", description='" + getDescription() + "'" +
             ", showOrder=" + getShowOrder() +
             ", active='" + isActive() + "'" +
+            ", isVisibleByDefault='" + isIsVisibleByDefault() + "'" +
             "}";
     }
 }

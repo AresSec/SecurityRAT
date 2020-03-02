@@ -9,6 +9,7 @@ export interface IOptColumn {
   description?: string;
   showOrder?: number;
   active?: boolean;
+  isVisibleByDefault?: boolean;
   optColumnType?: IOptColumnType;
   alternativeSets?: IAlternativeSet[];
   optColumnContents?: IOptColumnContent[];
@@ -22,11 +23,13 @@ export class OptColumn implements IOptColumn {
     public description?: string,
     public showOrder?: number,
     public active?: boolean,
+    public isVisibleByDefault?: boolean,
     public optColumnType?: IOptColumnType,
     public alternativeSets?: IAlternativeSet[],
     public optColumnContents?: IOptColumnContent[],
     public projectTypes?: IProjectType[]
   ) {
     this.active = this.active || false;
+    this.isVisibleByDefault = this.isVisibleByDefault || false;
   }
 }
