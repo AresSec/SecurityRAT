@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
+import org.appsec.securityrat.service.dto.ExtraInfoDTO;
 
 /**
  * REST controller for managing the current user's account.
@@ -54,6 +55,12 @@ public class AccountResource {
         this.userService = userService;
         this.mailService = mailService;
         this.persistentTokenRepository = persistentTokenRepository;
+    }
+    
+    @GetMapping("/authentication_config")
+    @ResponseStatus(HttpStatus.OK)
+    public ExtraInfoDTO getAuthenticationConfig() {
+        return this.userService.getExtraInfo();
     }
 
     /**

@@ -154,4 +154,11 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  authentication:
+    type: FORM # possible values are CAS or FORM
+    registration: true # restrict the registration only to the administrators by setting the value to 'false'
+  cas:
+    loginUrl: https://localhost:8443/cas # Change to the URL your CAS server listens on
+    logoutUrl: https://localhost:8443/cas/logout # Change to your CAS server logout URL
+    callbackUrl: https://localhost:9000/callback # Change to the correct URL (https) of SecurityRAT

@@ -28,6 +28,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.appsec.securityrat.config.ApplicationProperties;
+import org.appsec.securityrat.service.dto.ExtraInfoDTO;
 
 /**
  * Service class for managing users.
@@ -37,26 +39,29 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
-
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final UserSearchRepository userSearchRepository;
-
     private final PersistentTokenRepository persistentTokenRepository;
-
     private final AuthorityRepository authorityRepository;
-
     private final CacheManager cacheManager;
+    private final ApplicationProperties applicationProperties;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, PersistentTokenRepository persistentTokenRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            UserSearchRepository userSearchRepository,
+            PersistentTokenRepository persistentTokenRepository,
+            AuthorityRepository authorityRepository,
+            CacheManager cacheManager,
+            ApplicationProperties applicationProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
         this.persistentTokenRepository = persistentTokenRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.applicationProperties = applicationProperties;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -329,11 +334,23 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
-
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+    
+    public ExtraInfoDTO getExtraInfo() {
+        ApplicationProperties.Authentication authProps =
+                this.applicationProperties.getAuthentication();
+        
+        ApplicationProperties.Cas casProps =
+                this.applicationProperties.getCas();
+        
+        return new ExtraInfoDTO(
+                authProps.getType(),
+                authProps.isRegistration(),
+                casProps.getLogoutUrl());
     }
 }
