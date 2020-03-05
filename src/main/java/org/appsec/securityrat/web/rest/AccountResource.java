@@ -57,6 +57,12 @@ public class AccountResource {
         this.persistentTokenRepository = persistentTokenRepository;
     }
     
+    /**
+     * {@code GET  /authentication_config} : get the authentication
+     * configuration.
+     * 
+     * @return the authentication configuration.
+     */
     @GetMapping("/authentication_config")
     @ResponseStatus(HttpStatus.OK)
     public ExtraInfoDTO getAuthenticationConfig() {

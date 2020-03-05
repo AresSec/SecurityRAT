@@ -351,6 +351,6 @@ public class UserService {
         return new ExtraInfoDTO(
                 authProps.getType(),
                 authProps.isRegistration(),
-                casProps.getLogoutUrl());
+                casProps.getLogoutUrl().toString());
     }
 }
