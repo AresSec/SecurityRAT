@@ -1,14 +1,13 @@
-package org.appsec.securityrat.service.dto;
+package org.appsec.securityrat.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.appsec.securityrat.config.AuthenticationType;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ExtraInfoDTO {
+@AllArgsConstructor
+public class AuthenticationConfiguration {
     private AuthenticationType type;
     private boolean registration;
     private String casLogout;

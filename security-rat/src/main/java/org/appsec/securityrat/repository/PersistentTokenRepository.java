@@ -6,11 +6,14 @@ import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import org.appsec.securityrat.api.PersistentTokenRepositoryProvider;
 
 /**
  * Spring Data JPA repository for the {@link PersistentToken} entity.
  */
-public interface PersistentTokenRepository extends JpaRepository<PersistentToken, String> {
+public interface PersistentTokenRepository
+        extends JpaRepository<PersistentToken, String>,
+            PersistentTokenRepositoryProvider {
 
     List<PersistentToken> findByUser(User user);
 

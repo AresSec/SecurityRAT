@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import org.appsec.securityrat.api.MailServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
  * We use the {@link Async} annotation to send emails asynchronously.
  */
 @Service
-public class MailService {
+public class MailService implements MailServiceProvider {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
