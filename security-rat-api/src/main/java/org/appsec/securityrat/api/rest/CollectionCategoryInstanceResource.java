@@ -18,7 +18,8 @@ public class CollectionCategoryInstanceResource {
     @RequestMapping(value = "/collectionCategoryInstances",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> create(@RequestBody CollectionCategory collectionCategory) {
+    public ResponseEntity<CollectionCategory> create(
+            @RequestBody CollectionCategory collectionCategory) {
         log.warn("Not implemented");
         return null;
     }
@@ -26,7 +27,9 @@ public class CollectionCategoryInstanceResource {
     @RequestMapping(value = "/collectionCategoryInstances",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> update(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
+    public ResponseEntity<CollectionCategory> update(
+            @RequestBody CollectionCategory collectionCategory)
+            throws URISyntaxException {
         log.warn("Not implemented");
         return null;
     }
