@@ -28,7 +28,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.appsec.securityrat.api.UserServiceProvider;
 import org.appsec.securityrat.api.dto.AuthenticationConfiguration;
 import org.appsec.securityrat.api.dto.AuthenticationType;
 import org.appsec.securityrat.config.ApplicationProperties;
@@ -38,7 +37,7 @@ import org.appsec.securityrat.config.ApplicationProperties;
  */
 @Service
 @Transactional
-public class UserService implements UserServiceProvider {
+public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
@@ -341,23 +340,5 @@ public class UserService implements UserServiceProvider {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
-    }
-    
-    @Override
-    public AuthenticationConfiguration getAuthenticationConfiguration() {
-        ApplicationProperties.Authentication authProps =
-                this.applicationProperties.getAuthentication();
-        
-        ApplicationProperties.Cas casProps =
-                this.applicationProperties.getCas();
-        
-        // TODO [luis.felger@bosch.com]
-        // ============================
-        // AuthenticationType.valueOf(authProps.getType().name()) is not safe
-        
-        return new AuthenticationConfiguration(
-                AuthenticationType.valueOf(authProps.getType().name()),
-                authProps.isRegistration(),
-                casProps.getLogoutUrl().toString());
     }
 }

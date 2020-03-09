@@ -1,62 +1,75 @@
 package org.appsec.securityrat.api.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.appsec.securityrat.api.OptColumnProvider;
 import org.appsec.securityrat.api.dto.OptColumn;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-public class OptColumnResource {
+public class OptColumnResource extends AbstractResourceBase<Long, OptColumn> {
+    @Inject
+    @Getter(AccessLevel.PROTECTED)
+    private OptColumnProvider dtoProvider;
+    
+    public OptColumnResource() {
+        super("optColumn");
+    }
+    
     @RequestMapping(value = "/optColumns",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumn> create(@RequestBody OptColumn optColumn) {
-        log.warn("Not implemented");
-        return null;
+    public ResponseEntity<OptColumn> create(@RequestBody OptColumn optColumn) throws URISyntaxException {
+        return this.doCreate(optColumn);
     }
 
     @RequestMapping(value = "/optColumns",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumn> update(@RequestBody OptColumn optColumn) {
-        log.warn("Not implemented");
-        return null;
+    public ResponseEntity<OptColumn> update(@RequestBody OptColumn optColumn) throws URISyntaxException {
+        return this.doUpdate(optColumn);
     }
 
     @RequestMapping(value = "/optColumns",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OptColumn> getAll() {
-        log.warn("Not implemented");
-        return null;
+        return this.doGetAll();
     }
 
     @RequestMapping(value = "/optColumns/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OptColumn> get(@PathVariable Long id) {
-        log.warn("Not implemented");
-        return null;
+        return this.doGet(id);
     }
 
     @RequestMapping(value = "/optColumns/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.warn("Not implemented");
-        return null;
+        return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/optColumns/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OptColumn> search(@PathVariable String query) {
-        log.warn("Not implemented");
-        return null;
+        return this.doSearch(query);
+    }
+
+    @Override
+    protected URI getLocation(OptColumn dto) throws URISyntaxException {
+        return new URI("/api/optColumns/" + dto.getId().get());
     }
 }

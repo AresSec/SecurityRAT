@@ -13,14 +13,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.time.Instant;
-import org.appsec.securityrat.api.UserRepositoryProvider;
 
 /**
  * Spring Data JPA repository for the {@link User} entity.
  */
 @Repository
 public interface UserRepository
-        extends JpaRepository<User, Long>, UserRepositoryProvider {
+        extends JpaRepository<User, Long> {
 
     String USERS_BY_LOGIN_CACHE = "usersByLogin";
 
