@@ -1,25 +1,38 @@
 package org.appsec.securityrat.api.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.appsec.securityrat.api.AlternativeInstanceProvider;
 import org.appsec.securityrat.api.dto.AlternativeInstance;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
-public class AlternativeInstanceResource {
+public class AlternativeInstanceResource
+        extends AbstractResourceBase<Long, AlternativeInstance> {
+    
+    @Inject
+    @Getter(AccessLevel.PROTECTED)
+    private AlternativeInstanceProvider dtoProvider;
+    
+    public AlternativeInstanceResource() {
+        super("alternativeInstance");
+    }
+    
     @RequestMapping(value = "/alternativeInstances",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AlternativeInstance> create(
             @RequestBody
-            AlternativeInstance alternativeInstance) {
-        log.warn("Not implemented");
-        return null;
+            AlternativeInstance alternativeInstance) throws URISyntaxException {
+        return this.doCreate(alternativeInstance);
     }
 
     @RequestMapping(value = "/alternativeInstances",
@@ -27,17 +40,15 @@ public class AlternativeInstanceResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AlternativeInstance> update(
             @RequestBody
-            AlternativeInstance alternativeInstance) {
-        log.warn("Not implemented");
-        return null;
+            AlternativeInstance alternativeInstance) throws URISyntaxException {
+        return this.doUpdate(alternativeInstance);
     }
 
     @RequestMapping(value = "/alternativeInstances",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AlternativeInstance> getAll() {
-        log.warn("Not implemented");
-        return null;
+        return this.doGetAll();
     }
 
     @RequestMapping(value = "/alternativeInstances/{id}",
@@ -46,8 +57,7 @@ public class AlternativeInstanceResource {
     public ResponseEntity<AlternativeInstance> get(
             @PathVariable
             Long id) {
-        log.warn("Not implemented");
-        return null;
+        return this.doGet(id);
     }
 
     @RequestMapping(value = "/alternativeInstances/{id}",
@@ -56,8 +66,7 @@ public class AlternativeInstanceResource {
     public ResponseEntity<Void> delete(
             @PathVariable
             Long id) {
-        log.warn("Not implemented");
-        return null;
+        return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/alternativeInstances/{query}",
@@ -66,7 +75,12 @@ public class AlternativeInstanceResource {
     public List<AlternativeInstance> search(
             @PathVariable
             String query) {
-        log.warn("Not implemented");
-        return null;
+        return this.doSearch(query);
+    }
+
+    @Override
+    protected URI getLocation(AlternativeInstance dto)
+            throws URISyntaxException {
+        return new URI("/api/alternativeInstances/" + dto.getId().get());
     }
 }

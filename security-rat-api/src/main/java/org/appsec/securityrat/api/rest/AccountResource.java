@@ -2,7 +2,6 @@ package org.appsec.securityrat.api.rest;
 
 import java.util.Collection;
 import java.util.Collections;
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -11,10 +10,6 @@ import javax.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.appsec.securityrat.api.MailServiceProvider;
-import org.appsec.securityrat.api.PersistentTokenRepositoryProvider;
-import org.appsec.securityrat.api.UserRepositoryProvider;
-import org.appsec.securityrat.api.UserServiceProvider;
 import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.api.dto.ResetKeyAndPassword;
 import org.appsec.securityrat.api.dto.PersistentToken;
@@ -31,18 +26,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping("/api")
 @Slf4j
 public class AccountResource {
-    @Inject
-    private UserRepositoryProvider userRepository;
-    
-    @Inject
-    private UserServiceProvider userService;
-    
-    @Inject
-    private PersistentTokenRepositoryProvider persistentTokenRepository;
-    
-    @Inject
-    private MailServiceProvider mailService;
-    
     @GetMapping("/account")
     @ResponseStatus(HttpStatus.OK)
     public Account get() {
