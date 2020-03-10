@@ -12,15 +12,6 @@ public class OptColumnMapper extends AbstractMapperBase<
     
     @Inject
     private OptColumnTypeMapper optColumnTypeMapper;
-    
-    @Inject
-    private AlternativeSetMapper alternativeSetMapper;
-    
-    @Inject
-    private OptColumnContentMapper optColumnContentMapper;
-    
-    @Inject
-    private ProjectTypeMapper projectTypeMapper;
 
     @Override
     public OptColumn toDto(org.appsec.securityrat.domain.OptColumn entity) {
