@@ -20,9 +20,6 @@ public class OptColumn implements IdentifiableDto<Long> {
     private Boolean active;
     private Boolean isVisibleByDefault;
     private OptColumnType optColumnType;
-    private Set<AlternativeSet> alternativeSets;
-    private Set<OptColumnContent> optColumnContents;
-    private Set<ProjectType> projectTypes;
 
     @Override
     public Optional<Long> getId() {

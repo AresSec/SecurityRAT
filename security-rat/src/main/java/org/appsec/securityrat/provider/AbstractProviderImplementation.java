@@ -11,6 +11,7 @@ import org.appsec.securityrat.mapper.AbstractMapperBase;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractProviderImplementation<
         TIdType,
@@ -23,13 +24,20 @@ public abstract class AbstractProviderImplementation<
         getSearchRepo();
         
     protected abstract AbstractMapperBase<TEntity, TDto> getMapper();
+    
+    // NOTE: All methods that map entities to DTOs or the other way around need
+    //       to be marked with the @Transactional annotation. Otherwise, the
+    //       mapper will run into exceptions when attempting to load data from
+    //       references/nested objects.
 
     @Override
+    @Transactional
     public List<TDto> findAll() {
         return this.getMapper().toDtoList(this.getRepo().findAll());
     }
 
     @Override
+    @Transactional
     public Optional<TDto> findById(TIdType id) {
         return this.getRepo()
                 .findById(id)
@@ -37,6 +45,7 @@ public abstract class AbstractProviderImplementation<
     }
 
     @Override
+    @Transactional
     public TDto save(TDto dto) {
         TEntity entity = this.getMapper().toEntity(dto);
         
@@ -47,6 +56,7 @@ public abstract class AbstractProviderImplementation<
     }
 
     @Override
+    @Transactional
     public boolean delete(TIdType id) {
         return this.getRepo()
                 .findById(id)
@@ -59,6 +69,7 @@ public abstract class AbstractProviderImplementation<
     }
 
     @Override
+    @Transactional
     public List<TDto> search(String query) {
         Stream<TEntity> stream = StreamSupport.stream(
                 this.getSearchRepo().search(

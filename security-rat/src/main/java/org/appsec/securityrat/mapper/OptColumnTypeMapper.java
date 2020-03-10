@@ -1,6 +1,6 @@
 package org.appsec.securityrat.mapper;
 
-import javax.inject.Inject;
+import java.util.Collections;
 import org.appsec.securityrat.api.dto.OptColumnType;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +9,6 @@ public class OptColumnTypeMapper extends AbstractMapperBase<
         org.appsec.securityrat.domain.OptColumnType,
         org.appsec.securityrat.api.dto.OptColumnType> {
     
-    @Inject
-    private OptColumnMapper optColumnMapper;
-
     @Override
     public OptColumnType toDto(
             org.appsec.securityrat.domain.OptColumnType entity) {
@@ -24,8 +21,6 @@ public class OptColumnTypeMapper extends AbstractMapperBase<
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
-        dto.setOptColumns(this.optColumnMapper.toDtoSet(
-                entity.getOptColumns()));
         
         return dto;
     }
@@ -43,8 +38,7 @@ public class OptColumnTypeMapper extends AbstractMapperBase<
         entity.setId(dto.getId().orElse(null));
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
-        entity.setOptColumns(this.optColumnMapper.toEntitySet(
-                dto.getOptColumns()));
+        entity.setOptColumns(Collections.EMPTY_SET);
         
         return entity;
     }

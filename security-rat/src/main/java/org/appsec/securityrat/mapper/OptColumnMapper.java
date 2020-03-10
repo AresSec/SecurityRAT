@@ -1,5 +1,6 @@
 package org.appsec.securityrat.mapper;
 
+import java.util.Collections;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.dto.OptColumn;
 import org.springframework.stereotype.Service;
@@ -38,15 +39,6 @@ public class OptColumnMapper extends AbstractMapperBase<
         dto.setOptColumnType(this.optColumnTypeMapper.toDto(
                 entity.getOptColumnType()));
         
-        dto.setAlternativeSets(this.alternativeSetMapper.toDtoSet(
-                entity.getAlternativeSets()));
-        
-        dto.setOptColumnContents(this.optColumnContentMapper.toDtoSet(
-                entity.getOptColumnContents()));
-        
-        dto.setProjectTypes(this.projectTypeMapper.toDtoSet(
-                entity.getProjectTypes()));
-        
         return dto;
     }
 
@@ -68,14 +60,9 @@ public class OptColumnMapper extends AbstractMapperBase<
         entity.setOptColumnType(this.optColumnTypeMapper.toEntity(
                 dto.getOptColumnType()));
         
-        entity.setAlternativeSets(this.alternativeSetMapper.toEntitySet(
-                dto.getAlternativeSets()));
-        
-        entity.setOptColumnContents(this.optColumnContentMapper.toEntitySet(
-                dto.getOptColumnContents()));
-        
-        entity.setProjectTypes(this.projectTypeMapper.toEntitySet(
-                dto.getProjectTypes()));
+        entity.setAlternativeSets(Collections.EMPTY_SET);
+        entity.setOptColumnContents(Collections.EMPTY_SET);
+        entity.setProjectTypes(Collections.EMPTY_SET);
         
         return entity;
     }
