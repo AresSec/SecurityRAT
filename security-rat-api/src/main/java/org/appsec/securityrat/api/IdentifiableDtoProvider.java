@@ -5,8 +5,7 @@ import java.util.Optional;
 import org.appsec.securityrat.api.dto.IdentifiableDto;
 
 public interface IdentifiableDtoProvider<
-        TIdType, TDto extends IdentifiableDto<TIdType>>
-        extends DtoProvider<TDto> {
+        TIdType, TDto extends IdentifiableDto<TIdType>> {
     List<TDto> findAll();
     Optional<TDto> findById(TIdType id);
     TDto save(TDto dto);

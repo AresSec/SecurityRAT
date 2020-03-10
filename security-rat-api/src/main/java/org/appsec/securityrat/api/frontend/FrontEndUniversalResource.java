@@ -1,6 +1,8 @@
 package org.appsec.securityrat.api.frontend;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import org.appsec.securityrat.api.AlternativeInstanceProvider;
+import org.appsec.securityrat.api.CollectionInstanceProvider;
+import org.appsec.securityrat.api.FrontendAlternativeInstanceProvider;
+import org.appsec.securityrat.api.FrontendCategoryProvider;
+import org.appsec.securityrat.api.FrontendCollectionCategoryProvider;
+import org.appsec.securityrat.api.FrontendOptionColumnAlternativeProvider;
+import org.appsec.securityrat.api.FrontendProjectTypeProvider;
+import org.appsec.securityrat.api.FrontendTagCategoryProvider;
+import org.appsec.securityrat.api.OptColumnContentProvider;
+import org.appsec.securityrat.api.ProjectTypeProvider;
+import org.appsec.securityrat.api.ReqCategoryProvider;
+import org.appsec.securityrat.api.RequirementSkeletonProvider;
 import org.appsec.securityrat.api.dto.AlternativeInstance;
 import org.appsec.securityrat.api.dto.OptColumnContent;
 import org.appsec.securityrat.api.dto.ReqCategory;
@@ -20,81 +34,151 @@ import org.appsec.securityrat.api.dto.frontend.CollectionCategory;
 import org.appsec.securityrat.api.dto.frontend.OptionColumnAlternative;
 import org.appsec.securityrat.api.dto.frontend.ProjectType;
 import org.appsec.securityrat.api.dto.frontend.TagCategory;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/frontend-api")
 @Slf4j
 public class FrontEndUniversalResource {
+    // TODO: Frontend needs cleanup
+    
+    @Inject
+    private AlternativeInstanceProvider alternativeInstanceProvider;
+    
+    @Inject
+    private OptColumnContentProvider optColumnContentProvider;
+    
+    @Inject
+    private RequirementSkeletonProvider requirementSkeletonProvider;
+    
+    @Inject
+    private ReqCategoryProvider reqCategoryProvider;
+    
+    @Inject
+    private FrontendCollectionCategoryProvider
+            frontendCollectionCategoryProvider;
+    
+    @Inject
+    private FrontendProjectTypeProvider frontendProjectTypeProvider;
+    
+    @Inject
+    private FrontendTagCategoryProvider frontendTagCategoryProvider;
+    
+    @Inject
+    private FrontendOptionColumnAlternativeProvider
+            frontendOptionColumnAlternativeProvider;
+    
+    @Inject
+    private CollectionInstanceProvider collectionInstanceProvider;
+    
+    @Inject
+    private ProjectTypeProvider projectTypeProvider;
+    
+    @Inject
+    private FrontendCategoryProvider frontendCategoryProvider;
+    
+    @Inject
+    private FrontendAlternativeInstanceProvider
+            frontendAlternativeInstanceProvider;
+    
     @RequestMapping(value = "/collections",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CollectionCategory> getCollections() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all collection catetories and their "
+                + "collection instances");
+        
+        return this.frontendCollectionCategoryProvider.findAll();
     }
 
     @RequestMapping(value = "/projectTypes",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<ProjectType> getProjectTypes() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get project types");
+        
+        return new HashSet<>(this.frontendProjectTypeProvider.findAll());
     }
 
     @RequestMapping(value = "/tags",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TagCategory> getTags() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all tag catetories and their tag "
+                + "instances");
+        
+        return this.frontendTagCategoryProvider.findAll();
     }
 
     @RequestMapping(value = "/requirementCategories",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ReqCategory> getAllActiveReqCategories() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all ReqCategories");
+        
+        return this.reqCategoryProvider.findAll()
+                .stream()
+                .filter(e -> e.getActive())
+                .collect(Collectors.toList());
     }
     
     @RequestMapping(value = "/requirementSkeletons",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RequirementSkeleton> getAllActiveRequirements() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all Requirements");
+        
+        return this.requirementSkeletonProvider.findAll()
+                .stream()
+                .filter(e -> e.getActive())
+                .collect(Collectors.toList());
     }
     
     @RequestMapping(value = "/alternativeinstances",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AlternativeInstance> alternativeInstances() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all active alternative instances");
+        
+        return this.alternativeInstanceProvider.findAll()
+                .stream()
+                .filter(e -> e.getAlternativeSet().getActive())
+                .collect(Collectors.toList());
     }
     
     @RequestMapping(value = "/optColumnContents",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OptColumnContent> getAll() {
-        log.warn("Not implemented");
-        return null;
+        log.debug("REST request to get all active OptColumnContents");
+        
+        return this.optColumnContentProvider.findAll()
+                .stream()
+                .filter(e -> e.getOptColumn().getActive())
+                .collect(Collectors.toList());
     }
     
     @RequestMapping(value = "/requirementSkeletons/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementSkeleton> getActiveRequirement(@PathVariable Long id) {
-        log.warn("Not implemented");
-        return null;
+    public ResponseEntity<RequirementSkeleton> getActiveRequirement(
+            @PathVariable Long id) {
+        log.debug("REST request requirement {}", id);
+        
+        return this.requirementSkeletonProvider.findById(id)
+                .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @RequestMapping(value="/categoriesWithRequirements/filter",
     		method=RequestMethod.GET,
     		produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Category> getCategoriesWithSkeletons(@RequestParam("collections") Long[] collectionIds, @RequestParam("projectTypes") Long[] projectTypeIds) {
-        log.warn("Not implemented");
-        return null;
+    public Set<Category> getCategoriesWithSkeletons(
+            @RequestParam("collections") Long[] collectionIds,
+            @RequestParam("projectTypes") Long[] projectTypeIds) {
+        return new HashSet<>(
+                this.frontendCategoryProvider.findEagerlyCategoriesWithRequirements(
+                        collectionIds, projectTypeIds));
     }
 
     @RequestMapping(value="/numberOfRequirements/filter",
@@ -103,23 +187,27 @@ public class FrontEndUniversalResource {
     public int getNumberOfRequirements(
         @RequestParam("collections") Long[] collectionIds,
         @RequestParam("projectTypes") Long[] projectTypeIds) {
-        log.warn("Not implemented");
-        return -1;
+        return this.getCategoriesWithSkeletons(collectionIds, projectTypeIds)
+                .stream()
+                .mapToInt(e -> e.getRequirements().size())
+                .sum();
     }
 
-@RequestMapping(value = "/alternativeInstances/filter",
+    @RequestMapping(value = "/alternativeInstances/filter",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<org.appsec.securityrat.api.dto.frontend.AlternativeInstance> getAlternativeInstancesForAlternativeSet(@RequestParam("alternativeSet") Long alternativeSetId) {
-        log.warn("Not implemented");
-        return null;
+    public Set<org.appsec.securityrat.api.dto.frontend.AlternativeInstance> getAlternativeInstancesForAlternativeSet(
+            @RequestParam("alternativeSet") Long alternativeSetId) {
+        return new HashSet<>(
+                this.frontendAlternativeInstanceProvider.getActiveAlternativeInstancesForAlternativeSet(
+                        alternativeSetId));
     }
 
     @RequestMapping(value = "/optionColumnsWithAlternativeSets",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<OptionColumnAlternative> getOptionColumnsWithAlternativeSets() {
-        log.warn("Not implemented");
-        return null;
+        return new HashSet<>(
+                this.frontendOptionColumnAlternativeProvider.findAll());
     }
 }
