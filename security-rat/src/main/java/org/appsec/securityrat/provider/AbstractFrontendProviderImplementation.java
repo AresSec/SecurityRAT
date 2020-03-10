@@ -6,10 +6,10 @@ import org.appsec.securityrat.mapper.AbstractMapperBase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-public abstract class AbstractFrontendProviderImplementation<TId, TDto, TEntity>
+public abstract class AbstractFrontendProviderImplementation<TDto, TEntity>
         implements FrontendDtoProvider<TDto> {
     
-    protected abstract JpaRepository<TEntity, TId> getRepo();
+    protected abstract JpaRepository<TEntity, ?> getRepo();
     protected abstract AbstractMapperBase<TEntity, TDto> getMapper();
 
     @Override
