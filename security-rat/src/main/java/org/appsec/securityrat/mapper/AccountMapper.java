@@ -23,7 +23,7 @@ public class AccountMapper extends AbstractFrontendMapperBase<User, Account> {
         dto.setLangKey(entity.getLangKey());
         dto.setRoles(entity.getAuthorities()
                 .stream()
-                .map(e -> e.toString())
+                .map(e -> e.getName())
                 .collect(Collectors.toSet()));
         
         return dto;

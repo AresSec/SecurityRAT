@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.AccountProvider;
 import org.appsec.securityrat.api.dto.Account;
+import org.appsec.securityrat.domain.User;
 import org.appsec.securityrat.mapper.AccountMapper;
 import org.appsec.securityrat.repository.UserRepository;
 import org.appsec.securityrat.security.SecurityUtils;
@@ -47,6 +48,7 @@ public class AccountProviderImpl implements AccountProvider {
     }
 
     @Override
+    @Transactional
     public Optional<Account> getCurrent() {
         Optional<String> login = SecurityUtils.getCurrentUserLogin();
         
