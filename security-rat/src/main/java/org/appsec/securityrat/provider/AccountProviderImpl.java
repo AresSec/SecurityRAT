@@ -62,10 +62,18 @@ public class AccountProviderImpl implements AccountProvider {
     @Override
     @Transactional
     public boolean confirmPassword(String password) {
-        return this.getCurrent()
-                .map(e -> this.passwordEncoder.matches(
-                        password,
-                        e.getPassword()))
-                .orElse(Boolean.FALSE);
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
+        
+        if (login.isEmpty()) {
+            return false;
+        }
+        
+        Optional<User> user = this.users.findOneByLogin(login.get());
+        
+        if (user.isEmpty()) {
+            return false;
+        }
+        
+        return this.passwordEncoder.matches(password, user.get().getPassword());
     }
 }
