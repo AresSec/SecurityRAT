@@ -5,8 +5,6 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.appsec.securityrat.api.dto.Authority;
-import org.appsec.securityrat.api.dto.PersistentToken;
 
 @Data
 @NoArgsConstructor

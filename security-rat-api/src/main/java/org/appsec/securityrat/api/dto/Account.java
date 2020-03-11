@@ -1,6 +1,7 @@
 package org.appsec.securityrat.api.dto;
 
 import java.util.Collection;
+import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -44,5 +45,5 @@ public class Account {
     @Size(min = 2, max = 5)
     public String langKey;
 
-    public Collection<String> roles;
+    public Set<String> roles;
 }

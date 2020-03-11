@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class FrontendOptionColumnContentMapper
         extends AbstractFrontendMapperBase<
             org.appsec.securityrat.domain.OptColumnContent,
-        org.appsec.securityrat.api.dto.frontend.OptionColumnContent> {
+            org.appsec.securityrat.api.dto.frontend.OptionColumnContent> {
 
     @Override
     public OptionColumnContent toDto(OptColumnContent entity) {
