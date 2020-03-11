@@ -4,6 +4,9 @@ import org.appsec.securityrat.security.*;
 
 import io.github.jhipster.config.JHipsterProperties;
 import io.github.jhipster.security.*;
+import javax.inject.Inject;
+import org.appsec.securityrat.api.AuthoritiesConstants;
+import org.appsec.securityrat.config.filter.CsrfCookieGeneratorFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -13,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.AuthorizedUrl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -26,20 +30,23 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import(SecurityProblemSupport.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private final JHipsterProperties jHipsterProperties;
-
-    private final RememberMeServices rememberMeServices;
-
-    private final CorsFilter corsFilter;
-    private final SecurityProblemSupport problemSupport;
-
-    public SecurityConfiguration(JHipsterProperties jHipsterProperties, RememberMeServices rememberMeServices, CorsFilter corsFilter, SecurityProblemSupport problemSupport) {
-        this.jHipsterProperties = jHipsterProperties;
-        this.rememberMeServices = rememberMeServices;
-        this.corsFilter = corsFilter;
-        this.problemSupport = problemSupport;
-    }
+    @Inject
+    private JHipsterProperties jHipsterProperties;
+    
+    @Inject
+    private RememberMeServices rememberMeServices;
+    
+    @Inject
+    private CorsFilter corsFilter;
+    
+    @Inject
+    private SecurityProblemSupport problemSupport;
+    
+    @Inject
+    private Http401UnauthorizedEntryPoint authenticationEntryPoint;
+    
+    @Inject
+    private ApplicationProperties appConfig;
 
     @Bean
     public AjaxAuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
@@ -75,6 +82,87 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
+        
+        // TODO: At the moment only FORM authentication is implemented;
+        //       reimplement CAS, too.
+        
+        // TODO: Probably, it would be better, if we would outsource the
+        //       authentication endpoints to the API project.
+        
+        http
+                .headers().frameOptions().sameOrigin()
+            .and()
+                .csrf()
+                .ignoringAntMatchers("/websocket/**")
+            .and()
+                .addFilterAfter(
+                        new CsrfCookieGeneratorFilter(),
+                        CsrfFilter.class)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(this.authenticationEntryPoint)
+            .and()
+                .rememberMe()
+                .rememberMeServices(this.rememberMeServices)
+                .rememberMeParameter("remember-me")
+                .key(this.jHipsterProperties.getSecurity()
+                        .getRememberMe()
+                        .getKey())
+            .and()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/api/authentication")
+                .successHandler(this.ajaxAuthenticationSuccessHandler())
+                .failureHandler(this.ajaxAuthenticationFailureHandler())
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .permitAll()
+            .and()
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler(this.ajaxLogoutSuccessHandler())
+                .deleteCookies("JSESSIONID")
+                .permitAll();
+        
+        AuthorizedUrl registerUrl = http.authorizeRequests()
+                .antMatchers("/api/register");
+        
+        if (this.appConfig.getAuthentication().isRegistration()) {
+            registerUrl.permitAll();
+        } else {
+            registerUrl.denyAll();
+        }
+        
+        http
+            .authorizeRequests()
+            .antMatchers("/api/register").permitAll()
+            .antMatchers("/api/activate").permitAll()
+            .antMatchers("/api/authenticate").permitAll()
+            .antMatchers("/api/authentication_config").permitAll()
+            .antMatchers("/api/account/reset_password/init").permitAll()
+            .antMatchers("/api/account/reset_password/finish").permitAll()
+            .antMatchers("/api/account").authenticated()
+            .antMatchers("/api/account/**").authenticated()
+            .antMatchers(HttpMethod.GET, "/frontend-api/**").hasAnyAuthority(AuthoritiesConstants.FRONTEND_USER, AuthoritiesConstants.ADMIN, AuthoritiesConstants.USER)
+            .antMatchers("/api/training/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainings/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingBranchNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingCategoryNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingCustomSlideNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingGeneratedSlideNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingRequirementNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingTreeNodes/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingTreeNodeUpdate/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingTreeNodesWithPreparedContent/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/trainingTreeNode/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/slideTemplates/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TRAINER)
+            .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.ADMIN, AuthoritiesConstants.USER)
+            .antMatchers(HttpMethod.GET, "/admin-api/configConstants").permitAll()
+            .antMatchers("/admin-api/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/configuration/security").permitAll()
+            .antMatchers("/configuration/ui").permitAll()
+            .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/protected/**").authenticated();
+        
         /*
         http
             .csrf()
