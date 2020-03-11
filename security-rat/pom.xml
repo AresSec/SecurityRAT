@@ -426,6 +426,7 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <!--
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
@@ -456,6 +457,7 @@
                         </execution>
                     </executions>
                 </plugin>
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -908,6 +910,7 @@
                 <profile.tls>,tls</profile.tls>
             </properties>
         </profile>
+        <!--
         <profile>
             <id>webpack</id>
             <activation>
@@ -956,10 +959,11 @@
                 </plugins>
             </build>
             <properties>
-                <!-- default Spring profiles -->
+                < ! - -  default Spring profiles - - >
                 <spring.profiles.active>dev${profile.no-liquibase}</spring.profiles.active>
             </properties>
         </profile>
+        -->
         <profile>
             <id>dev</id>
             <activation>
@@ -982,6 +986,7 @@
             </properties>
         </profile>
         <profile>
+            <!-- TODO: Fix NPM for Prod -->
             <id>prod</id>
             <dependencies>
                 <dependency>
@@ -1103,6 +1108,7 @@
             </dependencies>
         </profile>
         <profile>
+            <!-- TODO: Fix NPM for eclipse -->
             <!-- This is automatically activated when working in Eclipse -->
             <id>eclipse</id>
             <activation>
