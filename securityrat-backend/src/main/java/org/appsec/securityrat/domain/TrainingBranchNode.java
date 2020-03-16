@@ -30,6 +30,7 @@ public class TrainingBranchNode implements Serializable {
     private Integer anchor;
 
     @ManyToOne
+    @JoinColumn(name = "node_id")
     private TrainingTreeNode node;
 
     public Long getId() {

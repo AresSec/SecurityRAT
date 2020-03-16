@@ -38,6 +38,7 @@ public class StatusColumnValue implements Serializable {
     private Boolean active;
 
     @ManyToOne
+    @JoinColumn(name = "statuscolumn_id")
     private StatusColumn statusColumn;
 
     public Long getId() {

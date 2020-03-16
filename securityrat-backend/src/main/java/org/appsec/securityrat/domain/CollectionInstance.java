@@ -40,6 +40,7 @@ public class CollectionInstance implements Serializable {
     private Boolean active;
 
     @ManyToOne
+    @JoinColumn(name = "collectioncategory_id")
     private CollectionCategory collectionCategory;
 
     @ManyToMany(mappedBy = "collectionInstances")

@@ -24,9 +24,11 @@ public class TrainingGeneratedSlideNode implements Serializable {
     
 
     @ManyToOne
+    @JoinColumn(name = "node_id")
     private TrainingTreeNode node;
 
     @ManyToOne
+    @JoinColumn(name = "optcolumn_id")
     private OptColumn optColumn;
 
     public Long getId() {

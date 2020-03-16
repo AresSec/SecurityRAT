@@ -51,6 +51,7 @@ public class RequirementSkeleton implements Serializable {
     private Set<AlternativeInstance> alternativeInstances = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "reqcategory_id")
     private ReqCategory reqCategory;
 
     @ManyToMany

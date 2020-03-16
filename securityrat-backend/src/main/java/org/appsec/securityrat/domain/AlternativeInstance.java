@@ -28,9 +28,11 @@ public class AlternativeInstance implements Serializable {
     private String content;
 
     @ManyToOne
+    @JoinColumn(name = "alternativeset_id")
     private AlternativeSet alternativeSet;
 
     @ManyToOne
+    @JoinColumn(name = "requirementskeleton_id")
     private RequirementSkeleton requirementSkeleton;
 
     public Long getId() {

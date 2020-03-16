@@ -40,6 +40,7 @@ public class AlternativeSet implements Serializable {
     private Boolean active;
 
     @ManyToOne
+    @JoinColumn(name = "optcolumn_id")
     private OptColumn optColumn;
 
     @OneToMany(mappedBy = "alternativeSet")

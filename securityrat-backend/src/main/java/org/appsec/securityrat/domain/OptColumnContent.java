@@ -29,9 +29,11 @@ public class OptColumnContent implements Serializable {
     private String content;
 
     @ManyToOne
+    @JoinColumn(name = "optcolumn_id")
     private OptColumn optColumn;
 
     @ManyToOne
+    @JoinColumn(name = "requirementskeleton_id")
     private RequirementSkeleton requirementSkeleton;
 
     public Long getId() {

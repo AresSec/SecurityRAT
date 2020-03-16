@@ -42,6 +42,7 @@ public class TagInstance implements Serializable {
     private Boolean active;
 
     @ManyToOne
+    @JoinColumn(name = "tagcategory_id")
     private TagCategory tagCategory;
 
     @ManyToMany(mappedBy = "tagInstances")

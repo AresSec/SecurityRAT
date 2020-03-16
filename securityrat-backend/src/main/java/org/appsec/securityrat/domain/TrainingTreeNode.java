@@ -36,6 +36,7 @@ public class TrainingTreeNode implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "parent_id_id")
     private TrainingTreeNode parent_id;
 
     @Transient
@@ -55,6 +56,7 @@ public class TrainingTreeNode implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "training_id_id")
     private Training training_id;
 
     // JSON transfer attribute for training_id

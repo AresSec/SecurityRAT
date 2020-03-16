@@ -24,9 +24,11 @@ public class TrainingRequirementNode implements Serializable {
     
 
     @ManyToOne
+    @JoinColumn(name = "node_id")
     private TrainingTreeNode node;
 
     @ManyToOne
+    @JoinColumn(name = "requirementskeleton_id")
     private RequirementSkeleton requirementSkeleton;
 
     public Long getId() {

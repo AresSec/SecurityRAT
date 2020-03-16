@@ -27,9 +27,11 @@ public class TrainingCategoryNode implements Serializable {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "node_id")
     private TrainingTreeNode node;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private ReqCategory category;
 
     public Long getId() {

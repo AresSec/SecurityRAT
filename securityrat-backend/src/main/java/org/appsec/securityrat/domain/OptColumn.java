@@ -43,6 +43,7 @@ public class OptColumn implements Serializable {
     private Boolean isVisibleByDefault;
 
     @ManyToOne
+    @JoinColumn(name = "optcolumntype_id")
     private OptColumnType optColumnType;
 
     @OneToMany(mappedBy = "optColumn")
