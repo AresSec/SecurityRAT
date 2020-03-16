@@ -1,7 +1,9 @@
 package org.appsec.securityrat.api;
 
+import java.util.List;
 import java.util.Optional;
 import org.appsec.securityrat.api.dto.Account;
+import org.appsec.securityrat.api.dto.PersistentToken;
 
 public interface AccountProvider {
     /**
@@ -67,4 +69,25 @@ public interface AccountProvider {
      *         matches the requester's password, otherwise <code>false</code>.
      */
     boolean confirmPassword(String password);
+    
+    /**
+     * Returns all valid {@link PersistentToken} for the current requester.
+     * 
+     * @return The valid tokens.
+     */
+    List<PersistentToken> getCurrentTokens();
+    
+    /**
+     * Invalidates the specified {@link PersistentToken}.
+     * 
+     * This method will only have an effect, if the current requester is
+     * associated with this token. This API call cannot be used for invalidating
+     * tokens of other users.
+     * 
+     * @param series The series of the token.
+     * @return Either <code>true</code>, if the specified token was assigned to
+     *         the current requester and got deleted successfully, otherwise
+     *         <code>false</code>.
+     */
+    boolean invalidateToken(String series);
 }

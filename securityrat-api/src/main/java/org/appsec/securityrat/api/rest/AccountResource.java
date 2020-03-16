@@ -2,6 +2,7 @@ package org.appsec.securityrat.api.rest;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -105,17 +106,16 @@ public class AccountResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    @PostMapping("/account/sessions")
+    @GetMapping("/account/sessions")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<PersistentToken> getSessions() {
-        log.warn("Not implemented");
-        return Collections.EMPTY_SET;
+    public List<PersistentToken> getSessions() {
+        return this.accounts.getCurrentTokens();
     }
     
     @DeleteMapping("/account/sessions/{series}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteSessions(@PathVariable @NotBlank String series) {
-        log.warn("Not implemented");
+        this.accounts.invalidateToken(series);
     }
     
     @PostMapping("/account/reset_password/init")
