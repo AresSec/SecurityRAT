@@ -1,6 +1,7 @@
 package org.appsec.securityrat.mapper;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import org.appsec.securityrat.api.dto.PersistentToken;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +9,14 @@ import org.springframework.stereotype.Service;
 public class PersistentTokenMapper extends AbstractMapperBase<
         org.appsec.securityrat.domain.PersistentToken,
         org.appsec.securityrat.api.dto.PersistentToken> {
-    private static DateTimeFormatter FORMAT =
-            DateTimeFormatter.ofPattern("d MMMM yyyy");
+    // NOTE: Due to the reason that the frontend will directly display the date
+    //       that is formatted with the DateTimeFormatter bellow, we should
+    //       always use ENGLISH as the locale because otherwise the translation
+    //       of the month's name will depend on the server's language
+    //       configuration (which is not really that nice).
+    
+    private static final DateTimeFormatter FORMAT =
+            DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
     
 
     @Override
