@@ -7,6 +7,7 @@ import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.domain.User;
 import org.appsec.securityrat.mapper.AccountMapper;
 import org.appsec.securityrat.repository.UserRepository;
+import org.appsec.securityrat.repository.search.UserSearchRepository;
 import org.appsec.securityrat.security.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountProviderImpl implements AccountProvider {
     @Inject
     private UserRepository users;
+    
+    @Inject
+    private UserSearchRepository userSearch;
     
     @Inject
     private AccountMapper mapper;
@@ -38,8 +42,28 @@ public class AccountProviderImpl implements AccountProvider {
     }
 
     @Override
+    @Transactional
     public Account save(Account account) {
-        throw new UnsupportedOperationException();
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
+        
+        if (login.isEmpty()) {
+            throw new IllegalArgumentException("User not authenticated");
+        }
+        
+        Optional<User> nullableUser = this.users.findOneByLogin(login.get());
+        
+        if (nullableUser.isEmpty()) {
+            throw new IllegalStateException("Authenticated user unknown");
+        }
+        
+        User user = nullableUser.get();
+        
+        this.mapper.toUser(account, user);
+        
+        this.users.save(user);
+        this.userSearch.save(user);
+        
+        return this.mapper.toDto(user);
     }
 
     @Override

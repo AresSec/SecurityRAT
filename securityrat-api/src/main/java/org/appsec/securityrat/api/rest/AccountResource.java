@@ -60,6 +60,12 @@ public class AccountResource {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
+        // NOTE: It is important to clear the password property first.
+        //       Otherwise, clients may change their passwords by calling this
+        //       endpoint.
+        
+        account.setPassword(null);
+        
         this.accounts.save(account);
         return new ResponseEntity<>(HttpStatus.OK);
     }
