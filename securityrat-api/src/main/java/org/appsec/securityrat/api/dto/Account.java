@@ -1,6 +1,5 @@
 package org.appsec.securityrat.api.dto;
 
-import java.util.Collection;
 import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -24,26 +23,26 @@ public class Account {
     @Pattern(regexp = "^[a-z0-9]*$")
     @NotNull
     @Size(min = 1, max = 50)
-    public String login;
+    private String login;
     
     // NOTE: 'password' may be 'null'
     
     @Pattern(regexp = PASSWORD_REGEX)
     @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
-    public String password;
+    private String password;
     
     @Size(max = 50)
-    public String firstName;
+    private String firstName;
     
     @Size(max = 50)
-    public String lastName;
+    private String lastName;
     
     @Email
     @Size(min = 5, max = 100)
-    public String email;
+    private String email;
     
     @Size(min = 2, max = 5)
-    public String langKey;
+    private String langKey;
 
-    public Set<String> roles;
+    private Set<String> roles;
 }

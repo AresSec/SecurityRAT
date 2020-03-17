@@ -1,10 +1,6 @@
 package org.appsec.securityrat.api.rest;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -15,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.appsec.securityrat.api.AccountProvider;
-import org.appsec.securityrat.api.MailProvider;
+import org.appsec.securityrat.api.EmailAlreadyInUseException;
+import org.appsec.securityrat.api.NotActivatedException;
+import org.appsec.securityrat.api.UnauthorizedContextException;
+import org.appsec.securityrat.api.UnknownEmailException;
+import org.appsec.securityrat.api.UsernameTakenException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.api.dto.ResetKeyAndPassword;
-import org.appsec.securityrat.api.dto.PersistentToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,39 +37,37 @@ public class AccountResource {
     @Inject
     private AccountProvider accounts;
     
-    @Inject
-    private MailProvider mails;
-    
     @GetMapping("/account")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Account> get() {
-        Optional<Account> account = this.accounts.getCurrent();
-        
-        if (account.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> get() {
+        try {
+            return ResponseEntity.ok(this.accounts.getCurrent());
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authenticated!");
         }
-        
-        return ResponseEntity.ok(account.get());
     }
     
     @PostMapping("/account")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> post(@Valid @RequestBody Account account) {
-        // AccountProvider.save will create a new account, if the account is not
-        // existing yet. To prevent this, we need to check first whether the
-        // account exists or not.
-        
-        if (this.accounts.findOneByLogin(account.getLogin()).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        
+    public ResponseEntity<?> post(@Valid @RequestBody Account account) {
         // NOTE: It is important to clear the password property first.
         //       Otherwise, clients may change their passwords by calling this
         //       endpoint.
         
         account.setPassword(null);
         
-        this.accounts.save(account);
+        try {
+            this.accounts.save(account);
+        } catch (EmailAlreadyInUseException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Email address already in use!");
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Either you are not authenticated or you attempted "
+                            + "to change another user's account information!");
+        }
+        
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
@@ -83,17 +80,27 @@ public class AccountResource {
                     max = Account.PASSWORD_MAX_LENGTH)
             String password) {
         
-        Optional<Account> currentAccountNullable = this.accounts.getCurrent();
+        Account currentAccount;
         
-        if (currentAccountNullable.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            currentAccount = this.accounts.getCurrent();
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authenticated!");
         }
-        
+
         // TODO: Is the password length validation required?
         
-        Account currentAccount = currentAccountNullable.get();
         currentAccount.setPassword(password);
-        this.accounts.save(currentAccount);
+        
+        try {
+            this.accounts.save(currentAccount);
+        } catch (EmailAlreadyInUseException | UnauthorizedContextException ex) {
+            // NOTE: This exception should never occur since we already queried
+            //       the requester's account and did not change their email.
+            
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -101,9 +108,18 @@ public class AccountResource {
     @PostMapping("/account/confirm_password")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> postConfirmPassword(@RequestBody String password) {
-        if (!this.accounts.confirmPassword(password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Password did not match");
+        // NOTE: This call adds zero security because it does not change the
+        //       user's state on the server side and thus their is no
+        //       verification that a user ever made this API call.
+        
+        try {
+            if (!this.accounts.confirmPassword(password)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Password did not match");
+            }
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authenticated!");
         }
         
         return new ResponseEntity<>(HttpStatus.OK);
@@ -111,14 +127,20 @@ public class AccountResource {
     
     @GetMapping("/account/sessions")
     @ResponseStatus(HttpStatus.OK)
-    public List<PersistentToken> getSessions() {
-        return this.accounts.getCurrentTokens();
+    public ResponseEntity<?> getSessions() {
+        try {
+            return ResponseEntity.ok(this.accounts.getCurrentTokens());
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authenticated!");
+        }
     }
     
     @DeleteMapping("/account/sessions/{series}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteSessions(
             @PathVariable @NotBlank String series) {
+        
         // NOTE: Since the original value of "series" is a Base64-encoded
         //       string and the Spring firewall blocks URL-escaped characters
         //       (like '%2F') by default, we need to circumvent this by using
@@ -133,30 +155,54 @@ public class AccountResource {
                     .body("Invalid encoding");
         }
         
-        this.accounts.invalidateToken(series);
+        try {
+            this.accounts.invalidateToken(series);
+        } catch (UnauthorizedContextException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not authenticated!");
+        }
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PostMapping("/account/reset_password/init")
     @ResponseStatus(HttpStatus.OK)
-    public String postResetPasswordInit(
+    public ResponseEntity<?> postResetPasswordInit(
             @RequestBody
             @Email
             @Size(min = 5, max = 100)
             String mail) {
-        log.warn("Not implemented");
-        return "";
+        
+        try {
+            this.accounts.requestPasswordReset(mail);
+        } catch (UnknownEmailException ex) {
+            return ResponseEntity.badRequest()
+                    .body("Unknown email address!");
+        } catch (NotActivatedException ex) {
+            return ResponseEntity.badRequest()
+                    .body("Account not activated!");
+        }
+        
+        return ResponseEntity.ok("Email was sent.");
     }
     
     @PostMapping("/account/reset_password/finish")
     @ResponseStatus(HttpStatus.OK)
-    public String postResetPasswordFinish(
+    public ResponseEntity<?> postResetPasswordFinish(
             @Valid
             @RequestBody
             ResetKeyAndPassword dto) {
-        log.warn("Not implemented");
-        return "";
+        
+        boolean success = this.accounts.finishPasswordReset(
+                dto.getKey(),
+                dto.getNewPassword());
+        
+        if (!success) {
+            return ResponseEntity.badRequest()
+                    .body("Resetting the password failed!");
+        }
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PostMapping("/register")
@@ -165,18 +211,17 @@ public class AccountResource {
             @Valid
             @RequestBody
             Account account) {
-        
-        if (this.accounts.findOneByLogin(account.getLogin()).isPresent()) {
+
+        try {
+            this.accounts.create(account);
+        } catch (UsernameTakenException ex) {
             return ResponseEntity.badRequest()
-                    .body("login already in use");
+                    .body("Username already in use!");
+        } catch (EmailAlreadyInUseException ex) {
+            return ResponseEntity.badRequest()
+                    .body("Email already in use!");
         }
         
-        if (this.accounts.findOneByEmail(account.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest()
-                    .body("e-mail address already in use");
-        }
-        
-        this.mails.sendActivationEmail(this.accounts.save(account));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     
@@ -191,6 +236,6 @@ public class AccountResource {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
