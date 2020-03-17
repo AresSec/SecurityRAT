@@ -136,6 +136,7 @@ public class AccountProviderImpl implements AccountProvider {
     }
 
     @Override
+    @Transactional
     public boolean invalidateToken(String series) {
         Optional<String> login = SecurityUtils.getCurrentUserLogin();
         

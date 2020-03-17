@@ -1,5 +1,6 @@
 package org.appsec.securityrat.api.rest;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.appsec.securityrat.api.AccountProvider;
 import org.appsec.securityrat.api.MailProvider;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,8 +117,25 @@ public class AccountResource {
     
     @DeleteMapping("/account/sessions/{series}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSessions(@PathVariable @NotBlank String series) {
+    public ResponseEntity<?> deleteSessions(
+            @PathVariable @NotBlank String series) {
+        // NOTE: Since the original value of "series" is a Base64-encoded
+        //       string and the Spring firewall blocks URL-escaped characters
+        //       (like '%2F') by default, we need to circumvent this by using
+        //       another encoding that can pass the firewall.
+        //       The current approach uses the hexadecimal representation of the
+        //       UTF-8 encoded text.
+        
+        try {
+            series = new String(Hex.decodeHex(series), StandardCharsets.UTF_8);
+        } catch (DecoderException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid encoding");
+        }
+        
         this.accounts.invalidateToken(series);
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PostMapping("/account/reset_password/init")
