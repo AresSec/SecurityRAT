@@ -89,6 +89,7 @@ public class CacheConfiguration {
             createCache(cm, org.appsec.securityrat.domain.TrainingGeneratedSlideNode.class.getName());
             createCache(cm, org.appsec.securityrat.domain.TrainingRequirementNode.class.getName());
             createCache(cm, org.appsec.securityrat.domain.TrainingTreeNode.class.getName());
+            createCache(cm, org.appsec.securityrat.domain.ConfigConstant.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

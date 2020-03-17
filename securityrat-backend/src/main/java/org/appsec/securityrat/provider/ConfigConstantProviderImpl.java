@@ -1,35 +1,30 @@
 package org.appsec.securityrat.provider;
 
-import java.util.List;
-import java.util.Optional;
+import javax.inject.Inject;
+import lombok.Getter;
 import org.appsec.securityrat.api.ConfigConstantProvider;
-import org.appsec.securityrat.api.dto.ConfigConstant;
+import org.appsec.securityrat.mapper.ConfigConstantMapper;
+import org.appsec.securityrat.repository.ConfigConstantRepository;
+import org.appsec.securityrat.repository.search.ConfigConstantSearchRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ConfigConstantProviderImpl implements ConfigConstantProvider {
-    @Override
-    public List<ConfigConstant> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Optional<ConfigConstant> findById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ConfigConstant save(ConfigConstant dto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<ConfigConstant> search(String query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public class ConfigConstantProviderImpl
+        extends AbstractProviderImplementation<
+            Long,
+            org.appsec.securityrat.api.dto.ConfigConstant,
+            org.appsec.securityrat.domain.ConfigConstant>
+        implements ConfigConstantProvider {
+    
+    @Inject
+    @Getter
+    private ConfigConstantRepository repo;
+    
+    @Inject
+    @Getter
+    private ConfigConstantSearchRepository searchRepo;
+    
+    @Inject
+    @Getter
+    private ConfigConstantMapper mapper;
 }
