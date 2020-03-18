@@ -1,82 +1,152 @@
 package org.appsec.securityrat.provider;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.IdentifiableDto;
-import org.appsec.securityrat.mapper.AbstractMapperBase;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractProviderImplementation<
-        TIdType,
-        TDto extends IdentifiableDto<TIdType>,
-        TEntity>
-        implements IdentifiableDtoProvider<TIdType, TDto> {
+            TId,
+            TDto extends IdentifiableDto<TId>,
+            TEntity>
+        extends AbstractIdentifiableDtoMapper<TId, TDto, TEntity>
+        implements IdentifiableDtoProvider<TId, TDto> {
     
-    protected abstract JpaRepository<TEntity, TIdType> getRepo();
-    protected abstract ElasticsearchRepository<TEntity, TIdType>
-        getSearchRepo();
+    /**
+     * Returns the repository that will be used for loading and storing
+     * persistent versions of <code>TEntity</code>.
+     * 
+     * @return The persistent repository.
+     */
+    protected abstract JpaRepository<TEntity, TId> getRepository();
+    
+    /**
+     * Returns the repository that will be used for saving and querying entities
+     * by using Elasticsearch.
+     * 
+     * @return The Elasticsearch repository.
+     */
+    protected abstract ElasticsearchRepository<TEntity, TId>
+        getSearchRepository();
+    
+    /**
+     * Returns an instance of <code>TEntity</code> that is resolved by the
+     * identifier that the specified <code>dto</code> provides.
+     * 
+     * @param dto The data transfer object whose identifier will be used for
+     *            resolving the returned instance of <code>TEntity</code>.
+     * 
+     * @return A container object that contains the matching instance of
+     *         <code>TEntity</code>, or <code>null</code>, if either the passed
+     *         <code>dto</code> is <code>null</code> or there is no matching
+     *         <code>TEntity</code> instance.
+     */
+    public Optional<TEntity> findByDto(TDto dto) {
+        if (dto == null) {
+            return Optional.empty();
+        }
         
-    protected abstract AbstractMapperBase<TEntity, TDto> getMapper();
+        if (dto.getId().isEmpty()) {
+            throw new IllegalArgumentException("dto does not provide an id!");
+        }
+        
+        return this.getRepository().findById(dto.getId().get());
+    }
     
-    // NOTE: All methods that map entities to DTOs or the other way around need
-    //       to be marked with the @Transactional annotation. Otherwise, the
-    //       mapper will run into exceptions when attempting to load data from
-    //       references/nested objects.
-
+    public List<TEntity> findListByDto(List<TDto> dtos) {
+        List<TId> dtoIds = dtos.stream()
+                .map(dto -> dto.getId()
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "dto does not provide an id!")))
+                .collect(Collectors.toList());
+        
+        List<TEntity> entities = this.getRepository().findAllById(dtoIds);
+        
+        if (entities.size() != dtos.size()) {
+            throw new IllegalArgumentException("Cannot resolve all DTOs!");
+        }
+        
+        return entities;
+    }
+    
+    public Set<TEntity> findSetByDto(Set<TDto> dtos) {
+        return new HashSet<>(this.findListByDto(new ArrayList<>(dtos)));
+    }
+    
     @Override
     @Transactional
     public List<TDto> findAll() {
-        return this.getMapper().toDtoList(this.getRepo().findAll());
+        return this.getRepository()
+                .findAll()
+                .stream()
+                .map(entity -> this.createDtoChecked(entity))
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public Optional<TDto> findById(TIdType id) {
-        return this.getRepo()
+    public Optional<TDto> findById(TId id) {
+        return this.getRepository()
                 .findById(id)
-                .map(entity -> this.getMapper().toDto(entity));
+                .map(entity -> this.createDto(entity));
     }
 
     @Override
     @Transactional
     public TDto save(TDto dto) {
-        TEntity entity = this.getMapper().toEntity(dto);
+        TEntity entity = null;
         
-        TEntity resultEntity = this.getRepo().save(entity);
-        this.getSearchRepo().save(entity);
+        if (dto.getId().isPresent()) {
+            entity = this.getRepository()
+                    .findById(dto.getId().get())
+                    .orElse(null);
+        }
         
-        return this.getMapper().toDto(resultEntity);
+        entity = this.createOrUpdateEntityChecked(dto, entity);
+        
+        entity = this.getRepository().save(entity);
+        this.getSearchRepository().save(entity);
+        
+        return this.createDtoChecked(entity);
     }
 
     @Override
     @Transactional
-    public boolean delete(TIdType id) {
-        return this.getRepo()
-                .findById(id)
-                .map(entity -> {
-                    this.getRepo().deleteById(id);
-                    this.getSearchRepo().deleteById(id);
-                    return true;
-                })
-                .orElse(Boolean.FALSE);
+    public boolean delete(TId id) {
+        Optional<TEntity> nullableEntity = this.getRepository().findById(id);
+        
+        if (nullableEntity.isEmpty()) {
+            return false;
+        }
+        
+        TEntity entity = nullableEntity.get();
+        
+        this.getRepository().delete(entity);
+        this.getSearchRepository().delete(entity);
+        
+        return true;
     }
 
     @Override
     @Transactional
     public List<TDto> search(String query) {
         Stream<TEntity> stream = StreamSupport.stream(
-                this.getSearchRepo().search(
+                this.getSearchRepository().search(
                         QueryBuilders.queryStringQuery(query)).spliterator(),
                 false);
         
-        return stream.map(entity -> this.getMapper().toDto(entity))
+        return stream.map(entity -> this.createDto(entity))
                 .collect(Collectors.toList());
     }
 }

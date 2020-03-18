@@ -1,5 +1,6 @@
 package org.appsec.securityrat.api.dto;
 
+import java.util.Optional;
 import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class Account implements IdentifiableDto<String> {
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 100;
     public static final String PASSWORD_REGEX =
@@ -45,4 +46,9 @@ public class Account {
     private String langKey;
 
     private Set<String> roles;
+
+    @Override
+    public Optional<String> getId() {
+        return Optional.ofNullable(this.login);
+    }
 }

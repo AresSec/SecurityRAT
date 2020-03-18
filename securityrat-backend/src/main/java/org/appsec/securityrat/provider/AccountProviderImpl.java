@@ -2,12 +2,15 @@ package org.appsec.securityrat.provider;
 
 import io.github.jhipster.security.RandomUtil;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.AccountProvider;
 import org.appsec.securityrat.api.AuthoritiesConstants;
@@ -21,8 +24,6 @@ import org.appsec.securityrat.api.dto.PersistentToken;
 import org.appsec.securityrat.config.ApplicationProperties;
 import org.appsec.securityrat.domain.Authority;
 import org.appsec.securityrat.domain.User;
-import org.appsec.securityrat.mapper.AccountMapper;
-import org.appsec.securityrat.mapper.PersistentTokenMapper;
 import org.appsec.securityrat.repository.UserRepository;
 import org.appsec.securityrat.repository.search.UserSearchRepository;
 import org.appsec.securityrat.security.SecurityUtils;
@@ -32,18 +33,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AccountProviderImpl implements AccountProvider {
+public class AccountProviderImpl extends AbstractIdentifiableDtoMapper<String, Account, User> implements AccountProvider {
+    // NOTE: Due to the reason that the frontend will directly display the date
+    //       that is formatted with the DateTimeFormatter bellow, we should
+    //       always use ENGLISH as the locale because otherwise the translation
+    //       of the month's name will depend on the server's language
+    //       configuration (which is not really that nice).
+    
+    private static final DateTimeFormatter FORMAT =
+            DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
+    
     @Inject
     private UserRepository users;
     
     @Inject
     private UserSearchRepository userSearch;
-    
-    @Inject
-    private AccountMapper mapper;
-    
-    @Inject
-    private PersistentTokenMapper tokenMapper;
     
     @Inject
     private PasswordEncoder passwordEncoder;
@@ -74,10 +78,10 @@ public class AccountProviderImpl implements AccountProvider {
                     + "sombody else's account information");
         }
         
-        user = this.mapper.toEntity(account, user);
+        user = this.createOrUpdateEntityChecked(account, user);
         this.save(user);
         
-        return this.mapper.toDto(user);
+        return this.createDtoChecked(user);
     }
 
     @Override
@@ -103,7 +107,7 @@ public class AccountProviderImpl implements AccountProvider {
             throw new UsernameTakenException();
         }
         
-        User createdUser = this.mapper.toEntity(account, new User());
+        User createdUser = this.createOrUpdateEntityChecked(account, null);
         
         // Depending on the authentication settings the user may need to
         // activate their account first.
@@ -140,7 +144,7 @@ public class AccountProviderImpl implements AccountProvider {
         
         // Sending the activation mail
         
-        return this.mapper.toDto(createdUser);
+        return this.createDtoChecked(createdUser);
     }
 
     @Override
@@ -174,7 +178,7 @@ public class AccountProviderImpl implements AccountProvider {
     @Override
     @Transactional
     public Account getCurrent() throws UnauthorizedContextException {
-        return this.mapper.toDto(this.getCurrentUser());
+        return this.createDtoChecked(this.getCurrentUser());
     }
 
     @Override
@@ -192,8 +196,24 @@ public class AccountProviderImpl implements AccountProvider {
     public List<PersistentToken> getCurrentTokens()
             throws UnauthorizedContextException {
         
-        return this.tokenMapper.toDtoList(new ArrayList<>(
-                this.getCurrentUser().getPersistentTokens()));
+        // NOTE: There is no dedicated TokenMapper
+        
+        return this.getCurrentUser()
+                .getPersistentTokens()
+                .stream()
+                .map(t -> {
+                    PersistentToken token = new PersistentToken();
+                    
+                    token.setFormattedTokenDate(t.getTokenDate().format(
+                            AccountProviderImpl.FORMAT));
+                    
+                    token.setIpAddress(t.getIpAddress());
+                    token.setSeries(t.getSeries());
+                    token.setUserAgent(t.getUserAgent());
+                    
+                    return token;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -314,5 +334,67 @@ public class AccountProviderImpl implements AccountProvider {
     private void save(User user) {
         this.users.save(user);
         this.userSearch.save(user);
+    }
+
+    @Override
+    protected User createOrUpdateEntity(Account dto, User target) {
+        if (target == null) {
+            target = new User();
+        }
+        
+        // NOTE: We do not support updating the username, also if it would be
+        //       possible.
+        
+        if (dto.getPassword() != null) {
+            // We only update the password, if it was specified.
+            
+            target.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        }
+        
+        target.setFirstName(dto.getFirstName());
+        target.setLastName(dto.getLastName());
+        target.setEmail(dto.getEmail());
+        target.setLangKey(dto.getLangKey());
+        
+        // NOTE: There is no dedicated mapper (String -> Authority).
+        
+        if (dto.getRoles() != null) {
+            target.setAuthorities(dto.getRoles()
+                    .stream()
+                    .map(r -> {
+                        Authority authority = new Authority();
+                        authority.setName(r);
+                        return authority;
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        
+        return target;
+    }
+
+    @Override
+    protected String getId(User entity) {
+        return entity.getLogin();
+    }
+
+    @Override
+    protected Account createDto(User entity) {
+        Account dto = new Account();
+        
+        dto.setLogin(entity.getLogin());
+        dto.setPassword(null);
+        dto.setFirstName(entity.getFirstName());
+        dto.setLastName(entity.getLastName());
+        dto.setEmail(entity.getEmail());
+        dto.setLangKey(entity.getLangKey());
+        
+        // NOTE: There is no dedicated mapper (Authority -> String).
+        
+        dto.setRoles(entity.getAuthorities()
+                .stream()
+                .map(e -> e.getName())
+                .collect(Collectors.toSet()));
+        
+        return dto;
     }
 }

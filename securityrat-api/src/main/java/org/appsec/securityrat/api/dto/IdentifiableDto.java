@@ -5,9 +5,9 @@ import java.util.Optional;
 /**
  * A data transfer object that may provide a unique id.
  * 
- * @param <TIdType> The type of the unique id.
+ * @param <TId> The type of the unique id.
  */
-public interface IdentifiableDto<TIdType> {
+public interface IdentifiableDto<TId> {
     /**
      * Returns the unique id.
      * 
@@ -16,5 +16,5 @@ public interface IdentifiableDto<TIdType> {
      * 
      * @return The unique id.
      */
-    Optional<TIdType> getId();
+    Optional<TId> getId();
 }

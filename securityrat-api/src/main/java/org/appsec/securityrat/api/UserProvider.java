@@ -1,5 +1,8 @@
 package org.appsec.securityrat.api;
 
-public interface UserProvider {
-    
+import java.util.Optional;
+import org.appsec.securityrat.api.dto.User;
+
+public interface UserProvider extends IdentifiableDtoProvider<Long, User> {
+    Optional<User> findByLogin(String login);
 }

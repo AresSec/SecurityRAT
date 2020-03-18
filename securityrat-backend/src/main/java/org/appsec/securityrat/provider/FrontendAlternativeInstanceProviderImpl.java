@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import lombok.Getter;
 import org.appsec.securityrat.api.FrontendAlternativeInstanceProvider;
 import org.appsec.securityrat.api.dto.frontend.AlternativeInstance;
-import org.appsec.securityrat.mapper.FrontendAlternativeInstanceMapper;
 import org.appsec.securityrat.repository.AlternativeInstanceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +20,7 @@ public class FrontendAlternativeInstanceProviderImpl
     
     @Getter
     @Inject
-    private AlternativeInstanceRepository repo;
-    
-    @Getter
-    @Inject
-    private FrontendAlternativeInstanceMapper mapper;
+    private AlternativeInstanceRepository repository;
 
     @Override
     @Transactional
@@ -33,12 +28,24 @@ public class FrontendAlternativeInstanceProviderImpl
             Long alternativeSetId) {
         // TODO: Preformance is improvable.
         
-        return this.mapper.toDtoList(
-                this.repo.findAll()
-                        .stream()
-                        .filter(e -> Objects.equals(
-                                e.getAlternativeSet().getId(),
-                                alternativeSetId))
-                        .collect(Collectors.toList()));
+        return this.repository.findAll()
+                .stream()
+                .filter(e -> Objects.equals(
+                        e.getAlternativeSet().getId(),
+                        alternativeSetId))
+                .map(this::createDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    protected AlternativeInstance createDto(
+            org.appsec.securityrat.domain.AlternativeInstance entity) {
+        AlternativeInstance dto = new AlternativeInstance();
+        
+        dto.setId(entity.getId());
+        dto.setRequirementId(entity.getRequirementSkeleton().getId());
+        dto.setContent(entity.getContent());
+        
+        return dto;
     }
 }
