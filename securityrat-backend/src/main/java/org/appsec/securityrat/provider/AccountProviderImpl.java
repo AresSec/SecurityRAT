@@ -33,7 +33,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AccountProviderImpl extends AbstractIdentifiableDtoMapper<String, Account, User> implements AccountProvider {
+public class AccountProviderImpl
+        extends AbstractIdentifiableDtoMapper<String, Account, User>
+        implements AccountProvider {
+    
     // NOTE: Due to the reason that the frontend will directly display the date
     //       that is formatted with the DateTimeFormatter bellow, we should
     //       always use ENGLISH as the locale because otherwise the translation
