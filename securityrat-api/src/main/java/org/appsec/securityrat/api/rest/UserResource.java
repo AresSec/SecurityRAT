@@ -74,7 +74,7 @@ public class UserResource extends AbstractResourceBase<Long, User> {
     @RequestMapping(value = "/users",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> create(@RequestBody User userdto)
+    public ResponseEntity<?> create(@RequestBody User userdto)
             throws URISyntaxException {
         
         return this.doCreate(userdto);
@@ -83,7 +83,7 @@ public class UserResource extends AbstractResourceBase<Long, User> {
     @RequestMapping(value = "/users",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> update(@RequestBody User user)
+    public ResponseEntity<?> update(@RequestBody User user)
             throws URISyntaxException {
         return this.doUpdate(user);
     }
@@ -91,7 +91,7 @@ public class UserResource extends AbstractResourceBase<Long, User> {
     @RequestMapping(value = "/users/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         log.debug("REST request to delete  user: {}", id);
         return this.doDelete(id);
     }
@@ -99,7 +99,7 @@ public class UserResource extends AbstractResourceBase<Long, User> {
     @RequestMapping(value = "/_search/users/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

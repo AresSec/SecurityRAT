@@ -3,6 +3,7 @@ package org.appsec.securityrat.provider;
 import java.util.Objects;
 import java.util.Optional;
 import org.appsec.securityrat.api.dto.IdentifiableDto;
+import org.appsec.securityrat.api.exception.ApiException;
 
 public abstract class AbstractIdentifiableDtoMapper<
             TId,
@@ -37,9 +38,15 @@ public abstract class AbstractIdentifiableDtoMapper<
      *         return value references the same object as <code>target</code>
      *         does.
      * 
+     * @throws ApiException If the modifications of the specified
+     *                      <code>dto</code> cannot be copied to the
+     *                      <code>target</code> entity as this would invalidate
+     *                      the persistent storage.
+     * 
      * @see #createOrUpdateEntityChecked(org.appsec.securityrat.api.dto.IdentifiableDto, java.lang.Object)
      */
-    protected abstract TEntity createOrUpdateEntity(TDto dto, TEntity target);
+    protected abstract TEntity createOrUpdateEntity(TDto dto, TEntity target)
+            throws ApiException;
     
     // NOTE: The following "getId(TEntity)" method is very basic and could be
     //       replaced with some reflection.
@@ -70,8 +77,15 @@ public abstract class AbstractIdentifiableDtoMapper<
      *               non-existing entity.
      * 
      * @return The new or updated entity instance.
+     * 
+     * @throws ApiException If the modifications of the specified
+     *                      <code>dto</code> cannot be copied to the
+     *                      <code>target</code> entity as this would invalidate
+     *                      the persistent storage.
      */
-    public TEntity createOrUpdateEntityChecked(TDto dto, TEntity target) {
+    public TEntity createOrUpdateEntityChecked(TDto dto, TEntity target)
+            throws ApiException {
+        
         if (dto == null) {
             throw new NullPointerException("dto is null");
         }
@@ -91,7 +105,7 @@ public abstract class AbstractIdentifiableDtoMapper<
         
         if (dtoId.isPresent() &&
                 target != null &&
-                Objects.equals(dtoId.get(), this.getId(target))) {
+                !Objects.equals(dtoId.get(), this.getId(target))) {
             throw new IllegalArgumentException(
                     "dto provides another id than target!");
         }

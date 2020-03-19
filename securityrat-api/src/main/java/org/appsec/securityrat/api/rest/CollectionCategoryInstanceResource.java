@@ -32,7 +32,7 @@ public class CollectionCategoryInstanceResource
     @RequestMapping(value = "/collectionCategoryInstances",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> create(
+    public ResponseEntity<?> create(
             @RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
         return this.doCreate(collectionCategory);
     }
@@ -40,7 +40,7 @@ public class CollectionCategoryInstanceResource
     @RequestMapping(value = "/collectionCategoryInstances",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> update(
+    public ResponseEntity<?> update(
             @RequestBody CollectionCategory collectionCategory)
             throws URISyntaxException {
         return this.doUpdate(collectionCategory);
@@ -49,7 +49,7 @@ public class CollectionCategoryInstanceResource
     @RequestMapping(value = "/collectionCategoryInstances",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CollectionCategory> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
@@ -57,6 +57,8 @@ public class CollectionCategoryInstanceResource
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<CollectionInstance>> get(@PathVariable Long id) {
+        // TODO [luis.felger@bosch.com]: Implement this.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -64,14 +66,14 @@ public class CollectionCategoryInstanceResource
     @RequestMapping(value = "/collectionCategoryInstances/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/collectionCategoryInstances/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CollectionCategory> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

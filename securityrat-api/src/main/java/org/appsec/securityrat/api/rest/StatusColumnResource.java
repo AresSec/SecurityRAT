@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,42 +28,42 @@ public class StatusColumnResource extends AbstractResourceBase<Long, StatusColum
     @RequestMapping(value = "/statusColumns",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumn> create(@RequestBody StatusColumn statusColumn) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody StatusColumn statusColumn) throws URISyntaxException {
         return this.doCreate(statusColumn);
     }
 
     @RequestMapping(value = "/statusColumns",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumn> update(@RequestBody StatusColumn statusColumn) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody StatusColumn statusColumn) throws URISyntaxException {
         return this.doCreate(statusColumn);
     }
 
     @RequestMapping(value = "/statusColumns",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StatusColumn> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/statusColumns/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumn> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/statusColumns/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/statusColumns/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StatusColumn> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

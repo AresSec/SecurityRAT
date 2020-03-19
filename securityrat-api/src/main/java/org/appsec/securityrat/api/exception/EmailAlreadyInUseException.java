@@ -1,4 +1,4 @@
-package org.appsec.securityrat.api;
+package org.appsec.securityrat.api.exception;
 
 /**
  * An exception that indicates that the chosen email is already in use by
@@ -7,7 +7,7 @@ package org.appsec.securityrat.api;
  * @see AccountProvider
  * @see UserProvider
  */
-public class EmailAlreadyInUseException extends Exception {
+public class EmailAlreadyInUseException extends ApiException {
     public EmailAlreadyInUseException() {
     }
     

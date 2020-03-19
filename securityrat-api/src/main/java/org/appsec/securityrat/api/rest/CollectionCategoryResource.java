@@ -30,42 +30,42 @@ public class CollectionCategoryResource extends AbstractResourceBase<Long, Colle
     @RequestMapping(value = "/collectionCategorys",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> create(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
         return this.doCreate(collectionCategory);
     }
 
     @RequestMapping(value = "/collectionCategorys",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> update(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody CollectionCategory collectionCategory) throws URISyntaxException {
         return this.doUpdate(collectionCategory);
     }
 
     @RequestMapping(value = "/collectionCategorys",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CollectionCategory> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/collectionCategorys/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionCategory> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/collectionCategorys/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/collectionCategorys/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CollectionCategory> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

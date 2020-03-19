@@ -1,4 +1,4 @@
-package org.appsec.securityrat.api;
+package org.appsec.securityrat.api.exception;
 
 /**
  * A checked exception that indicates that an operation could not take place

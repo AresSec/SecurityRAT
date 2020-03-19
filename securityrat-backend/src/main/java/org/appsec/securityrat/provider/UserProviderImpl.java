@@ -1,7 +1,9 @@
 package org.appsec.securityrat.provider;
 
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -10,6 +12,9 @@ import org.appsec.securityrat.api.UserProvider;
 import org.appsec.securityrat.api.dto.Authority;
 import org.appsec.securityrat.api.dto.PersistentToken;
 import org.appsec.securityrat.api.dto.User;
+import org.appsec.securityrat.api.exception.ApiException;
+import org.appsec.securityrat.api.exception.EmailAlreadyInUseException;
+import org.appsec.securityrat.api.exception.UsernameTakenException;
 import org.appsec.securityrat.repository.UserRepository;
 import org.appsec.securityrat.repository.search.UserSearchRepository;
 import org.springframework.stereotype.Service;
@@ -43,10 +48,49 @@ public class UserProviderImpl
     @Override
     protected org.appsec.securityrat.domain.User createOrUpdateEntity(
             User dto,
-            org.appsec.securityrat.domain.User target) {
-        // TODO
+            org.appsec.securityrat.domain.User target) throws ApiException {
+        if (target == null) {
+            target = new org.appsec.securityrat.domain.User();
+        }
         
-        throw new UnsupportedOperationException();
+        // Checking, if the username or email is already in use (only if the
+        // updated information differ from the persistent one)
+        
+        if (!Objects.equals(target.getEmail(), dto.getEmail()) &&
+                !this.repository.findOneByEmail(dto.getEmail()).isPresent()) {
+            throw new EmailAlreadyInUseException();
+        }
+        
+        if (!Objects.equals(target.getLogin(), dto.getLogin()) &&
+                !this.repository.findOneByLogin(dto.getLogin()).isPresent()) {
+            throw new UsernameTakenException();
+        }
+        
+        // Updating the information
+        
+        target.setLogin(dto.getLogin());
+        target.setFirstName(dto.getFirstName());
+        target.setLastName(dto.getLastName());
+        target.setEmail(dto.getEmail());
+        target.setActivated(dto.isActivated());
+        target.setLangKey(dto.getLangKey());
+        target.setResetKey(dto.getResetKey());
+        target.setResetDate(dto.getResetDate());
+        target.setAuthorities(dto.getAuthorities()
+                .stream()
+                .map(e -> {
+                    org.appsec.securityrat.domain.Authority authority =
+                            new org.appsec.securityrat.domain.Authority();                    
+                    
+                    authority.setName(e.getName());
+                    
+                    return authority;
+                })
+                .collect(Collectors.toSet()));
+        
+        // NOTE: We do not support updating the persistent tokens.
+        
+        return target;
     }
 
     @Override

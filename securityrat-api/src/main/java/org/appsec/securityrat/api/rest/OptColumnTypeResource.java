@@ -29,42 +29,42 @@ public class OptColumnTypeResource extends AbstractResourceBase<Long, OptColumnT
     @RequestMapping(value = "/optColumnTypes",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnType> create(@RequestBody OptColumnType optColumnType) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody OptColumnType optColumnType) throws URISyntaxException {
         return this.doCreate(optColumnType);
     }
 
     @RequestMapping(value = "/optColumnTypes",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnType> update(@RequestBody OptColumnType optColumnType) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody OptColumnType optColumnType) throws URISyntaxException {
         return this.doUpdate(optColumnType);
     }
 
     @RequestMapping(value = "/optColumnTypes",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OptColumnType> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/optColumnTypes/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnType> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/optColumnTypes/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/optColumnTypes/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OptColumnType> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

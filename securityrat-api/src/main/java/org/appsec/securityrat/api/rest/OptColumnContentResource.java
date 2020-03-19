@@ -31,28 +31,28 @@ public class OptColumnContentResource extends AbstractResourceBase<Long, OptColu
     @RequestMapping(value = "/optColumnContents",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnContent> create(@RequestBody OptColumnContent optColumnContent) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody OptColumnContent optColumnContent) throws URISyntaxException {
         return this.doCreate(optColumnContent);
     }
     
     @RequestMapping(value = "/optColumnContents",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnContent> update(@RequestBody OptColumnContent optColumnContent) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody OptColumnContent optColumnContent) throws URISyntaxException {
         return this.doUpdate(optColumnContent);
     }
 
     @RequestMapping(value = "/optColumnContents",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OptColumnContent> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/optColumnContents/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OptColumnContent> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
@@ -60,6 +60,8 @@ public class OptColumnContentResource extends AbstractResourceBase<Long, OptColu
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<OptColumnContent>> getRequirement(@PathVariable Long id) {
+        // TODO [luis.felger@bosch.com]: Implement this.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -70,6 +72,8 @@ public class OptColumnContentResource extends AbstractResourceBase<Long, OptColu
     public List<OptColumnContent> foo(
     		@RequestParam("projectTypeId") Long projectTypeId,
     		@RequestParam("requirementId") Long requirementSkeletonId) {
+        // TODO [luis.felger@bosch.com]: Implement this.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -80,6 +84,8 @@ public class OptColumnContentResource extends AbstractResourceBase<Long, OptColu
     public OptColumnContent getOptColumnContentByOptColumnAndRequirement(
         @PathVariable("optColumnId") Long optColumnId,
         @PathVariable("requirementId") Long requirementId) {
+        // TODO [luis.felger@bosch.com]: Implement this.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -87,14 +93,14 @@ public class OptColumnContentResource extends AbstractResourceBase<Long, OptColu
     @RequestMapping(value = "/optColumnContents/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/optColumnContents/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OptColumnContent> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

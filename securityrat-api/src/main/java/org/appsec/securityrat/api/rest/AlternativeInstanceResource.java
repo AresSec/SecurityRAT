@@ -29,7 +29,7 @@ public class AlternativeInstanceResource
     @RequestMapping(value = "/alternativeInstances",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AlternativeInstance> create(
+    public ResponseEntity<?> create(
             @RequestBody
             AlternativeInstance alternativeInstance) throws URISyntaxException {
         return this.doCreate(alternativeInstance);
@@ -38,7 +38,7 @@ public class AlternativeInstanceResource
     @RequestMapping(value = "/alternativeInstances",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AlternativeInstance> update(
+    public ResponseEntity<?> update(
             @RequestBody
             AlternativeInstance alternativeInstance) throws URISyntaxException {
         return this.doUpdate(alternativeInstance);
@@ -47,14 +47,14 @@ public class AlternativeInstanceResource
     @RequestMapping(value = "/alternativeInstances",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AlternativeInstance> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/alternativeInstances/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AlternativeInstance> get(
+    public ResponseEntity<?> get(
             @PathVariable
             Long id) {
         return this.doGet(id);
@@ -63,7 +63,7 @@ public class AlternativeInstanceResource
     @RequestMapping(value = "/alternativeInstances/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<?> delete(
             @PathVariable
             Long id) {
         return this.doDelete(id);
@@ -72,7 +72,7 @@ public class AlternativeInstanceResource
     @RequestMapping(value = "/_search/alternativeInstances/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AlternativeInstance> search(
+    public ResponseEntity<?> search(
             @PathVariable
             String query) {
         return this.doSearch(query);

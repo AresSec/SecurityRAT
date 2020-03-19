@@ -1,4 +1,4 @@
-package org.appsec.securityrat.api;
+package org.appsec.securityrat.api.exception;
 
 /**
  * An exception that indicates that a specified email address is unknown to the
@@ -6,7 +6,7 @@ package org.appsec.securityrat.api;
  * 
  * @see AccountProvider#requestPasswordReset(java.lang.String)
  */
-public class UnknownEmailException extends Exception {
+public class UnknownEmailException extends ApiException {
     public UnknownEmailException() {
     }
     

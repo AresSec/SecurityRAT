@@ -3,6 +3,12 @@ package org.appsec.securityrat.api;
 import java.util.List;
 import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.api.dto.PersistentToken;
+import org.appsec.securityrat.api.exception.ApiException;
+import org.appsec.securityrat.api.exception.EmailAlreadyInUseException;
+import org.appsec.securityrat.api.exception.NotActivatedException;
+import org.appsec.securityrat.api.exception.UnauthorizedContextException;
+import org.appsec.securityrat.api.exception.UnknownEmailException;
+import org.appsec.securityrat.api.exception.UsernameTakenException;
 
 /**
  * This interface provides access to the requester's {@link Account}.
@@ -40,7 +46,9 @@ public interface AccountProvider {
      *                                      account details of another user.
      */
     Account save(Account account)
-            throws EmailAlreadyInUseException, UnauthorizedContextException;
+            throws ApiException,
+                EmailAlreadyInUseException,
+                UnauthorizedContextException;
     
     /**
      * Creates the specified <code>account</code>.
@@ -62,7 +70,9 @@ public interface AccountProvider {
      *                                    {@link Account}.
      */
     Account create(Account account)
-            throws UsernameTakenException, EmailAlreadyInUseException;
+            throws ApiException,
+                UsernameTakenException,
+                EmailAlreadyInUseException;
     
     /**
      * Activates the {@link Account} that is associated to the specified

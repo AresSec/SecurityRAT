@@ -34,7 +34,7 @@ public class ConfigConstantResource
     @RequestMapping(value = "/configConstants",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConfigConstant> create(
+    public ResponseEntity<?> create(
             @RequestBody ConfigConstant configConstant)
             throws URISyntaxException {
         return this.doCreate(configConstant);
@@ -44,7 +44,7 @@ public class ConfigConstantResource
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed(value=AuthoritiesConstants.ADMIN)
-    public ResponseEntity<ConfigConstant> update(
+    public ResponseEntity<?> update(
             @RequestBody ConfigConstant configConstant)
             throws URISyntaxException {
         return this.doUpdate(configConstant);
@@ -53,28 +53,28 @@ public class ConfigConstantResource
     @RequestMapping(value = "/configConstants",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ConfigConstant> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/configConstants/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConfigConstant> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/configConstants/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/configConstants/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ConfigConstant> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
     

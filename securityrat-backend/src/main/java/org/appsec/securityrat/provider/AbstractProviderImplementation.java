@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.IdentifiableDto;
+import org.appsec.securityrat.api.exception.ApiException;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -103,7 +104,7 @@ public abstract class AbstractProviderImplementation<
 
     @Override
     @Transactional
-    public TDto save(TDto dto) {
+    public TDto save(TDto dto) throws ApiException {
         TEntity entity = null;
         
         if (dto.getId().isPresent()) {
@@ -114,6 +115,8 @@ public abstract class AbstractProviderImplementation<
         
         entity = this.createOrUpdateEntityChecked(dto, entity);
         
+        // TODO [luis.felger@bosch.com]: Catch saving failures.
+        
         entity = this.getRepository().save(entity);
         this.getSearchRepository().save(entity);
         
@@ -122,7 +125,7 @@ public abstract class AbstractProviderImplementation<
 
     @Override
     @Transactional
-    public boolean delete(TId id) {
+    public boolean delete(TId id) throws ApiException {
         Optional<TEntity> nullableEntity = this.getRepository().findById(id);
         
         if (nullableEntity.isEmpty()) {
@@ -130,6 +133,8 @@ public abstract class AbstractProviderImplementation<
         }
         
         TEntity entity = nullableEntity.get();
+        
+        // TODO [luis.felger@bosch.com]: Catch deletion failures.
         
         this.getRepository().delete(entity);
         this.getSearchRepository().delete(entity);

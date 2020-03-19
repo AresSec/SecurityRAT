@@ -30,28 +30,28 @@ public class TagInstanceResource extends AbstractResourceBase<Long, TagInstance>
     @RequestMapping(value = "/tagInstances",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagInstance> create(@RequestBody TagInstance tagInstance) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody TagInstance tagInstance) throws URISyntaxException {
         return this.doCreate(tagInstance);
     }
 
     @RequestMapping(value = "/tagInstances",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagInstance> update(@RequestBody TagInstance tagInstance) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody TagInstance tagInstance) throws URISyntaxException {
         return this.doUpdate(tagInstance);
     }
 
     @RequestMapping(value = "/tagInstances",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TagInstance> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/tagInstances/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagInstance> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
@@ -66,14 +66,14 @@ public class TagInstanceResource extends AbstractResourceBase<Long, TagInstance>
     @RequestMapping(value = "/tagInstances/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/tagInstances/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TagInstance> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

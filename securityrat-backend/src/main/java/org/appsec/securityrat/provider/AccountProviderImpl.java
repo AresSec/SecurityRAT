@@ -14,13 +14,14 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.AccountProvider;
 import org.appsec.securityrat.api.AuthoritiesConstants;
-import org.appsec.securityrat.api.EmailAlreadyInUseException;
-import org.appsec.securityrat.api.NotActivatedException;
-import org.appsec.securityrat.api.UnauthorizedContextException;
-import org.appsec.securityrat.api.UnknownEmailException;
-import org.appsec.securityrat.api.UsernameTakenException;
+import org.appsec.securityrat.api.exception.EmailAlreadyInUseException;
+import org.appsec.securityrat.api.exception.NotActivatedException;
+import org.appsec.securityrat.api.exception.UnauthorizedContextException;
+import org.appsec.securityrat.api.exception.UnknownEmailException;
+import org.appsec.securityrat.api.exception.UsernameTakenException;
 import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.api.dto.PersistentToken;
+import org.appsec.securityrat.api.exception.ApiException;
 import org.appsec.securityrat.config.ApplicationProperties;
 import org.appsec.securityrat.domain.Authority;
 import org.appsec.securityrat.domain.User;
@@ -67,7 +68,9 @@ public class AccountProviderImpl
     @Override
     @Transactional
     public Account save(Account account)
-            throws EmailAlreadyInUseException, UnauthorizedContextException {
+            throws ApiException,
+                EmailAlreadyInUseException,
+                UnauthorizedContextException {
         
         // Before we do anything else, we should always clear the roles
         // property. Otherwise, a user may be able to change their own roles.
@@ -90,7 +93,9 @@ public class AccountProviderImpl
     @Override
     @Transactional
     public Account create(Account account)
-            throws UsernameTakenException, EmailAlreadyInUseException {
+            throws ApiException,
+                UsernameTakenException,
+                EmailAlreadyInUseException {
         
         // Before we do anything else, we should always clear the roles
         // property. Otherwise, a user may be able to change their own roles.

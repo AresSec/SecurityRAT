@@ -33,42 +33,42 @@ public class ProjectTypeResource extends AbstractResourceBase<Long, ProjectType>
     @RequestMapping(value = "/projectTypes",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectType> create(@RequestBody ProjectType projectType) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody ProjectType projectType) throws URISyntaxException {
         return this.doCreate(projectType);
     }
 
     @RequestMapping(value = "/projectTypes",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectType> update(@RequestBody ProjectType projectType) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody ProjectType projectType) throws URISyntaxException {
         return this.doUpdate(projectType);
     }
 
     @RequestMapping(value = "/projectTypes",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProjectType> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/projectTypes/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectType> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/projectTypes/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/projectTypes/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProjectType> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

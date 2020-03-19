@@ -17,6 +17,7 @@ public class AuthorityResource {
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Authority> getAll() {
+         // TODO [luis.felger@bosch.com]: Implement this.
         log.warn("Not implemented");
         return null;
     }

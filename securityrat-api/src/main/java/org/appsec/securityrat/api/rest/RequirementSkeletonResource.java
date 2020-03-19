@@ -29,35 +29,37 @@ public class RequirementSkeletonResource extends AbstractResourceBase<Long, Requ
     @RequestMapping(value = "/requirementSkeletons",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementSkeleton> create(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
         return this.doCreate(requirementSkeleton);
     }
 
     @RequestMapping(value = "/requirementSkeletons",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementSkeleton> update(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody RequirementSkeleton requirementSkeleton) throws URISyntaxException {
         return this.doUpdate(requirementSkeleton);
     }
 
     @RequestMapping(value = "/requirementSkeletons",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RequirementSkeleton> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/requirementSkeletons/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementSkeleton> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value="/requirementSkeletons/getSelected",
     		method=RequestMethod.GET,
     		produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RequirementSkeleton> get(@RequestParam("collections") Long[] collections, @RequestParam("projecttypes") Long[] projectTypes) {
+    public ResponseEntity<?> get(@RequestParam("collections") Long[] collections, @RequestParam("projecttypes") Long[] projectTypes) {
+        // TODO [luis.felger@bosch.com]: Implementation.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -65,14 +67,14 @@ public class RequirementSkeletonResource extends AbstractResourceBase<Long, Requ
     @RequestMapping(value = "/requirementSkeletons/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/requirementSkeletons/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RequirementSkeleton> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 
@@ -80,6 +82,8 @@ public class RequirementSkeletonResource extends AbstractResourceBase<Long, Requ
     		method = RequestMethod.GET,
     		produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RequirementSkeleton> foo(@PathVariable String shortName) {
+        // TODO [luis.felger@bosch.com]: Implementation.
+        
         log.warn("Not implemented");
         return null;
     }

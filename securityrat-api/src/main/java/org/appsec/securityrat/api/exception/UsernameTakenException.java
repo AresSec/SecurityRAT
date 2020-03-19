@@ -1,4 +1,4 @@
-package org.appsec.securityrat.api;
+package org.appsec.securityrat.api.exception;
 
 /**
  * An exception that indicates that a username was already chosen by another
@@ -7,7 +7,7 @@ package org.appsec.securityrat.api;
  * @see AccountProvider
  * @see UserProvider
  */
-public class UsernameTakenException extends Exception {
+public class UsernameTakenException extends ApiException {
     public UsernameTakenException() {
     }
     

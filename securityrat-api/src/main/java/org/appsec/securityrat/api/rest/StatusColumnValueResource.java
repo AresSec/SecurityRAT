@@ -30,35 +30,37 @@ public class StatusColumnValueResource extends AbstractResourceBase<Long, Status
     @RequestMapping(value = "/statusColumnValues",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumnValue> create(@RequestBody StatusColumnValue statusColumnValue) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody StatusColumnValue statusColumnValue) throws URISyntaxException {
         return this.doCreate(statusColumnValue);
     }
 
     @RequestMapping(value = "/statusColumnValues",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumnValue> update(@RequestBody StatusColumnValue statusColumnValue) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody StatusColumnValue statusColumnValue) throws URISyntaxException {
         return this.doUpdate(statusColumnValue);
     }
 
     @RequestMapping(value = "/statusColumnValues",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StatusColumnValue> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/statusColumnValues/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatusColumnValue> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/statusColumnValues/statusColumn/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<StatusColumnValue>> getStatusColumn(@PathVariable Long id) {
+    public ResponseEntity<?> getStatusColumn(@PathVariable Long id) {
+        // TODO [luis.felger@bosch.com]: Implementation.
+        
         log.warn("Not implemented");
         return null;
     }
@@ -66,14 +68,14 @@ public class StatusColumnValueResource extends AbstractResourceBase<Long, Status
     @RequestMapping(value = "/statusColumnValues/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/statusColumnValues/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StatusColumnValue> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 

@@ -29,42 +29,42 @@ public class TagCategoryResource extends AbstractResourceBase<Long, TagCategory>
     @RequestMapping(value = "/tagCategorys",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagCategory> create(@RequestBody TagCategory tagCategory) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody TagCategory tagCategory) throws URISyntaxException {
         return this.doCreate(tagCategory);
     }
 
     @RequestMapping(value = "/tagCategorys",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagCategory> update(@RequestBody TagCategory tagCategory) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody TagCategory tagCategory) throws URISyntaxException {
         return this.doUpdate(tagCategory);
     }
 
     @RequestMapping(value = "/tagCategorys",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TagCategory> getAll() {
+    public ResponseEntity<?> getAll() {
         return this.doGetAll();
     }
 
     @RequestMapping(value = "/tagCategorys/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagCategory> get(@PathVariable Long id) {
+    public ResponseEntity<?> get(@PathVariable Long id) {
         return this.doGet(id);
     }
 
     @RequestMapping(value = "/tagCategorys/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return this.doDelete(id);
     }
 
     @RequestMapping(value = "/_search/tagCategorys/{query}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TagCategory> search(@PathVariable String query) {
+    public ResponseEntity<?> search(@PathVariable String query) {
         return this.doSearch(query);
     }
 
