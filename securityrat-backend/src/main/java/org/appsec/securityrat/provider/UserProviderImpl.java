@@ -57,12 +57,12 @@ public class UserProviderImpl
         // updated information differ from the persistent one)
         
         if (!Objects.equals(target.getEmail(), dto.getEmail()) &&
-                !this.repository.findOneByEmail(dto.getEmail()).isPresent()) {
+                this.repository.findOneByEmail(dto.getEmail()).isPresent()) {
             throw new EmailAlreadyInUseException();
         }
         
         if (!Objects.equals(target.getLogin(), dto.getLogin()) &&
-                !this.repository.findOneByLogin(dto.getLogin()).isPresent()) {
+                this.repository.findOneByLogin(dto.getLogin()).isPresent()) {
             throw new UsernameTakenException();
         }
         

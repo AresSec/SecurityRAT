@@ -107,6 +107,8 @@ public abstract class AbstractResourceBase<
         //       since we do not know whether the exception was caused by an
         //       invalid client request or by a fault on the server side.
         
+        log.warn("Exception occurred while handling request", ex);
+        
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
