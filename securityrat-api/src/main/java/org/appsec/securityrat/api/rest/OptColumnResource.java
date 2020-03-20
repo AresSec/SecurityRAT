@@ -6,22 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.OptColumnProvider;
 import org.appsec.securityrat.api.dto.OptColumn;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
 public class OptColumnResource extends AbstractResourceBase<Long, OptColumn> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private OptColumnProvider dtoProvider;
-    
     public OptColumnResource() {
         super("optColumn");
     }
@@ -29,14 +18,16 @@ public class OptColumnResource extends AbstractResourceBase<Long, OptColumn> {
     @RequestMapping(value = "/optColumns",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@RequestBody OptColumn optColumn) throws URISyntaxException {
+    public ResponseEntity<?> create(@RequestBody OptColumn optColumn)
+            throws URISyntaxException {
         return this.doCreate(optColumn);
     }
 
     @RequestMapping(value = "/optColumns",
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@RequestBody OptColumn optColumn) throws URISyntaxException {
+    public ResponseEntity<?> update(@RequestBody OptColumn optColumn)
+            throws URISyntaxException {
         return this.doUpdate(optColumn);
     }
 

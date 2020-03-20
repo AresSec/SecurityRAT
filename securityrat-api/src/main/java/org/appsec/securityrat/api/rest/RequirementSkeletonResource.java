@@ -7,20 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.RequirementSkeletonProvider;
 import org.appsec.securityrat.api.dto.RequirementSkeleton;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-public class RequirementSkeletonResource extends AbstractResourceBase<Long, RequirementSkeleton> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private RequirementSkeletonProvider dtoProvider;
+public class RequirementSkeletonResource
+        extends AbstractResourceBase<Long, RequirementSkeleton> {
     
     public RequirementSkeletonResource() {
         super("requirementSkeleton");

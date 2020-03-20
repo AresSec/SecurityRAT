@@ -2,7 +2,6 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.TagCategoryProvider;
 import org.appsec.securityrat.api.dto.TagCategory;
 import org.appsec.securityrat.repository.TagCategoryRepository;
 import org.appsec.securityrat.repository.search.TagCategorySearchRepository;
@@ -13,8 +12,7 @@ public class TagCategoryProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.TagCategory,
-            org.appsec.securityrat.domain.TagCategory>
-        implements TagCategoryProvider {
+            org.appsec.securityrat.domain.TagCategory> {
     
     @Inject
     @Getter

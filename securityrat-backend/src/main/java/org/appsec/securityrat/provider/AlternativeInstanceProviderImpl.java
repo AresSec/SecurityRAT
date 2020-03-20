@@ -2,7 +2,6 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.AlternativeInstanceProvider;
 import org.appsec.securityrat.api.dto.AlternativeInstance;
 import org.appsec.securityrat.repository.AlternativeInstanceRepository;
 import org.appsec.securityrat.repository.search.AlternativeInstanceSearchRepository;
@@ -13,8 +12,7 @@ public class AlternativeInstanceProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.AlternativeInstance,
-            org.appsec.securityrat.domain.AlternativeInstance>
-        implements AlternativeInstanceProvider {
+            org.appsec.securityrat.domain.AlternativeInstance> {
     
     @Inject
     @Getter

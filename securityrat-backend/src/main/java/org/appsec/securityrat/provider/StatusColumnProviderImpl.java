@@ -2,7 +2,6 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.StatusColumnProvider;
 import org.appsec.securityrat.api.dto.StatusColumn;
 import org.appsec.securityrat.repository.StatusColumnRepository;
 import org.appsec.securityrat.repository.search.StatusColumnSearchRepository;
@@ -13,8 +12,8 @@ public class StatusColumnProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.StatusColumn,
-            org.appsec.securityrat.domain.StatusColumn>
-        implements StatusColumnProvider {
+            org.appsec.securityrat.domain.StatusColumn> {
+    
     @Getter
     @Inject
     private StatusColumnRepository repository;

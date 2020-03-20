@@ -2,13 +2,14 @@ package org.appsec.securityrat.provider;
 
 import java.util.List;
 import java.util.Optional;
-import org.appsec.securityrat.api.TrainingBranchNodeProvider;
+import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.TrainingBranchNode;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TrainingBranchNodeProviderImpl
-        implements TrainingBranchNodeProvider {
+        implements IdentifiableDtoProvider<Long, TrainingBranchNode> {
+    
     @Override
     public List<TrainingBranchNode> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

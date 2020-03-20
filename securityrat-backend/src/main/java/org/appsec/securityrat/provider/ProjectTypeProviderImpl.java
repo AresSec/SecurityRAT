@@ -3,7 +3,6 @@ package org.appsec.securityrat.provider;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.ProjectTypeProvider;
 import org.appsec.securityrat.api.dto.ProjectType;
 import org.appsec.securityrat.repository.ProjectTypeRepository;
 import org.appsec.securityrat.repository.search.ProjectTypeSearchRepository;
@@ -14,8 +13,7 @@ public class ProjectTypeProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.ProjectType,
-            org.appsec.securityrat.domain.ProjectType>
-        implements ProjectTypeProvider {
+            org.appsec.securityrat.domain.ProjectType> {
     
     @Inject
     @Getter

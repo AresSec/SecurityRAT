@@ -3,7 +3,6 @@ package org.appsec.securityrat.provider;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.FrontendTagCategoryProvider;
 import org.appsec.securityrat.api.dto.frontend.TagCategory;
 import org.appsec.securityrat.api.dto.frontend.TagInstance;
 import org.appsec.securityrat.repository.TagCategoryRepository;
@@ -13,8 +12,7 @@ import org.springframework.stereotype.Service;
 public class FrontendTagCategoryProviderImpl
         extends AbstractFrontendProviderImplementation<
             org.appsec.securityrat.api.dto.frontend.TagCategory,
-            org.appsec.securityrat.domain.TagCategory>
-        implements FrontendTagCategoryProvider {
+            org.appsec.securityrat.domain.TagCategory> {
     
     @Getter
     @Inject

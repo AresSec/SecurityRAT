@@ -2,7 +2,6 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.CollectionCategoryProvider;
 import org.appsec.securityrat.api.dto.CollectionCategory;
 import org.appsec.securityrat.repository.CollectionCategoryRepository;
 import org.appsec.securityrat.repository.search.CollectionCategorySearchRepository;
@@ -13,8 +12,7 @@ public class CollectionCategoryProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.CollectionCategory,
-            org.appsec.securityrat.domain.CollectionCategory>
-        implements CollectionCategoryProvider {
+            org.appsec.securityrat.domain.CollectionCategory> {
     
     @Inject
     @Getter

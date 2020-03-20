@@ -2,12 +2,14 @@ package org.appsec.securityrat.provider;
 
 import java.util.List;
 import java.util.Optional;
-import org.appsec.securityrat.api.TrainingTreeNodeProvider;
+import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.TrainingTreeNode;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrainingTreeNodeProviderImpl implements TrainingTreeNodeProvider {
+public class TrainingTreeNodeProviderImpl
+        implements IdentifiableDtoProvider<Long, TrainingTreeNode> {
+    
     @Override
     public List<TrainingTreeNode> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -2,6 +2,9 @@ package org.appsec.securityrat.api.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.appsec.securityrat.api.IdentifiableDtoProvider;
@@ -12,14 +15,18 @@ import org.springframework.http.HttpStatus;
 
 @Slf4j
 public abstract class AbstractResourceBase<
-        TIdType, TDto extends IdentifiableDto<TIdType>> {
+        TId,
+        TDto extends IdentifiableDto<TId>> {
+    
     private final String entityName;
+    
+    @Inject
+    @Getter(AccessLevel.PROTECTED)
+    private IdentifiableDtoProvider<TId, TDto> dtoProvider;
     
     protected AbstractResourceBase(String entityName) {
         this.entityName = entityName;
     }
-    
-    protected abstract IdentifiableDtoProvider<TIdType, TDto> getDtoProvider();
     
     protected abstract URI getLocation(TDto dto) throws URISyntaxException;
     
@@ -69,7 +76,7 @@ public abstract class AbstractResourceBase<
         return ResponseEntity.ok(this.getDtoProvider().findAll());
     }
     
-    protected ResponseEntity<?> doGet(TIdType id) {
+    protected ResponseEntity<?> doGet(TId id) {
         log.debug("REST request to get {} : {}", id);
         
         return this.getDtoProvider()
@@ -78,7 +85,7 @@ public abstract class AbstractResourceBase<
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    protected ResponseEntity<?> doDelete(TIdType id) {
+    protected ResponseEntity<?> doDelete(TId id) {
         log.debug("REST request to delete {} : {}", this.entityName, id);
         
         boolean deleted;

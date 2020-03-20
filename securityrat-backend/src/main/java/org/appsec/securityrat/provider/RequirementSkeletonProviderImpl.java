@@ -3,7 +3,6 @@ package org.appsec.securityrat.provider;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.RequirementSkeletonProvider;
 import org.appsec.securityrat.api.dto.RequirementSkeleton;
 import org.appsec.securityrat.repository.RequirementSkeletonRepository;
 import org.appsec.securityrat.repository.search.RequirementSkeletonSearchRepository;
@@ -14,8 +13,7 @@ public class RequirementSkeletonProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.RequirementSkeleton,
-            org.appsec.securityrat.domain.RequirementSkeleton>
-        implements RequirementSkeletonProvider {
+            org.appsec.securityrat.domain.RequirementSkeleton> {
     
     @Inject
     @Getter

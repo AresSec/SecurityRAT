@@ -2,13 +2,14 @@ package org.appsec.securityrat.provider;
 
 import java.util.List;
 import java.util.Optional;
-import org.appsec.securityrat.api.TrainingCustomSlideNodeProvider;
+import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.TrainingCustomSlideNode;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TrainingCustomSlideNodeProviderImpl
-        implements TrainingCustomSlideNodeProvider {
+        implements IdentifiableDtoProvider<Long, TrainingCustomSlideNode> {
+    
     @Override
     public List<TrainingCustomSlideNode> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -2,12 +2,14 @@ package org.appsec.securityrat.provider;
 
 import java.util.List;
 import java.util.Optional;
-import org.appsec.securityrat.api.TrainingProvider;
+import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.Training;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrainingProviderImpl implements TrainingProvider {
+public class TrainingProviderImpl
+        implements IdentifiableDtoProvider<Long, Training> {
+    
     @Override
     public List<Training> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

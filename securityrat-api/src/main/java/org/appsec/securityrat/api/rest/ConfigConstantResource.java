@@ -7,25 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.List;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.api.AuthoritiesConstants;
-import org.appsec.securityrat.api.ConfigConstantProvider;
 import org.appsec.securityrat.api.dto.ConfigConstant;
 
 
 @RestController
 @RequestMapping("/admin-api")
 @RolesAllowed(value=AuthoritiesConstants.ADMIN)
-@Slf4j
 public class ConfigConstantResource
         extends AbstractResourceBase<Long, ConfigConstant> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private ConfigConstantProvider dtoProvider;
     
     public ConfigConstantResource() {
         super("configConstant");

@@ -13,18 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.AlternativeInstanceProvider;
-import org.appsec.securityrat.api.CollectionInstanceProvider;
 import org.appsec.securityrat.api.FrontendAlternativeInstanceProvider;
 import org.appsec.securityrat.api.FrontendCategoryProvider;
-import org.appsec.securityrat.api.FrontendCollectionCategoryProvider;
-import org.appsec.securityrat.api.FrontendOptionColumnAlternativeProvider;
-import org.appsec.securityrat.api.FrontendProjectTypeProvider;
-import org.appsec.securityrat.api.FrontendTagCategoryProvider;
-import org.appsec.securityrat.api.OptColumnContentProvider;
-import org.appsec.securityrat.api.ProjectTypeProvider;
-import org.appsec.securityrat.api.ReqCategoryProvider;
-import org.appsec.securityrat.api.RequirementSkeletonProvider;
+import org.appsec.securityrat.api.FrontendDtoProvider;
+import org.appsec.securityrat.api.IdentifiableDtoProvider;
 import org.appsec.securityrat.api.dto.AlternativeInstance;
 import org.appsec.securityrat.api.dto.OptColumnContent;
 import org.appsec.securityrat.api.dto.ReqCategory;
@@ -42,37 +34,33 @@ import org.springframework.http.HttpStatus;
 public class FrontEndUniversalResource {
     // TODO: Frontend needs cleanup
     
-    @Inject
-    private AlternativeInstanceProvider alternativeInstanceProvider;
+    private IdentifiableDtoProvider<Long, AlternativeInstance>
+            alternativeInstanceProvider;
     
     @Inject
-    private OptColumnContentProvider optColumnContentProvider;
+    private IdentifiableDtoProvider<Long, OptColumnContent>
+            optColumnContentProvider;
     
     @Inject
-    private RequirementSkeletonProvider requirementSkeletonProvider;
+    private IdentifiableDtoProvider<Long, RequirementSkeleton>
+            requirementSkeletonProvider;
     
     @Inject
-    private ReqCategoryProvider reqCategoryProvider;
+    private IdentifiableDtoProvider<Long, ReqCategory> reqCategoryProvider;
     
     @Inject
-    private FrontendCollectionCategoryProvider
+    private FrontendDtoProvider<CollectionCategory>
             frontendCollectionCategoryProvider;
     
     @Inject
-    private FrontendProjectTypeProvider frontendProjectTypeProvider;
+    private FrontendDtoProvider<ProjectType> frontendProjectTypeProvider;
     
     @Inject
-    private FrontendTagCategoryProvider frontendTagCategoryProvider;
+    private FrontendDtoProvider<TagCategory> frontendTagCategoryProvider;
     
     @Inject
-    private FrontendOptionColumnAlternativeProvider
+    private FrontendDtoProvider<OptionColumnAlternative>
             frontendOptionColumnAlternativeProvider;
-    
-    @Inject
-    private CollectionInstanceProvider collectionInstanceProvider;
-    
-    @Inject
-    private ProjectTypeProvider projectTypeProvider;
     
     @Inject
     private FrontendCategoryProvider frontendCategoryProvider;

@@ -3,7 +3,6 @@ package org.appsec.securityrat.provider;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.AlternativeSetProvider;
 import org.appsec.securityrat.api.dto.AlternativeSet;
 import org.appsec.securityrat.repository.AlternativeSetRepository;
 import org.appsec.securityrat.repository.search.AlternativeSetSearchRepository;
@@ -14,8 +13,8 @@ public class AlternativeSetProviderImpl
         extends AbstractProviderImplementation<
             Long,
             org.appsec.securityrat.api.dto.AlternativeSet,
-            org.appsec.securityrat.domain.AlternativeSet>
-        implements AlternativeSetProvider {
+            org.appsec.securityrat.domain.AlternativeSet> {
+    
     @Inject
     @Getter
     private AlternativeSetRepository repository;

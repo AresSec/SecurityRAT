@@ -6,22 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.StatusColumnValueProvider;
 import org.appsec.securityrat.api.dto.StatusColumnValue;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-public class StatusColumnValueResource extends AbstractResourceBase<Long, StatusColumnValue> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private StatusColumnValueProvider dtoProvider;
+public class StatusColumnValueResource
+        extends AbstractResourceBase<Long, StatusColumnValue> {
     
     public StatusColumnValueResource() {
         super("statusColumnValue");

@@ -6,20 +6,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.TagCategoryProvider;
 import org.appsec.securityrat.api.dto.TagCategory;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
-public class TagCategoryResource extends AbstractResourceBase<Long, TagCategory> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private TagCategoryProvider dtoProvider;
+public class TagCategoryResource
+        extends AbstractResourceBase<Long, TagCategory> {
     
     public TagCategoryResource() {
         super("tagCategory");

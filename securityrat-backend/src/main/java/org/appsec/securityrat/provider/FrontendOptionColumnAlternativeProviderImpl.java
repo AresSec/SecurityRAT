@@ -3,7 +3,6 @@ package org.appsec.securityrat.provider;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.FrontendOptionColumnAlternativeProvider;
 import org.appsec.securityrat.api.dto.frontend.AlternativeSet;
 import org.appsec.securityrat.api.dto.frontend.OptionColumnAlternative;
 import org.appsec.securityrat.domain.OptColumn;
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Service;
 public class FrontendOptionColumnAlternativeProviderImpl
         extends AbstractFrontendProviderImplementation<
             org.appsec.securityrat.api.dto.frontend.OptionColumnAlternative,
-            org.appsec.securityrat.domain.OptColumn>
-        implements FrontendOptionColumnAlternativeProvider {
+            org.appsec.securityrat.domain.OptColumn> {
     
     @Inject
     @Getter

@@ -6,22 +6,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.CollectionInstanceProvider;
 import org.appsec.securityrat.api.dto.CollectionInstance;
 
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-public class CollectionInstanceResource extends AbstractResourceBase<Long, CollectionInstance> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private CollectionInstanceProvider dtoProvider;
+public class CollectionInstanceResource
+        extends AbstractResourceBase<Long, CollectionInstance> {
     
     public CollectionInstanceResource() {
         super("collectionInstance");

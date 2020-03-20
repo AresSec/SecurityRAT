@@ -6,21 +6,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import org.appsec.securityrat.api.AlternativeInstanceProvider;
 import org.appsec.securityrat.api.dto.AlternativeInstance;
 
 @RestController
 @RequestMapping("/api")
 public class AlternativeInstanceResource
         extends AbstractResourceBase<Long, AlternativeInstance> {
-    
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private AlternativeInstanceProvider dtoProvider;
     
     public AlternativeInstanceResource() {
         super("alternativeInstance");

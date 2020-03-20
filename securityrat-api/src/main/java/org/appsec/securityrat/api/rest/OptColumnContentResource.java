@@ -12,17 +12,14 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.OptColumnContentProvider;
 import org.appsec.securityrat.api.dto.OptColumnContent;
 
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-public class OptColumnContentResource extends AbstractResourceBase<Long, OptColumnContent> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private OptColumnContentProvider dtoProvider;
+public class OptColumnContentResource
+        extends AbstractResourceBase<Long, OptColumnContent> {
     
     public OptColumnContentResource() {
         super("optColumnContent");

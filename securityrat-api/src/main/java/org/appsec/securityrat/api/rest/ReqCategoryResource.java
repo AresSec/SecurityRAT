@@ -6,19 +6,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import org.appsec.securityrat.api.ReqCategoryProvider;
 import org.appsec.securityrat.api.dto.ReqCategory;
 
 
 @RestController
 @RequestMapping("/api")
-public class ReqCategoryResource extends AbstractResourceBase<Long, ReqCategory> {
-    @Inject
-    @Getter(AccessLevel.PROTECTED)
-    private ReqCategoryProvider dtoProvider;
+public class ReqCategoryResource
+        extends AbstractResourceBase<Long, ReqCategory> {
     
     public ReqCategoryResource() {
         super("reqCategory");
