@@ -6,25 +6,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.api.ReqCategoryProvider;
 import org.appsec.securityrat.api.dto.ReqCategory;
 
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
 public class ReqCategoryResource extends AbstractResourceBase<Long, ReqCategory> {
     @Inject
     @Getter(AccessLevel.PROTECTED)
     private ReqCategoryProvider dtoProvider;
     
     public ReqCategoryResource() {
-        super("eqCategory");
+        super("reqCategory");
     }
     
     @RequestMapping(value = "/reqCategorys",

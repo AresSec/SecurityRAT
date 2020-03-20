@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.appsec.securityrat.api.dto.Account;
 import org.appsec.securityrat.api.dto.ResetKeyAndPassword;
+import org.appsec.securityrat.api.exception.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,6 +67,8 @@ public class AccountResource {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Either you are not authenticated or you attempted "
                             + "to change another user's account information!");
+        } catch (ApiException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
         return new ResponseEntity<>(HttpStatus.OK);
@@ -99,6 +102,8 @@ public class AccountResource {
             // NOTE: This exception should never occur since we already queried
             //       the requester's account and did not change their email.
             
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (ApiException ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
@@ -220,6 +225,8 @@ public class AccountResource {
         } catch (EmailAlreadyInUseException ex) {
             return ResponseEntity.badRequest()
                     .body("Email already in use!");
+        }  catch (ApiException ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
         return new ResponseEntity<>(HttpStatus.CREATED);
