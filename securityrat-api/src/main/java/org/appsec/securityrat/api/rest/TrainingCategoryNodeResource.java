@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.TrainingCategoryNode;
+import org.appsec.securityrat.api.dto.rest.TrainingCategoryNode;
 
 @RestController
 @RequestMapping("/api")

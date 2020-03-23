@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.TrainingCustomSlideNode;
+import org.appsec.securityrat.api.dto.rest.TrainingCustomSlideNode;
 
 @RestController
 @RequestMapping("/api")

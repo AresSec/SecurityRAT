@@ -3,7 +3,7 @@ package org.appsec.securityrat.provider;
 import java.util.List;
 import java.util.Optional;
 import org.appsec.securityrat.api.IdentifiableDtoProvider;
-import org.appsec.securityrat.api.dto.TrainingRequirementNode;
+import org.appsec.securityrat.api.dto.rest.TrainingRequirementNode;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.api.AuthenticationProvider;
-import org.appsec.securityrat.api.dto.AuthenticationConfiguration;
+import org.appsec.securityrat.api.dto.rest.AuthenticationConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

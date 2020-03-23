@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.TrainingTreeNode;
-import org.appsec.securityrat.api.dto.TrainingTreeStatus;
+import org.appsec.securityrat.api.dto.rest.TrainingTreeNode;
+import org.appsec.securityrat.api.dto.rest.TrainingTreeStatus;
 
 @RestController
 @RequestMapping("/api")

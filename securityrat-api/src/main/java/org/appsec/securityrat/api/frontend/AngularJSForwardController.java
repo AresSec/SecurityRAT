@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.api.AuthenticationProvider;
-import org.appsec.securityrat.api.dto.AuthenticationType;
+import org.appsec.securityrat.api.dto.rest.AuthenticationType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

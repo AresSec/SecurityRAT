@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.OptColumnContent;
+import org.appsec.securityrat.api.dto.rest.OptColumnContent;
 
 
 @RestController

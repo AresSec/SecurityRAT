@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URISyntaxException;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.CollectionCategory;
-import org.appsec.securityrat.api.dto.CollectionInstance;
+import org.appsec.securityrat.api.dto.rest.CollectionCategory;
+import org.appsec.securityrat.api.dto.rest.CollectionInstance;
 
 
 @RestController

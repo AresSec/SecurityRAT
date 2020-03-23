@@ -106,19 +106,25 @@ public abstract class AbstractProviderImplementation<
     @Transactional
     public TDto save(TDto dto) throws ApiException {
         TEntity entity = null;
+        boolean created = false;
         
         if (dto.getId().isPresent()) {
             entity = this.getRepository()
                     .findById(dto.getId().get())
                     .orElse(null);
+            
+            created = true;
         }
         
         entity = this.createOrUpdateEntityChecked(dto, entity);
         
         // TODO [luis.felger@bosch.com]: Catch saving failures.
         
-        entity = this.getRepository().save(entity);
-        this.getSearchRepository().save(entity);
+        if (created) {
+            this.doCreate(entity);
+        } else {
+            this.doUpdate(entity);
+        }
         
         return this.createDtoChecked(entity);
     }
@@ -136,8 +142,7 @@ public abstract class AbstractProviderImplementation<
         
         // TODO [luis.felger@bosch.com]: Catch deletion failures.
         
-        this.getRepository().delete(entity);
-        this.getSearchRepository().delete(entity);
+        this.doDelete(entity);
         
         return true;
     }
@@ -152,5 +157,38 @@ public abstract class AbstractProviderImplementation<
         
         return stream.map(entity -> this.createDto(entity))
                 .collect(Collectors.toList());
+    }
+    
+    protected void onCreated(TEntity entity) {
+        // Child classes may override this method to handle entity creations.
+    }
+    
+    protected void onDeleted(TEntity entity) {
+        // Child classes may override this method to handle entity deletions.
+    }
+    
+    protected final void doCreate(TEntity entity) throws ApiException {
+        this.getRepository().save(entity);
+        this.getSearchRepository().save(entity);
+        this.onCreated(entity);
+    }
+    
+    protected final void doUpdate(TEntity entity) throws ApiException {
+        this.getRepository().save(entity);
+        this.getSearchRepository().save(entity);
+        
+        // NOTE: Without deep modifications of the overall setup, we cannot
+        //       provide a good implementation of an "onUpdate" method that
+        //       tells the implementer about the fields that have been updated.
+        //
+        //       That's because we would need to detach the entities from their
+        //       Hibernate session before updating them. This may have a big
+        //       impact on the application's performance.
+    }
+    
+    protected final void doDelete(TEntity entity) throws ApiException {
+        this.getRepository().delete(entity);
+        this.getSearchRepository().delete(entity);
+        this.onDeleted(entity);
     }
 }

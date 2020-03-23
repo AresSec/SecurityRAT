@@ -2,7 +2,7 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.dto.TagInstance;
+import org.appsec.securityrat.api.dto.rest.TagInstance;
 import org.appsec.securityrat.repository.TagInstanceRepository;
 import org.appsec.securityrat.repository.search.TagInstanceSearchRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class TagInstanceProviderImpl
         extends AbstractProviderImplementation<
             Long,
-            org.appsec.securityrat.api.dto.TagInstance,
+            org.appsec.securityrat.api.dto.rest.TagInstance,
             org.appsec.securityrat.domain.TagInstance> {
     
     @Getter

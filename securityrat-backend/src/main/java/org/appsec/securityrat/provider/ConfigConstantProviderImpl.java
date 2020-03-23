@@ -2,7 +2,7 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.dto.ConfigConstant;
+import org.appsec.securityrat.api.dto.rest.ConfigConstant;
 import org.appsec.securityrat.repository.ConfigConstantRepository;
 import org.appsec.securityrat.repository.search.ConfigConstantSearchRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class ConfigConstantProviderImpl
         extends AbstractProviderImplementation<
             Long,
-            org.appsec.securityrat.api.dto.ConfigConstant,
+            org.appsec.securityrat.api.dto.rest.ConfigConstant,
             org.appsec.securityrat.domain.ConfigConstant> {
     
     @Inject

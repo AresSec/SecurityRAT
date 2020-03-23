@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.appsec.securityrat.api.dto.rest.Authority;
+import org.appsec.securityrat.api.dto.rest.PersistentToken;
 
 @Data
 @NoArgsConstructor
@@ -16,10 +18,11 @@ public class User implements IdentifiableDto<Long> {
     @Getter(AccessLevel.NONE)
     private Long id;
     private String login;
+    private String password;
     private String firstName;
     private String lastName;
     private String email;
-    private boolean activated;
+    private Boolean activated;
     private String langKey;
     private String resetKey;
     private Instant resetDate;

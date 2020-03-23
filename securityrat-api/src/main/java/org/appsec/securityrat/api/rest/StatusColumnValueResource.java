@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.StatusColumnValue;
+import org.appsec.securityrat.api.dto.rest.StatusColumnValue;
 
 @RestController
 @RequestMapping("/api")

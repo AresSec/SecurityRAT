@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.Authority;
+import org.appsec.securityrat.api.dto.rest.Authority;
 
 @RestController
 @RequestMapping("/admin-api")

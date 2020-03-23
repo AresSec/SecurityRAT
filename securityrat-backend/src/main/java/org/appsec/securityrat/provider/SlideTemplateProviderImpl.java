@@ -2,7 +2,7 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.dto.SlideTemplate;
+import org.appsec.securityrat.api.dto.rest.SlideTemplate;
 import org.appsec.securityrat.repository.SlideTemplateRepository;
 import org.appsec.securityrat.repository.search.SlideTemplateSearchRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class SlideTemplateProviderImpl
         extends AbstractProviderImplementation<
             Long,
-            org.appsec.securityrat.api.dto.SlideTemplate,
+            org.appsec.securityrat.api.dto.rest.SlideTemplate,
             org.appsec.securityrat.domain.SlideTemplate> {
     
     @Inject

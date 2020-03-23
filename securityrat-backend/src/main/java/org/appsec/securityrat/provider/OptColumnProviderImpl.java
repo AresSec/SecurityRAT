@@ -2,7 +2,7 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.dto.OptColumn;
+import org.appsec.securityrat.api.dto.rest.OptColumn;
 import org.appsec.securityrat.repository.OptColumnRepository;
 import org.appsec.securityrat.repository.search.OptColumnSearchRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class OptColumnProviderImpl
         extends AbstractProviderImplementation<
             Long,
-            org.appsec.securityrat.api.dto.OptColumn,
+            org.appsec.securityrat.api.dto.rest.OptColumn,
             org.appsec.securityrat.domain.OptColumn> {
     
     @Inject

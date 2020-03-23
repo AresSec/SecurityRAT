@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import org.appsec.securityrat.api.AuthoritiesConstants;
-import org.appsec.securityrat.api.dto.ConfigConstant;
+import org.appsec.securityrat.api.dto.rest.ConfigConstant;
 
 
 @RestController

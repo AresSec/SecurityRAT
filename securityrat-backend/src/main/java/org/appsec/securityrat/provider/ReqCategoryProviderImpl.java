@@ -2,7 +2,7 @@ package org.appsec.securityrat.provider;
 
 import javax.inject.Inject;
 import lombok.Getter;
-import org.appsec.securityrat.api.dto.ReqCategory;
+import org.appsec.securityrat.api.dto.rest.ReqCategory;
 import org.appsec.securityrat.repository.ReqCategoryRepository;
 import org.appsec.securityrat.repository.search.ReqCategorySearchRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class ReqCategoryProviderImpl
         extends AbstractProviderImplementation<
             Long,
-            org.appsec.securityrat.api.dto.ReqCategory,
+            org.appsec.securityrat.api.dto.rest.ReqCategory,
             org.appsec.securityrat.domain.ReqCategory> {
     
     @Getter

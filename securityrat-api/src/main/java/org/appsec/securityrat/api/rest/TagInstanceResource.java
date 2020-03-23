@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.appsec.securityrat.api.dto.TagInstance;
+import org.appsec.securityrat.api.dto.rest.TagInstance;
 
 @RestController
 @RequestMapping("/api")
