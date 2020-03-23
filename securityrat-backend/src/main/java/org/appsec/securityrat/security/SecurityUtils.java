@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.appsec.securityrat.api.AuthoritiesConstants;
 
 /**
  * Utility class for Spring Security.
