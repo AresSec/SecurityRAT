@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-@Repository
+@Service
 public class PersistentStorageMock implements PersistentStorage {
     private static Object getPublicConstant(
             Class<?> numberClass,
@@ -158,12 +158,12 @@ public class PersistentStorageMock implements PersistentStorage {
     }
 
     @Override
-    public <TSimpleDto extends SimpleDto<?>> Set<TSimpleDto> findAll(Class<TSimpleDto> simpleDtoClass) {
+    public <TId, TSimpleDto extends SimpleDto<TId>> Set<TSimpleDto> findAll(Class<TSimpleDto> simpleDtoClass) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public <TSimpleDto extends SimpleDto<?>> List<TSimpleDto> search(String query, Class<TSimpleDto> simpleDtoClass) {
+    public <TId, TSimpleDto extends SimpleDto<TId>> List<TSimpleDto> search(String query, Class<TSimpleDto> simpleDtoClass) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

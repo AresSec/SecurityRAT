@@ -2,7 +2,7 @@ package org.appsec.securityrat.api.endpoint.rest;
 
 import java.util.List;
 import java.util.Set;
-import org.appsec.securityrat.api.dto.rest.ReqCategory;
+import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class ReqCategoryResource extends SimpleResource<Long, ReqCategory> {
+public class ReqCategoryResource extends SimpleResource<Long, ReqCategoryDto> {
     public ReqCategoryResource() {
-        super(ReqCategory.class);
+        super(ReqCategoryDto.class);
     }
 
     @Override
     @PostMapping("/reqCategorys")
-    public ResponseEntity<ReqCategory> create(@RequestBody ReqCategory dto) {
+    public ResponseEntity<ReqCategoryDto> create(@RequestBody ReqCategoryDto dto) {
         return super.create(dto);
     }
 
@@ -34,26 +34,26 @@ public class ReqCategoryResource extends SimpleResource<Long, ReqCategory> {
 
     @Override
     @GetMapping("/reqCategorys/{id}")
-    public ResponseEntity<ReqCategory> get(@PathVariable Long id) {
+    public ResponseEntity<ReqCategoryDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @GetMapping("/reqCategorys")
-    public ResponseEntity<Set<ReqCategory>> getAll() {
+    public ResponseEntity<Set<ReqCategoryDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/_search/reqCategorys/{query}")
-    public ResponseEntity<List<ReqCategory>> search(
+    public ResponseEntity<List<ReqCategoryDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }
 
     @Override
     @PutMapping("/reqCategorys")
-    public ResponseEntity<ReqCategory> update(@RequestBody ReqCategory dto) {
+    public ResponseEntity<ReqCategoryDto> update(@RequestBody ReqCategoryDto dto) {
         return super.update(dto);
     }
 }

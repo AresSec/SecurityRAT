@@ -86,12 +86,14 @@ public interface PersistentStorage {
      * Resolves all stored instances of <code>TSimpleDto</code>.
      * 
      * @param <TSimpleDto> The type of the DTOs' unique identifier.
+     * @param <TId> The type of the DTO's unique identifier.
+     * 
      * @param simpleDtoClass The class of the data transfer objects.
      * 
      * @return A {@link Set} of all stored instances of <code>TSimpleDto</code>
      *         or <code>null</code>, if an error occurs.
      */
-    <TSimpleDto extends SimpleDto<?>> Set<TSimpleDto> findAll(
+    <TId, TSimpleDto extends SimpleDto<TId>> Set<TSimpleDto> findAll(
             Class<TSimpleDto> simpleDtoClass);
     
     /**
@@ -99,12 +101,14 @@ public interface PersistentStorage {
      * passed Elasticsearch <code>query</code>.
      * 
      * @param <TSimpleDto> The type of the DTOs' unique identifier.
+     * @param <TId> The type of the DTO's unique identifier.
+     * 
      * @param query The Elasticsearch query.
      * @param simpleDtoClass The class of the data transfer objects.
      * 
      * @return Either result set as {@link List} or <code>null</code>, if an
      *         error occurs.
      */
-    <TSimpleDto extends SimpleDto<?>> List<TSimpleDto> search(String query,
-            Class<TSimpleDto> simpleDtoClass);
+    <TId, TSimpleDto extends SimpleDto<TId>> List<TSimpleDto> search(
+            String query, Class<TSimpleDto> simpleDtoClass);
 }

@@ -6,14 +6,14 @@ import org.appsec.securityrat.api.dto.SimpleDto;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ReqCategory extends SimpleDto<Long> {
+public class ReqCategoryDto extends SimpleDto<Long> {
     private String name;
     private String shortcut;
     private String description;
     private Integer showOrder;
     private Boolean active;
     
-    public ReqCategory() {
+    public ReqCategoryDto() {
         super(Long.class);
     }
 }

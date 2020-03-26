@@ -1,4 +1,4 @@
-package org.appsec.securityRAT.security;
+package org.appsec.securityrat.security;
 
 /**
  * Constants for Spring Security authorities.
