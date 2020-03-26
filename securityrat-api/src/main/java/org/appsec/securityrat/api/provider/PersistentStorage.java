@@ -15,13 +15,16 @@ public interface PersistentStorage {
      * If the {@link SimpleDto#id} is not <code>null</code>, this method will
      * always fail and return <code>false</code>.
      * 
+     * @param <TId> The type of the DTO's unique identifier.
+     * @param <TSimpleDto> The type of the data transfer object.
+     * 
      * @param dto The data transfer object that will be stored in the persistent
      *            storage.
      * 
      * @return Either <code>true</code>, if storing the passed <code>dto</code>
      *         succeeded, otherwise <code>false</code>, if not.
      */
-    boolean create(SimpleDto<?> dto);
+    <TId, TSimpleDto extends SimpleDto<TId>> boolean create(TSimpleDto dto);
     
     /**
      * Updates the stored version of the passed <code>dto</code> with the
@@ -30,13 +33,16 @@ public interface PersistentStorage {
      * If the {@link SimpleDto#id} is <code>null</code>, this method will always
      * fail and return <code>false</code>.
      * 
+     * @param <TId> The type of the DTO's unique identifier.
+     * @param <TSimpleDto> The type of the data transfer object.
+     * 
      * @param dto The data transfer object that will be used for updating its
      *            stored representation.
      * 
      * @return Either <code>true</code>, if updating the stored representation
      *         succeeds, otherwise <code>false</code>.
      */
-    boolean update(SimpleDto<?> dto);
+    <TId, TSimpleDto extends SimpleDto<TId>> boolean update(TSimpleDto dto);
     
     /**
      * Deletes the stored representation of the data transfer object that is

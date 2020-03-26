@@ -22,38 +22,38 @@ public class ReqCategoryResource extends SimpleResource<Long, ReqCategory> {
 
     @Override
     @PostMapping("/reqCategorys")
-    protected ResponseEntity<ReqCategory> create(@RequestBody ReqCategory dto) {
+    public ResponseEntity<ReqCategory> create(@RequestBody ReqCategory dto) {
         return super.create(dto);
     }
 
     @Override
     @DeleteMapping("/reqCategorys/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/reqCategorys/{id}")
-    protected ResponseEntity<ReqCategory> get(@PathVariable Long id) {
+    public ResponseEntity<ReqCategory> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @GetMapping("/reqCategorys")
-    protected ResponseEntity<Set<ReqCategory>> getAll() {
+    public ResponseEntity<Set<ReqCategory>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/_search/reqCategorys/{query}")
-    protected ResponseEntity<List<ReqCategory>> search(
+    public ResponseEntity<List<ReqCategory>> search(
             @PathVariable String query) {
         return super.search(query);
     }
 
     @Override
     @PutMapping("/reqCategorys")
-    protected ResponseEntity<ReqCategory> update(@RequestBody ReqCategory dto) {
+    public ResponseEntity<ReqCategory> update(@RequestBody ReqCategory dto) {
         return super.update(dto);
     }
 }

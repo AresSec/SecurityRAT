@@ -12,4 +12,8 @@ public class ReqCategory extends SimpleDto<Long> {
     private String description;
     private Integer showOrder;
     private Boolean active;
+    
+    public ReqCategory() {
+        super(Long.class);
+    }
 }

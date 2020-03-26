@@ -1,6 +1,9 @@
 package org.appsec.securityrat.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 /**
  * A simple data transfer object that behaves normal and is manageable by the
@@ -32,6 +35,9 @@ import lombok.Data;
  * @param <TId> The type of the identifier.
  */
 @Data
-public class SimpleDto<TId> implements IdentifiableDto<TId> {
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class SimpleDto<TId> implements IdentifiableDto<TId> {
+    @JsonIgnore
+    private final Class<TId> identifierClass;
     private TId id;
 }

@@ -3,6 +3,7 @@ package org.appsec.securityrat.api.endpoint.rest;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
  *                     handles.
  */
 public abstract class SimpleResource<TId, TSimpleDto extends SimpleDto<TId>> {
+    @Getter
     private final Class<TSimpleDto> dtoClass;
     private final String entityName;
     

@@ -31,4 +31,11 @@ public interface IdentifiableDto<TId> extends Dto {
      * @param identifier Either the unique identifier or <code>null</code>.
      */
     void setId(TId identifier);
+    
+    /**
+     * Returns the class of the data transfer object's unique identifier.
+     * 
+     * @return The class of the unique identifier.
+     */
+    Class<TId> getIdentifierClass();
 }
