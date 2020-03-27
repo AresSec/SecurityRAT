@@ -1,5 +1,7 @@
 package org.appsec.securityrat.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Represents a data transfer object that is identifiable by a unique
  * identifier.
@@ -41,5 +43,6 @@ public interface IdentifiableDto<TId> extends Dto {
      * 
      * @return The class of the unique identifier.
      */
+    @JsonIgnore
     Class<TId> getIdentifierClass();
 }

@@ -302,8 +302,7 @@ public class PersistentStorageImpl implements PersistentStorage {
                         SimpleMapper.class,
                         identifierClass,
                         entityClass,
-                        dtoClass)
-                        .resolve())
+                        dtoClass))
                 .getObject();
         
         this.mapperCache.put(entityClass, mapper);
