@@ -32,6 +32,10 @@ public interface IdentifiableDto<TId> extends Dto {
      */
     void setId(TId identifier);
     
+    // NOTE: The following method 'getIdentifierClass' is required because
+    //       Java's implementation of generics has some limitations at runtime
+    //       and may not be available at all (if using an obfuscator).
+    
     /**
      * Returns the class of the data transfer object's unique identifier.
      * 
