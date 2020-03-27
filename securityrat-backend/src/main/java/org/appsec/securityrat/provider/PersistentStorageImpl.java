@@ -15,13 +15,13 @@ import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
 import org.appsec.securityrat.domain.ReqCategory;
-import org.appsec.securityrat.provider.mapper.SimpleMapper;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.appsec.securityrat.provider.mapper.IdentifiableMapper;
 
 @Service
 public class PersistentStorageImpl implements PersistentStorage {
@@ -63,7 +63,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     
     private final ConcurrentMap<Class<?>, JpaRepository<?, ?>> repositoryCache;
     private final ConcurrentMap<Class<?>, ElasticsearchRepository<?, ?>> searchRepositoryCache;
-    private final ConcurrentMap<Class<?>, SimpleMapper<?, ?, ?>> mapperCache;
+    private final ConcurrentMap<Class<?>, IdentifiableMapper<?, ?, ?>> mapperCache;
     
     @Inject
     private ApplicationContext context;
@@ -196,7 +196,7 @@ public class PersistentStorageImpl implements PersistentStorage {
         ElasticsearchRepository<TEntity, TId> repo =
                 this.getSearchRepository(entityClass, identifierClass);
         
-        SimpleMapper<TId, TEntity, TSimpleDto> mapper =
+        IdentifiableMapper<TId, TEntity, TSimpleDto> mapper =
                 this.getMapper(identifierClass, entityClass, simpleDtoClass);
         
         // Performing the search
@@ -211,9 +211,10 @@ public class PersistentStorageImpl implements PersistentStorage {
     
     private <TResult, TId, TEntity, TSimpleDto extends SimpleDto<TId>> TResult prepare(
             Class<TSimpleDto> dtoClass,
-            BiFunction<JpaRepository<TEntity, TId>, SimpleMapper, TResult> callback) {
-        // NOTE: The SimpleMapper<TId, TEntity, TDto> argument of the callback
-        //       parameter is specified without generic type parameters.
+            BiFunction<JpaRepository<TEntity, TId>, IdentifiableMapper, TResult> callback) {
+        // NOTE: The IdentifiableMapper<TId, TEntity, TDto> argument of the
+        //       callback parameter is specified without generic type
+        //       parameters.
         //       => This simplifies constructing the callback method a lot.
         
         Class<TEntity> entityClass = (Class<TEntity>) MAPPINGS.get(dtoClass);
@@ -232,7 +233,7 @@ public class PersistentStorageImpl implements PersistentStorage {
         JpaRepository<TEntity, TId> repo =
                 this.getRepository(entityClass, identifierClass);
         
-        SimpleMapper<TId, TEntity, TSimpleDto> mapper =
+        IdentifiableMapper<TId, TEntity, TSimpleDto> mapper =
                 this.getMapper(identifierClass, entityClass, dtoClass);
         
         return callback.apply(repo, mapper);
@@ -285,21 +286,19 @@ public class PersistentStorageImpl implements PersistentStorage {
         return searchRepository;
     }
     
-    private <TId, TEntity, TDto extends SimpleDto<TId>> SimpleMapper<TId, TEntity, TDto> getMapper(
+    private <TId, TEntity, TDto extends SimpleDto<TId>> IdentifiableMapper<TId, TEntity, TDto> getMapper(
             Class<TId> identifierClass,
             Class<TEntity> entityClass,
             Class<TDto> dtoClass) {
         
-        SimpleMapper<TId, TEntity, TDto> mapper =
-                (SimpleMapper<TId, TEntity, TDto>) this.mapperCache.get(entityClass);
+        IdentifiableMapper<TId, TEntity, TDto> mapper =
+                (IdentifiableMapper<TId, TEntity, TDto>) this.mapperCache.get(entityClass);
         
         if (mapper != null) {
             return mapper;
         }
         
-        mapper = (SimpleMapper<TId, TEntity, TDto>) this.context.getBeanProvider(
-                ResolvableType.forClassWithGenerics(
-                        SimpleMapper.class,
+        mapper = (IdentifiableMapper<TId, TEntity, TDto>) this.context.getBeanProvider(ResolvableType.forClassWithGenerics(IdentifiableMapper.class,
                         identifierClass,
                         entityClass,
                         dtoClass))

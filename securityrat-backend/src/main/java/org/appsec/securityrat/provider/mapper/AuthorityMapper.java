@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AuthorityMapper
-        extends SimpleMapper<String, Authority, AuthorityDto> {
+        extends IdentifiableMapper<String, Authority, AuthorityDto> {
 }
