@@ -1,6 +1,8 @@
 package org.appsec.securityrat.api.provider;
 
+import java.time.Instant;
 import java.util.List;
+import org.appsec.securityrat.api.dto.AuditEventDto;
 import org.appsec.securityrat.api.dto.AuthenticationConfigDto;
 import org.appsec.securityrat.api.dto.AuthorityDto;
 import org.appsec.securityrat.api.dto.LoggerDto;
@@ -33,4 +35,22 @@ public interface SystemInfo {
      * @param logger The updated logger configuration.
      */
     void updateLogger(LoggerDto logger);
+    
+    /**
+     * Returns all audit events.
+     * 
+     * @return All audit events.
+     */
+    List<AuditEventDto> getAuditEvents();
+    
+    /**
+     * Return all audit events that have been logged between the specified
+     * <code>fromDate</code> and <code>toDate</code>.
+     * 
+     * @param fromDate The earliest date
+     * @param toDate The latest date
+     * 
+     * @return All events that have been logged in the specified time span.
+     */
+    List<AuditEventDto> getAuditEvents(Instant fromDate, Instant toDate);
 }
