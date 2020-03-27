@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.dto.SimpleDto;
+import org.appsec.securityrat.api.dto.rest.ConfigConstantDto;
 import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
+import org.appsec.securityrat.domain.ConfigConstant;
 import org.appsec.securityrat.domain.ReqCategory;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +33,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     static {
         MAPPINGS = new ConcurrentHashMap<>();
         MAPPINGS.put(ReqCategoryDto.class, ReqCategory.class);
+        MAPPINGS.put(ConfigConstantDto.class, ConfigConstant.class);
         
         IDENTIFIER_CACHE = new ConcurrentHashMap<>();
     }
