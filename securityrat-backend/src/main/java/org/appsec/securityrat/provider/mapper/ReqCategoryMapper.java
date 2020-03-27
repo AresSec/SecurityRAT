@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ReqCategoryMapper
-        extends SimpleMapper<ReqCategory, ReqCategoryDto> {
+        extends SimpleMapper<Long, ReqCategory, ReqCategoryDto> {
 }
