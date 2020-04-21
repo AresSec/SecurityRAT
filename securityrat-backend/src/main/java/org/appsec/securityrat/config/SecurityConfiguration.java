@@ -81,9 +81,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-            if (true) {
-                return;
-            }
+            // TODO [luis.felger@bosch.com]: Cleanup hint.
+            //if (true) {
+            //    return;
+            //}
             
             ExceptionHandlingConfigurer<HttpSecurity> base = http.headers()
                         .frameOptions()
