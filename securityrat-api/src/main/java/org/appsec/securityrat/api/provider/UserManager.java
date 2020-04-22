@@ -48,6 +48,19 @@ public interface UserManager {
     /**
      * Creates the user.
      * 
+     * An initial password will be generated and assigned dynamically and sent
+     * to the user, if required.
+     * 
+     * @param user The user that will be created.
+     * 
+     * @return Either <code>true</code>, if the operation succeeded, otherwise
+     *         <code>false</code>.
+     */
+    boolean create(InternalUserDto user);
+    
+    /**
+     * Creates the user.
+     * 
      * @param user The user that will be created.
      * @param password The password for the user.
      * 
