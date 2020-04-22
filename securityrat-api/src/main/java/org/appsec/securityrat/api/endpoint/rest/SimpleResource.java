@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.Getter;
 import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -19,6 +20,46 @@ import org.springframework.http.ResponseEntity;
  *                     handles.
  */
 public abstract class SimpleResource<TId, TSimpleDto extends SimpleDto<TId>> {
+    private static HttpHeaders createAlert(String message, String params) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-sdlctoolApp-alert", message);
+        headers.add("X-sdlctoolApp-params", params);
+        return headers;
+    }
+    
+    public static HttpHeaders createEntityCreationAlert(
+            String entityName,
+            Object identifier) {
+        String message = String.format(
+                "A new %s is created with identifier %s",
+                entityName,
+                identifier.toString());
+        
+        return SimpleResource.createAlert(message, identifier.toString());
+    }
+    
+    public static HttpHeaders createEntityUpdateAlert(
+            String entityName,
+            Object identifier) {
+        String message = String.format(
+                "A %s is updated with identifier %s",
+                entityName,
+                identifier.toString());
+        
+        return SimpleResource.createAlert(message, identifier.toString());
+    }
+    
+    public static HttpHeaders createEntityDeletionAlert(
+            String entityName,
+            Object identifier) {
+        String message = String.format(
+                "A %s is deleted with identifier %s",
+                entityName,
+                identifier.toString());
+        
+        return SimpleResource.createAlert(message, identifier.toString());
+    }
+    
     @Getter
     private final Class<TSimpleDto> dtoClass;
     private final String entityName;
@@ -61,11 +102,9 @@ public abstract class SimpleResource<TId, TSimpleDto extends SimpleDto<TId>> {
         }
         
         return ResponseEntity.ok()
-                .header("X-sdlctoolApp-alert", String.format(
-                        "A new %s is created with identifier %s",
+                .headers(SimpleResource.createEntityCreationAlert(
                         this.entityName,
-                        dto.getId().toString()))
-                .header("X-sdlctoolApp-params", dto.getId().toString())
+                        dto.getId()))
                 .body(dto);
     }
     
@@ -83,11 +122,9 @@ public abstract class SimpleResource<TId, TSimpleDto extends SimpleDto<TId>> {
         }
         
         return ResponseEntity.ok()
-                .header("X-sdlctoolApp-alert", String.format(
-                        "A %s is updated with identifier %s",
+                .headers(SimpleResource.createEntityUpdateAlert(
                         this.entityName,
-                        dto.getId().toString()))
-                .header("X-sdlctoolApp-params", dto.getId().toString())
+                        dto.getId()))
                 .body(dto);
     }
     
@@ -103,11 +140,9 @@ public abstract class SimpleResource<TId, TSimpleDto extends SimpleDto<TId>> {
         }
         
         return ResponseEntity.ok()
-                .header("X-sdlctoolApp-alert", String.format(
-                        "A %s is deleted with identifier %s",
+                .headers(SimpleResource.createEntityDeletionAlert(
                         this.entityName,
-                        id.toString()))
-                .header("X-sdlctoolApp-params", id.toString())
+                        id))
                 .build();
     }
     
