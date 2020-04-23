@@ -73,7 +73,7 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     @Transactional
-    public InternalUserDto findById(Long id) {
+    public InternalUserDto find(Long id) {
         Preconditions.checkNotNull(id);
         
         return this.repo.findOneById(id)

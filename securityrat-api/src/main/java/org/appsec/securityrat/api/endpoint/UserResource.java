@@ -47,7 +47,7 @@ public class UserResource {
     
     @GetMapping("/userAuthorities/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        InternalUserDto user = this.userManager.findById(id);
+        InternalUserDto user = this.userManager.find(id);
         
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -1,29 +1,12 @@
 package org.appsec.securityrat.api.provider;
 
-import java.util.List;
-import java.util.Set;
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
 
 /**
  * General management of the users.
  */
-public interface UserManager {
-    /**
-     * Returns all existing users.
-     * 
-     * @return All existing users.
-     */
-    Set<InternalUserDto> findAll();
-    
-    /**
-     * Find a user by its unique identifier.
-     * 
-     * @param id The unique identifier.
-     * 
-     * @return Either the instance of the corresponding user or
-     *         <code>null</code>, if there is no such user.
-     */
-    InternalUserDto findById(Long id);
+public interface UserManager
+        extends IdentifiableProvider<Long, InternalUserDto> {
     
     /**
      * Find a user by its login/username.
@@ -56,6 +39,7 @@ public interface UserManager {
      * @return Either <code>true</code>, if the operation succeeded, otherwise
      *         <code>false</code>.
      */
+    @Override
     boolean create(InternalUserDto user);
     
     /**
@@ -68,36 +52,6 @@ public interface UserManager {
      *         <code>false</code>.
      */
     boolean create(InternalUserDto user, String password);
-    
-    /**
-     * Updates the user.
-     * 
-     * @param user The user object with the modifications.
-     * 
-     * @return Either <code>true</code>, if the operation succeeded, otherwise
-     *         <code>false</code>.
-     */
-    boolean update(InternalUserDto user);
-    
-    /**
-     * Deletes the user.
-     * 
-     * @param id The unique identifier of the user.
-     * 
-     * @return Either <code>true</code>, if the operation succeeded, otherwise
-     *         <code>false</code>.
-     */
-    boolean delete(Long id);
-    
-    /**
-     * Searches for users.
-     * 
-     * @param query The Elasticsearch query.
-     * 
-     * @return Either a result set as {@link List} or <code>null</code>, if an
-     *         error occurs.
-     */
-    List<InternalUserDto> search(String query);
     
     /**
      * Activates the associated user account.
