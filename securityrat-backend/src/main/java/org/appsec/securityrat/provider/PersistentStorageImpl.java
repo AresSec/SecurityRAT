@@ -1,7 +1,9 @@
 package org.appsec.securityrat.provider;
 
 import com.google.common.base.Preconditions;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +13,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.inject.Inject;
+import javax.persistence.Id;
 import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.dto.rest.ConfigConstantDto;
 import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
@@ -64,6 +67,36 @@ public class PersistentStorageImpl implements PersistentStorage {
         return identifierClass;
     }
     
+    /**
+     * Extracts the identifier of the passed entity.
+     * 
+     * The implementation expects that the identifier is stored in a field that
+     * is annotated with the {@link Id} class. Also, the field has to be defined
+     * directly in the class of <code>entity</code> (not a parent).
+     * 
+     * @param entity The instance whose identifier is extracted.
+     * @return The extracted identifier.
+     */
+    private static Object getEntityId(Object entity) {
+        Field idField = Arrays.stream(entity.getClass().getDeclaredFields())
+                .filter(f -> f.getAnnotation(Id.class) != null)
+                .findFirst()
+                .orElse(null);
+        
+        if (idField == null) {
+            throw new IllegalArgumentException(
+                    "No field marked with the javax.persistence.Id annotation");
+        }
+        
+        idField.setAccessible(true);
+        
+        try {
+            return idField.get(entity);
+        } catch (IllegalAccessException ex) {
+            throw new IllegalStateException("Cannot access id field!", ex);
+        }
+    }
+    
     private final ConcurrentMap<Class<?>, JpaRepository<?, ?>> repositoryCache;
     private final ConcurrentMap<Class<?>, ElasticsearchRepository<?, ?>> searchRepositoryCache;
     private final ConcurrentMap<Class<?>, IdentifiableMapper<?, ?, ?>> mapperCache;
@@ -87,11 +120,13 @@ public class PersistentStorageImpl implements PersistentStorage {
         }
         
         return this.prepare(dto.getClass(), (repo, mapper) -> {
-            if (repo.existsById(dto.getId())) {
-                return false;
-            }
+            Object entity = mapper.toEntity(dto);
+            repo.save(entity);
             
-            repo.save(mapper.toEntity(dto));
+            // After the entity has been created, we need to write back its
+            // unique identifier to the dto.
+            
+            dto.setId((TId) PersistentStorageImpl.getEntityId(entity));
             return true;
         });
     }
