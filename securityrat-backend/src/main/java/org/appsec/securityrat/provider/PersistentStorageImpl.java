@@ -15,11 +15,27 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.persistence.Id;
 import org.appsec.securityrat.api.dto.SimpleDto;
+import org.appsec.securityrat.api.dto.rest.AlternativeSetDto;
+import org.appsec.securityrat.api.dto.rest.CollectionCategoryDto;
+import org.appsec.securityrat.api.dto.rest.CollectionInstanceDto;
 import org.appsec.securityrat.api.dto.rest.ConfigConstantDto;
+import org.appsec.securityrat.api.dto.rest.OptColumnDto;
+import org.appsec.securityrat.api.dto.rest.OptColumnTypeDto;
+import org.appsec.securityrat.api.dto.rest.ProjectTypeDto;
 import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
+import org.appsec.securityrat.api.dto.rest.StatusColumnDto;
+import org.appsec.securityrat.api.dto.rest.TagCategoryDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
+import org.appsec.securityrat.domain.AlternativeSet;
+import org.appsec.securityrat.domain.CollectionCategory;
+import org.appsec.securityrat.domain.CollectionInstance;
 import org.appsec.securityrat.domain.ConfigConstant;
+import org.appsec.securityrat.domain.OptColumn;
+import org.appsec.securityrat.domain.OptColumnType;
+import org.appsec.securityrat.domain.ProjectType;
 import org.appsec.securityrat.domain.ReqCategory;
+import org.appsec.securityrat.domain.StatusColumn;
+import org.appsec.securityrat.domain.TagCategory;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
@@ -27,6 +43,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.appsec.securityrat.provider.mapper.IdentifiableMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersistentStorageImpl implements PersistentStorage {
@@ -35,8 +52,16 @@ public class PersistentStorageImpl implements PersistentStorage {
     
     static {
         MAPPINGS = new ConcurrentHashMap<>();
-        MAPPINGS.put(ReqCategoryDto.class, ReqCategory.class);
+        MAPPINGS.put(AlternativeSetDto.class, AlternativeSet.class);
+        MAPPINGS.put(CollectionCategoryDto.class, CollectionCategory.class);
+        MAPPINGS.put(CollectionInstanceDto.class, CollectionInstance.class);
         MAPPINGS.put(ConfigConstantDto.class, ConfigConstant.class);
+        MAPPINGS.put(OptColumnDto.class, OptColumn.class);
+        MAPPINGS.put(OptColumnTypeDto.class, OptColumnType.class);
+        MAPPINGS.put(ProjectTypeDto.class, ProjectType.class);
+        MAPPINGS.put(ReqCategoryDto.class, ReqCategory.class);
+        MAPPINGS.put(StatusColumnDto.class, StatusColumn.class);
+        MAPPINGS.put(TagCategoryDto.class, TagCategory.class);
         
         IDENTIFIER_CACHE = new ConcurrentHashMap<>();
     }
@@ -111,6 +136,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
     
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> boolean create(
             TSimpleDto dto) {
         Preconditions.checkNotNull(dto);
@@ -132,6 +158,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
 
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> boolean update(
             TSimpleDto dto) {
         Preconditions.checkNotNull(dto);
@@ -151,6 +178,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
 
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> boolean delete(
             TId id,
             Class<TSimpleDto> simpleDtoClass) {
@@ -168,6 +196,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
 
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> TSimpleDto find(
             TId id,
             Class<TSimpleDto> simpleDtoClass) {
@@ -186,6 +215,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
 
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> Set<TSimpleDto> findAll(
             Class<TSimpleDto> simpleDtoClass) {
         Preconditions.checkNotNull(simpleDtoClass);
@@ -199,6 +229,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     }
 
     @Override
+    @Transactional
     public <TId, TSimpleDto extends SimpleDto<TId>> List<TSimpleDto> search(
             String query,
             Class<TSimpleDto> simpleDtoClass) {
