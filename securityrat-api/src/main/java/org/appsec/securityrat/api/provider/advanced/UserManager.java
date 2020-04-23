@@ -1,6 +1,7 @@
-package org.appsec.securityrat.api.provider;
+package org.appsec.securityrat.api.provider.advanced;
 
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
+import org.appsec.securityrat.api.provider.IdentifiableProvider;
 
 /**
  * General management of the users.

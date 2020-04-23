@@ -13,7 +13,7 @@ import org.appsec.securityrat.api.dto.user.KeyAndPasswordDto;
 import org.appsec.securityrat.api.dto.user.PersistentTokenDto;
 import org.appsec.securityrat.api.provider.SecurityContext;
 import org.appsec.securityrat.api.provider.SystemInfo;
-import org.appsec.securityrat.api.provider.UserManager;
+import org.appsec.securityrat.api.provider.advanced.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -3,7 +3,7 @@ package org.appsec.securityrat.provider;
 import javax.inject.Inject;
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
 import org.appsec.securityrat.api.provider.SecurityContext;
-import org.appsec.securityrat.api.provider.UserManager;
+import org.appsec.securityrat.api.provider.advanced.UserManager;
 import org.appsec.securityrat.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 

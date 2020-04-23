@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
 import org.appsec.securityrat.api.dto.user.UserDto;
 import org.appsec.securityrat.api.endpoint.rest.SimpleResource;
-import org.appsec.securityrat.api.provider.UserManager;
+import org.appsec.securityrat.api.provider.advanced.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

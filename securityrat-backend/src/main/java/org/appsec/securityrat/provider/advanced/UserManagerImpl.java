@@ -1,4 +1,4 @@
-package org.appsec.securityrat.provider;
+package org.appsec.securityrat.provider.advanced;
 
 import com.google.common.base.Preconditions;
 import io.github.jhipster.security.RandomUtil;
@@ -14,11 +14,12 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
-import org.appsec.securityrat.api.provider.UserManager;
+import org.appsec.securityrat.api.provider.advanced.UserManager;
 import org.appsec.securityrat.config.ApplicationProperties;
 import org.appsec.securityrat.domain.Authority;
 import org.appsec.securityrat.domain.PersistentToken;
 import org.appsec.securityrat.domain.User;
+import org.appsec.securityrat.provider.MailService;
 import org.appsec.securityrat.provider.mapper.AuthorityMapper;
 import org.appsec.securityrat.provider.mapper.InternalUserMapper;
 import org.appsec.securityrat.repository.AuthorityRepository;
@@ -123,6 +124,10 @@ public class UserManagerImpl implements UserManager {
     @Transactional
     public boolean update(InternalUserDto user) {
         Preconditions.checkNotNull(user);
+        
+        if (user.getLogin() == null) {
+            return false;
+        }
         
         // We cannot assume that the InternalUserDto's id is correctly set as,
         // for example, AccountDtos do not provide this information.
@@ -312,11 +317,16 @@ public class UserManagerImpl implements UserManager {
     }
     
     @Transactional
-    private void create(
+    private boolean create(
             InternalUserDto dto,
             String password,
             boolean sendPasswordEmail) {
         User user = this.mapper.toEntity(dto);
+        
+        if (user.getId() != null) {
+            return false;
+        }
+        
         user.setPassword(this.passwordEncoder.encode(password));
         
         boolean emailActivation = false;
@@ -360,6 +370,8 @@ public class UserManagerImpl implements UserManager {
         if (sendPasswordEmail) {
             this.mailService.sendActivationPassword(user, password);
         }
+        
+        return true;
     }
     
     //

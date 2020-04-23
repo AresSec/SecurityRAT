@@ -56,7 +56,8 @@ public interface IdentifiableProvider<TId, TDto extends IdentifiableDto<TId>> {
     /**
      * Resolves all DTOs that are stored in the persistent storage.
      * 
-     * @return All DTOs stored in the persistent storage.
+     * @return All DTOs stored in the persistent storage or <code>null</code>,
+     *         if an error occurs.
      */
     Set<TDto> findAll();
     
@@ -64,7 +65,7 @@ public interface IdentifiableProvider<TId, TDto extends IdentifiableDto<TId>> {
      * Performs a Elasticsearch query for DTOs.
      * 
      * @param query The Elasticsearch query.
-     * @return The result set
+     * @return The result set or <code>null</code>, if an error occurs.
      */
     List<TDto> search(String query);
 }
