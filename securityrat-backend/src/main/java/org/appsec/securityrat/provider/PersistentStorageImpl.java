@@ -73,7 +73,6 @@ public class PersistentStorageImpl implements PersistentStorage {
         MAPPINGS.put(TrainingDto.class, Training.class);
         
         // TODO:
-        //  - StatusColumnValue
         //  - TrainingBranchNode
         //  - TrainingCategoryNode
         //  - TrainingCustomSlideNode
