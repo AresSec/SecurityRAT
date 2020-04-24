@@ -9,7 +9,7 @@ import org.appsec.securityrat.api.dto.SimpleDto;
 public class AlternativeInstanceDto extends SimpleDto<Long> {
     private String content;
     private AlternativeSetDto alternativeSet;
-    // TODO: requirementSkeleton
+    private RequirementSkeletonDto requirementSkeleton;
     
     public AlternativeInstanceDto() {
         super(Long.class);
