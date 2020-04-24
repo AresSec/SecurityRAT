@@ -15,6 +15,7 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.persistence.Id;
 import org.appsec.securityrat.api.dto.SimpleDto;
+import org.appsec.securityrat.api.dto.rest.AlternativeInstanceDto;
 import org.appsec.securityrat.api.dto.rest.AlternativeSetDto;
 import org.appsec.securityrat.api.dto.rest.CollectionCategoryDto;
 import org.appsec.securityrat.api.dto.rest.CollectionInstanceDto;
@@ -23,9 +24,12 @@ import org.appsec.securityrat.api.dto.rest.OptColumnDto;
 import org.appsec.securityrat.api.dto.rest.OptColumnTypeDto;
 import org.appsec.securityrat.api.dto.rest.ProjectTypeDto;
 import org.appsec.securityrat.api.dto.rest.ReqCategoryDto;
+import org.appsec.securityrat.api.dto.rest.SlideTemplateDto;
 import org.appsec.securityrat.api.dto.rest.StatusColumnDto;
 import org.appsec.securityrat.api.dto.rest.TagCategoryDto;
+import org.appsec.securityrat.api.dto.rest.TrainingDto;
 import org.appsec.securityrat.api.provider.PersistentStorage;
+import org.appsec.securityrat.domain.AlternativeInstance;
 import org.appsec.securityrat.domain.AlternativeSet;
 import org.appsec.securityrat.domain.CollectionCategory;
 import org.appsec.securityrat.domain.CollectionInstance;
@@ -34,8 +38,10 @@ import org.appsec.securityrat.domain.OptColumn;
 import org.appsec.securityrat.domain.OptColumnType;
 import org.appsec.securityrat.domain.ProjectType;
 import org.appsec.securityrat.domain.ReqCategory;
+import org.appsec.securityrat.domain.SlideTemplate;
 import org.appsec.securityrat.domain.StatusColumn;
 import org.appsec.securityrat.domain.TagCategory;
+import org.appsec.securityrat.domain.Training;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
@@ -52,6 +58,7 @@ public class PersistentStorageImpl implements PersistentStorage {
     
     static {
         MAPPINGS = new ConcurrentHashMap<>();
+        MAPPINGS.put(AlternativeInstanceDto.class, AlternativeInstance.class);
         MAPPINGS.put(AlternativeSetDto.class, AlternativeSet.class);
         MAPPINGS.put(CollectionCategoryDto.class, CollectionCategory.class);
         MAPPINGS.put(CollectionInstanceDto.class, CollectionInstance.class);
@@ -60,9 +67,21 @@ public class PersistentStorageImpl implements PersistentStorage {
         MAPPINGS.put(OptColumnTypeDto.class, OptColumnType.class);
         MAPPINGS.put(ProjectTypeDto.class, ProjectType.class);
         MAPPINGS.put(ReqCategoryDto.class, ReqCategory.class);
+        MAPPINGS.put(SlideTemplateDto.class, SlideTemplate.class);
         MAPPINGS.put(StatusColumnDto.class, StatusColumn.class);
         MAPPINGS.put(TagCategoryDto.class, TagCategory.class);
+        MAPPINGS.put(TrainingDto.class, Training.class);
         
+        // TODO:
+        //  - StatusColumnValue
+        //  - TrainingBranchNode
+        //  - TrainingCategoryNode
+        //  - TrainingCustomSlideNode
+        //  - TrainingGeneratedSlideNode
+        //  - TrainingRequirementNode
+        //  - TrainingTreeNode
+        //  - TrainingTreeStatus
+
         IDENTIFIER_CACHE = new ConcurrentHashMap<>();
     }
     
