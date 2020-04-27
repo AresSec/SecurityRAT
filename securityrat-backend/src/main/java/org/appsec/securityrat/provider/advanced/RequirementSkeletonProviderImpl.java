@@ -38,6 +38,9 @@ public class RequirementSkeletonProviderImpl
         Preconditions.checkNotNull(collectionInstanceIds);
         Preconditions.checkNotNull(projectTypeIds);
         
+        Arrays.sort(collectionInstanceIds);
+        Arrays.sort(projectTypeIds);
+        
         return this.repo.findAll()
                 .stream()
                 .filter(e -> e.getCollectionInstances()
