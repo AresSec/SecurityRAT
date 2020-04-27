@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.appsec.securityrat.api.dto.SimpleDto;
 import org.appsec.securityrat.api.endpoint.rest.SimpleResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -153,6 +154,32 @@ public final class SimpleResourceUtil {
                 return;
             }
         });
+        
+        // Asserting that all methods are available
+        
+        Assert.notNull(builder.createHandler, String.format(
+                "%s does not provide a create handler",
+                instClass.getName()));
+        
+        Assert.notNull(builder.deleteHandler, String.format(
+                "%s does not provide a delete handler",
+                instClass.getName()));
+        
+        Assert.notNull(builder.getHandler, String.format(
+                "%s does not provide a get handler",
+                instClass.getName()));
+        
+        Assert.notNull(builder.getAllHandler, String.format(
+                "%s does not provide a get all handler",
+                instClass.getName()));
+        
+        Assert.notNull(builder.searchHandler, String.format(
+                "%s does not provide a search handler",
+                instClass.getName()));
+        
+        Assert.notNull(builder.updateHandler, String.format(
+                "%s does not provide a update handler",
+                instClass.getName()));
         
         return builder.build();
     }

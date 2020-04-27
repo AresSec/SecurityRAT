@@ -24,39 +24,39 @@ public class SlideTemplateResource
 
     @Override
     @PostMapping("/slideTemplates")
-    protected ResponseEntity<SlideTemplateDto> create(
+    public ResponseEntity<SlideTemplateDto> create(
             @RequestBody SlideTemplateDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/slideTemplates")
-    protected ResponseEntity<SlideTemplateDto> update(
+    public ResponseEntity<SlideTemplateDto> update(
             @RequestBody SlideTemplateDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/slideTemplates")
-    protected ResponseEntity<Set<SlideTemplateDto>> getAll() {
+    public ResponseEntity<Set<SlideTemplateDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/slideTemplates/{id}")
-    protected ResponseEntity<SlideTemplateDto> get(@PathVariable Long id) {
+    public ResponseEntity<SlideTemplateDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/slideTemplates/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/slideTemplates/{query}")
-    protected ResponseEntity<List<SlideTemplateDto>> search(
+    public ResponseEntity<List<SlideTemplateDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

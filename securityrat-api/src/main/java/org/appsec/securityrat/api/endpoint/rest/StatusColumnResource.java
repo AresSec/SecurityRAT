@@ -24,39 +24,39 @@ public class StatusColumnResource
 
     @Override
     @PostMapping("/statusColumns")
-    protected ResponseEntity<StatusColumnDto> create(
+    public ResponseEntity<StatusColumnDto> create(
             @RequestBody StatusColumnDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/statusColumns")
-    protected ResponseEntity<StatusColumnDto> update(
+    public ResponseEntity<StatusColumnDto> update(
             @RequestBody StatusColumnDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/statusColumns")
-    protected ResponseEntity<Set<StatusColumnDto>> getAll() {
+    public ResponseEntity<Set<StatusColumnDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/statusColumns/{id}")
-    protected ResponseEntity<StatusColumnDto> get(@PathVariable Long id) {
+    public ResponseEntity<StatusColumnDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/statusColumns/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/statusColumns/{query}")
-    protected ResponseEntity<List<StatusColumnDto>> search(
+    public ResponseEntity<List<StatusColumnDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

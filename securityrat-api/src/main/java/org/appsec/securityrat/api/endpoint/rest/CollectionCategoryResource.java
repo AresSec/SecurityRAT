@@ -24,39 +24,39 @@ public class CollectionCategoryResource
 
     @Override
     @PostMapping("/collectionCategorys")
-    protected ResponseEntity<CollectionCategoryDto> create(
+    public ResponseEntity<CollectionCategoryDto> create(
             @RequestBody CollectionCategoryDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/collectionCategorys")
-    protected ResponseEntity<CollectionCategoryDto> update(
+    public ResponseEntity<CollectionCategoryDto> update(
             @RequestBody CollectionCategoryDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/collectionCategorys")
-    protected ResponseEntity<Set<CollectionCategoryDto>> getAll() {
+    public ResponseEntity<Set<CollectionCategoryDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/collectionCategorys/{id}")
-    protected ResponseEntity<CollectionCategoryDto> get(@PathVariable Long id) {
+    public ResponseEntity<CollectionCategoryDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/collectionCategorys/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/collectionCategorys/{query}")
-    protected ResponseEntity<List<CollectionCategoryDto>> search(
+    public ResponseEntity<List<CollectionCategoryDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

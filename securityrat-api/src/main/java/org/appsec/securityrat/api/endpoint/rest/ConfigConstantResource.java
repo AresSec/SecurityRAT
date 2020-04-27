@@ -2,7 +2,6 @@ package org.appsec.securityrat.api.endpoint.rest;
 
 import java.util.List;
 import java.util.Set;
-import javax.annotation.security.RolesAllowed;
 import org.appsec.securityrat.api.dto.rest.ConfigConstantDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,39 +24,39 @@ public class ConfigConstantResource
 
     @Override
     @PostMapping("/configConstants")
-    protected ResponseEntity<ConfigConstantDto> create(
+    public ResponseEntity<ConfigConstantDto> create(
             @RequestBody ConfigConstantDto dto) {
         return super.create(dto);
     }
 
     @Override
     @DeleteMapping("/configConstants/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/configConstants/{id}")
-    protected ResponseEntity<ConfigConstantDto> get(@PathVariable Long id) {
+    public ResponseEntity<ConfigConstantDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @GetMapping("/configConstants")
-    protected ResponseEntity<Set<ConfigConstantDto>> getAll() {
+    public ResponseEntity<Set<ConfigConstantDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/_search/configConstants/{query}")
-    protected ResponseEntity<List<ConfigConstantDto>> search(
+    public ResponseEntity<List<ConfigConstantDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }
 
     @Override
     @PutMapping("/configConstants")
-    protected ResponseEntity<ConfigConstantDto> update(
+    public ResponseEntity<ConfigConstantDto> update(
             @RequestBody ConfigConstantDto dto) {
         return super.update(dto);
     }

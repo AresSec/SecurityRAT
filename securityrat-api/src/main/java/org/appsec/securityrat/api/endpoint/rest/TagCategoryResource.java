@@ -29,32 +29,32 @@ public class TagCategoryResource extends SimpleResource<Long, TagCategoryDto> {
 
     @Override
     @PutMapping("/tagCategorys")
-    protected ResponseEntity<TagCategoryDto> update(
+    public ResponseEntity<TagCategoryDto> update(
             @RequestBody TagCategoryDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/tagCategorys")
-    protected ResponseEntity<Set<TagCategoryDto>> getAll() {
+    public ResponseEntity<Set<TagCategoryDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/tagCategorys/{id}")
-    protected ResponseEntity<TagCategoryDto> get(@PathVariable Long id) {
+    public ResponseEntity<TagCategoryDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/tagCategorys/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/tagCategorys/{query}")
-    protected ResponseEntity<List<TagCategoryDto>> search(
+    public ResponseEntity<List<TagCategoryDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

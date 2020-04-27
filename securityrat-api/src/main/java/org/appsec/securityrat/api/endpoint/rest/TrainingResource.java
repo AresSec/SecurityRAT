@@ -22,37 +22,37 @@ public class TrainingResource extends SimpleResource<Long, TrainingDto> {
 
     @Override
     @PostMapping("/trainings")
-    protected ResponseEntity<TrainingDto> create(@RequestBody TrainingDto dto) {
+    public ResponseEntity<TrainingDto> create(@RequestBody TrainingDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/trainings")
-    protected ResponseEntity<TrainingDto> update(@RequestBody TrainingDto dto) {
+    public ResponseEntity<TrainingDto> update(@RequestBody TrainingDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/trainings")
-    protected ResponseEntity<Set<TrainingDto>> getAll() {
+    public ResponseEntity<Set<TrainingDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/trainings/{id}")
-    protected ResponseEntity<TrainingDto> get(@PathVariable Long id) {
+    public ResponseEntity<TrainingDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/trainings/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/trainings/{query}")
-    protected ResponseEntity<List<TrainingDto>> search(
+    public ResponseEntity<List<TrainingDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

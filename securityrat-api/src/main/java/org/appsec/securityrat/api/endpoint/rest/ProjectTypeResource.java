@@ -22,39 +22,39 @@ public class ProjectTypeResource extends SimpleResource<Long, ProjectTypeDto> {
 
     @Override
     @PostMapping("/projectTypes")
-    protected ResponseEntity<ProjectTypeDto> create(
+    public ResponseEntity<ProjectTypeDto> create(
             @RequestBody ProjectTypeDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/projectTypes")
-    protected ResponseEntity<ProjectTypeDto> update(
+    public ResponseEntity<ProjectTypeDto> update(
             @RequestBody ProjectTypeDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/projectTypes")
-    protected ResponseEntity<Set<ProjectTypeDto>> getAll() {
+    public ResponseEntity<Set<ProjectTypeDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/projectTypes/{id}")
-    protected ResponseEntity<ProjectTypeDto> get(@PathVariable Long id) {
+    public ResponseEntity<ProjectTypeDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/projectTypes/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/projectTypes/{query}")
-    protected ResponseEntity<List<ProjectTypeDto>> search(
+    public ResponseEntity<List<ProjectTypeDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

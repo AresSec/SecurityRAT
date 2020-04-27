@@ -24,39 +24,39 @@ public class CollectionInstanceResource
 
     @Override
     @PostMapping("/collectionInstances")
-    protected ResponseEntity<CollectionInstanceDto> create(
+    public ResponseEntity<CollectionInstanceDto> create(
             @RequestBody CollectionInstanceDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/collectionInstances")
-    protected ResponseEntity<CollectionInstanceDto> update(
+    public ResponseEntity<CollectionInstanceDto> update(
             @RequestBody CollectionInstanceDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/collectionInstances")
-    protected ResponseEntity<Set<CollectionInstanceDto>> getAll() {
+    public ResponseEntity<Set<CollectionInstanceDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/collectionInstances/{id}")
-    protected ResponseEntity<CollectionInstanceDto> get(@PathVariable Long id) {
+    public ResponseEntity<CollectionInstanceDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/collectionInstances/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/collectionInstances/{query}")
-    protected ResponseEntity<List<CollectionInstanceDto>> search(
+    public ResponseEntity<List<CollectionInstanceDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }

@@ -22,39 +22,39 @@ public class OptColumnResource extends SimpleResource<Long, OptColumnDto> {
     
     @Override
     @PostMapping("/optColumns")
-    protected ResponseEntity<OptColumnDto> create(
+    public ResponseEntity<OptColumnDto> create(
             @RequestBody OptColumnDto dto) {
         return super.create(dto);
     }
 
     @Override
     @DeleteMapping("/optColumns/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/optColumns/{id}")
-    protected ResponseEntity<OptColumnDto> get(@PathVariable Long id) {
+    public ResponseEntity<OptColumnDto> get(@PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @GetMapping("/optColumns")
-    protected ResponseEntity<Set<OptColumnDto>> getAll() {
+    public ResponseEntity<Set<OptColumnDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/_search/optColumns/{query}")
-    protected ResponseEntity<List<OptColumnDto>> search(
+    public ResponseEntity<List<OptColumnDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }
 
     @Override
     @PutMapping("/optColumns")
-    protected ResponseEntity<OptColumnDto> update(
+    public ResponseEntity<OptColumnDto> update(
             @RequestBody OptColumnDto dto) {
         return super.update(dto);
     }

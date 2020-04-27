@@ -24,40 +24,40 @@ public class AlternativeInstanceResource
 
     @Override
     @PostMapping("/alternativeInstances")
-    protected ResponseEntity<AlternativeInstanceDto> create(
+    public ResponseEntity<AlternativeInstanceDto> create(
             @RequestBody AlternativeInstanceDto dto) {
         return super.create(dto);
     }
 
     @Override
     @PutMapping("/alternativeInstances")
-    protected ResponseEntity<AlternativeInstanceDto> update(
+    public ResponseEntity<AlternativeInstanceDto> update(
             @RequestBody AlternativeInstanceDto dto) {
         return super.update(dto);
     }
 
     @Override
     @GetMapping("/alternativeInstances")
-    protected ResponseEntity<Set<AlternativeInstanceDto>> getAll() {
+    public ResponseEntity<Set<AlternativeInstanceDto>> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping("/alternativeInstances/{id}")
-    protected ResponseEntity<AlternativeInstanceDto> get(
+    public ResponseEntity<AlternativeInstanceDto> get(
             @PathVariable Long id) {
         return super.get(id);
     }
 
     @Override
     @DeleteMapping("/alternativeInstances/{id}")
-    protected ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return super.delete(id);
     }
 
     @Override
     @GetMapping("/_search/alternativeInstances/{query}")
-    protected ResponseEntity<List<AlternativeInstanceDto>> search(
+    public ResponseEntity<List<AlternativeInstanceDto>> search(
             @PathVariable String query) {
         return super.search(query);
     }
