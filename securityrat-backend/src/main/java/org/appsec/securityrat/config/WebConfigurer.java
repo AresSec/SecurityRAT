@@ -3,9 +3,6 @@ package org.appsec.securityrat.config;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
 import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -14,13 +11,16 @@ import javax.inject.Inject;
 import javax.servlet.*;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.appsec.securityrat.web.filter.StaticResourcesProductionFilter;
+import org.appsec.securityrat.web.filter.gzip.GZipServletFilter;
 import org.springframework.boot.web.server.MimeMappings;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.core.env.Profiles;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
@@ -40,13 +40,12 @@ public class WebConfigurer implements ServletContextInitializer,
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
-        
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
-        
-        if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_PRODUCTION))) {
+        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
+            initStaticResourcesProductionFilter(servletContext, disps);
+            initGzipFilter(servletContext, disps);
         }
-        
         log.info("Web application fully configured");
     }
 
@@ -71,30 +70,11 @@ public class WebConfigurer implements ServletContextInitializer,
             mappings.add("json", "text/html;charset=utf-8");
             configurableFactory.setMimeMappings(mappings);
         }
-        
-        // Document root
-        
-        if (configurableFactory != null) {
-            URL indexHtmlUrl = WebConfigurer.class.getResource(
-                    "/webapp/index.html");
-            
-            log.debug("Located index.html at {}", indexHtmlUrl);
-            
-            try {
-                configurableFactory.setDocumentRoot(
-                        new File(indexHtmlUrl.toURI()).getParentFile());
-            } catch (URISyntaxException ex) {
-                log.error("Cannot set document root", ex);
-            }
-        }
     }
     
-    // TODO [luis.felger@bosch.com]: Static resource provider should be in here!
-
     /**
      * Initializes the GZip filter.
      */
-    /*
     private void initGzipFilter(ServletContext servletContext, EnumSet<DispatcherType> disps) {
         log.debug("Registering GZip Filter");
         FilterRegistration.Dynamic compressingFilter = servletContext.addFilter("gzipFilter", new GZipServletFilter());
@@ -110,12 +90,10 @@ public class WebConfigurer implements ServletContextInitializer,
         compressingFilter.addMappingForUrlPatterns(disps, true, "/metrics/*");
         compressingFilter.setAsyncSupported(true);
     }
-    */
 
     /**
      * Initializes the static resources production Filter.
      */
-    /*
     private void initStaticResourcesProductionFilter(ServletContext servletContext,
                                                      EnumSet<DispatcherType> disps) {
 
@@ -130,7 +108,6 @@ public class WebConfigurer implements ServletContextInitializer,
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
         staticResourcesProductionFilter.setAsyncSupported(true);
     }
-    */
 
     /**
      * Initializes the caching HTTP Headers Filter.
