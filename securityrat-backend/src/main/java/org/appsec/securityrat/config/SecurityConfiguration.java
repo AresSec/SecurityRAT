@@ -1,13 +1,13 @@
 package org.appsec.securityrat.config;
 
 import io.github.jhipster.config.JHipsterProperties;
+import io.github.jhipster.security.AjaxAuthenticationFailureHandler;
+import io.github.jhipster.security.AjaxAuthenticationSuccessHandler;
+import io.github.jhipster.security.AjaxLogoutSuccessHandler;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.appsec.securityrat.security.AuthoritiesConstants;
 import org.appsec.securityrat.config.ApplicationProperties.AuthenticationType;
-import org.appsec.securityrat.security.AjaxAuthenticationFailureHandler;
-import org.appsec.securityrat.security.AjaxAuthenticationSuccessHandler;
-import org.appsec.securityrat.security.AjaxLogoutSuccessHandler;
 import org.appsec.securityrat.security.Http401UnauthorizedEntryPoint;
 import org.appsec.securityrat.web.filter.CsrfCookieGeneratorFilter;
 
