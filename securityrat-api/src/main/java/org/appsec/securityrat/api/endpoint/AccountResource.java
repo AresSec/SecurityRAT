@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.appsec.securityrat.api.dto.AuthenticationConfigDto;
 import org.appsec.securityrat.api.dto.user.AccountDto;
 import org.appsec.securityrat.api.dto.user.InternalUserDto;
@@ -195,8 +197,23 @@ public class AccountResource {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
-        String decodedSeries =
-                URLDecoder.decode(series, StandardCharsets.UTF_8);
+        // NOTE: Since the original value of "series" is a Base64-encoded
+        //       string and the Spring firewall blocks URL-escaped characters
+        //       (like '%2F') by default, we need to circumvent this by using
+        //       another encoding that can pass the firewall.
+        //       The current approach uses the hexadecimal representation of the
+        //       UTF-8 encoded text.
+        
+        final String decodedSeries;
+        
+        try {
+            decodedSeries = new String(
+                    Hex.decodeHex(series),
+                    StandardCharsets.UTF_8);
+        } catch (DecoderException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid encoding");
+        }
         
         // Resolving and removing the PersistentTokenDto instance
         
