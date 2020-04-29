@@ -10,7 +10,6 @@ import org.appsec.securityrat.security.AjaxAuthenticationSuccessHandler;
 import org.appsec.securityrat.security.AjaxLogoutSuccessHandler;
 import org.appsec.securityrat.security.Http401UnauthorizedEntryPoint;
 import org.appsec.securityrat.web.filter.CsrfCookieGeneratorFilter;
-import org.pac4j.core.config.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

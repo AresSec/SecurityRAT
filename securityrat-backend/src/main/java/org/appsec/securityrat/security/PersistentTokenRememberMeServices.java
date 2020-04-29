@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
+import org.appsec.securityrat.domain.User;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.
@@ -69,15 +72,19 @@ public class PersistentTokenRememberMeServices extends
     private final PersistentTokenRepository persistentTokenRepository;
 
     private final UserRepository userRepository;
+    
+    private final TransactionTemplate transactionTemplate;
 
     public PersistentTokenRememberMeServices(JHipsterProperties jHipsterProperties,
             org.springframework.security.core.userdetails.UserDetailsService userDetailsService,
-            PersistentTokenRepository persistentTokenRepository, UserRepository userRepository) {
+            PersistentTokenRepository persistentTokenRepository, UserRepository userRepository,
+            PlatformTransactionManager transactionManager) {
 
         super(jHipsterProperties.getSecurity().getRememberMe().getKey(), userDetailsService);
         this.persistentTokenRepository = persistentTokenRepository;
         this.userRepository = userRepository;
-        upgradedTokenCache = new PersistentTokenCache<>(UPGRADED_TOKEN_VALIDITY_MILLIS);
+        this.upgradedTokenCache = new PersistentTokenCache<>(UPGRADED_TOKEN_VALIDITY_MILLIS);
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -157,7 +164,20 @@ public class PersistentTokenRememberMeServices extends
             try {
                 String[] cookieTokens = decodeCookie(rememberMeCookie);
                 PersistentToken token = getPersistentToken(cookieTokens);
-                persistentTokenRepository.deleteById(token.getSeries());
+                
+                this.transactionTemplate.executeWithoutResult((a) -> {
+                    Optional<User> optionalUser =
+                            this.userRepository.findOneById(
+                                    token.getUser().getId());
+                    
+                    if (optionalUser.isEmpty()) {
+                        return;
+                    }
+                    
+                    User user = optionalUser.get();
+                    user.getPersistentTokens().remove(token);
+                    this.userRepository.save(user);
+                });
             } catch (InvalidCookieException ice) {
                 log.info("Invalid cookie, no persistent token could be deleted", ice);
             } catch (RememberMeAuthenticationException rmae) {
