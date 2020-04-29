@@ -245,7 +245,11 @@ module.exports = function (grunt) {
                         'scripts/**/*.html',
                         'assets/images/**/*.{png,gif,webp,jpg,jpeg,svg}',
                         'assets/fonts/*',
-			'assets/static/*'
+                        'assets/static/*',
+                        'bower_components/**/*',
+                        'swagger-ui',
+                        '.htaccess',
+                        'robots.txt'
                     ]
                 }, {
                     expand: true,
