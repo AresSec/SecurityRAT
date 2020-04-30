@@ -18,10 +18,6 @@ public class InternalUserDto implements IdentifiableDto<Long> {
     private String firstName;
     private String lastName;
     private String email;
-    
-    /**
-     * The value of this flag cannot be changed directly.
-     */
     private boolean activated;
     
     private String langKey;

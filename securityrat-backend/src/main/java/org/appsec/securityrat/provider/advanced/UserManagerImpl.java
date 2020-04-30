@@ -145,6 +145,7 @@ public class UserManagerImpl implements UserManager {
         entity.setLastName(user.getLastName());
         entity.setEmail(user.getEmail());
         entity.setLangKey(user.getLangKey());
+        entity.setActivated(user.isActivated());
         
         if (user.getAuthorities() != null) {
             entity.setAuthorities(user.getAuthorities()
@@ -362,6 +363,8 @@ public class UserManagerImpl implements UserManager {
         
         this.repo.save(user);
         this.searchRepo.save(user);
+        
+        dto.setId(user.getId());
         
         if (emailActivation) {
             this.mailService.sendActivationEmail(user);

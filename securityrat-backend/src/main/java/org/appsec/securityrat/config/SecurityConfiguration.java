@@ -140,6 +140,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 }
                 
                 http.authorizeRequests()
+                        .antMatchers("/api/register").permitAll() // Why is this line necessary?
                         .antMatchers("/api/activate").permitAll()
                         .antMatchers("/api/authenticate").permitAll()
                         .antMatchers("/api/authentication_config").permitAll()
