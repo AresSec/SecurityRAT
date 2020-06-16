@@ -12,6 +12,7 @@ if(process.env.WTF) {
 	opts.cellStyles = true;
 }
 var fullex = [".xlsb", ".xlsm", ".xlsx"];
+var ofmt = ["xlsb", "xlsm", "xlsx", "ods", "biff2"];
 var ex = fullex.slice(); ex.push(".ods"); ex.push(".xls"); ex.push("xml");
 if(process.env.FMTS === "full") process.env.FMTS = ex.join(":");
 if(process.env.FMTS) ex=process.env.FMTS.split(":").map(function(x){return x[0]==="."?x:"."+x;});
@@ -114,6 +115,7 @@ function parsetest(x, wb, full, ext) {
 	if(!full) return;
 	var getfile = function(dir, x, i, type) {
 		var name = (dir + x + '.' + i + type);
+		var root = "";
 		if(x.substr(-5) === ".xlsb") {
 			root = x.slice(0,-5);
 			if(!fs.existsSync(name)) name=(dir + root + '.xlsx.' + i + type);
@@ -867,8 +869,9 @@ describe('roundtrip features', function() {
 				else if(dj && dk && !di); /* TODO: convert to date */
 				else assert.equal(m[1].t, 'n');
 
-				if(m[0].t === m[1].t) assert.equal(m[0].v, m[1].v);
-				else if(m[0].t === 'd') assert(Math.abs(datenum(new Date(m[0].v)) - m[1].v) < 0.01); /* TODO: 1sec adjustment */
+				if(m[0].t === 'n' && m[1].t === 'n') assert.equal(m[0].v, m[1].v);
+				else if(m[0].t === 'd' && m[1].t === 'd') assert.equal(m[0].v.toString(), m[1].v.toString());
+				else if(m[1].t === 'n') assert(Math.abs(datenum(new Date(m[0].v)) - m[1].v) < 0.01); /* TODO: 1sec adjustment */
 			});
 		});
 	});
@@ -930,10 +933,10 @@ describe('invalid files', function() {
 	});
 });
 
-function datenum(v, date1904) {
-	if(date1904) v+=1462;
-	var epoch = Date.parse(v);
-	return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+function datenum(v/*:Date*/, date1904/*:?boolean*/)/*:number*/ {
+	var epoch = v.getTime();
+	if(date1904) epoch += 1462*24*60*60*1000;
+	return (epoch + 2209161600000) / (24 * 60 * 60 * 1000);
 }
 function sheet_from_array_of_arrays(data, opts) {
 	var ws = {};
@@ -1032,6 +1035,47 @@ describe('json output', function() {
 	});
 });
 
+describe('js -> file -> js', function() {
+	var data, ws, wb, BIN="binary";
+	before(function() {
+		data = [
+			[1,2,3],
+			[true, false, null, "sheetjs"],
+			["foo","bar",new Date("2014-02-19T14:30Z"), "0.3"],
+			["baz", 6.9, "qux"]
+		];
+		ws = sheet_from_array_of_arrays(data);
+		wb = { SheetNames: ['Sheet1'], Sheets: {Sheet1: ws} };
+	});
+	function eqcell(wb1, wb2, s, a) {
+		assert.equal(wb1.Sheets[s][a].v, wb2.Sheets[s][a].v);
+		assert.equal(wb1.Sheets[s][a].t, wb2.Sheets[s][a].t);
+	}
+	ofmt.forEach(function(f) {
+		it(f, function() {
+			var newwb = X.read(X.write(wb, {type:BIN, bookType: f}), {type:BIN});
+			/* int */
+			eqcell(wb, newwb, 'Sheet1', 'A1');
+			eqcell(wb, newwb, 'Sheet1', 'B1');
+			eqcell(wb, newwb, 'Sheet1', 'C1');
+			/* double */
+			eqcell(wb, newwb, 'Sheet1', 'B4');
+			/* bool */
+			eqcell(wb, newwb, 'Sheet1', 'A2');
+			eqcell(wb, newwb, 'Sheet1', 'B2');
+			/* string */
+			eqcell(wb, newwb, 'Sheet1', 'D2');
+			eqcell(wb, newwb, 'Sheet1', 'A3');
+			eqcell(wb, newwb, 'Sheet1', 'B3');
+			eqcell(wb, newwb, 'Sheet1', 'D3');
+			eqcell(wb, newwb, 'Sheet1', 'A4');
+			eqcell(wb, newwb, 'Sheet1', 'C4');
+			/* date */
+			eqcell(wb, newwb, 'Sheet1', 'C3');
+		});
+	});
+});
+
 describe('corner cases', function() {
 	it('output functions', function() {
 		var data = [
@@ -1053,6 +1097,8 @@ describe('corner cases', function() {
 		X.write(wb, {type: "binary", bookType: 'xlsx'});
 		X.write(wb, {type: "buffer", bookType: 'xlsm'});
 		X.write(wb, {type: "base64", bookType: 'xlsb'});
+		X.write(wb, {type: "binary", bookType: 'ods'});
+		X.write(wb, {type: "binary", bookType: 'biff2'});
 		ws.A2.t = "f";
 		assert.throws(function() { X.utils.make_json(ws); });
 	});
