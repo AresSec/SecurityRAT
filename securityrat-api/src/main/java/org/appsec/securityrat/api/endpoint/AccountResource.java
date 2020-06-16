@@ -64,7 +64,7 @@ public class AccountResource {
     public ResponseEntity<Void> activateAccount(
             @RequestParam("key") String key) {
         
-        if (!this.userManager.activate(key)) {
+        if (this.userManager.activate(key)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         

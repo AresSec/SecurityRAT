@@ -21,7 +21,8 @@ public class AngularJSForwardController {
                              "/error*","/accessdenied*", "/requirements","/collection*/**","/tag*/**","req*/**",
                              "opt*/**","status*/**","alternative*/**","projectTypes*/**", "/import*","/export*",
                              "/config*/**", "/user*/**", "/authorities*", "/login*", "/password*", "/reset*", "/logout*",
-                             "/register*", "/ferequirement*/**", "/presentation", "/training*/**", "/slideTemplate*/**"},
+                             "/register*", "/ferequirement*/**", "/presentation", "/training*/**", "/slideTemplate*/**",
+                             "/activate*"},
                               method = RequestMethod.GET)
     public void pageForward(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
     	String[] onlyForm = { "/login*", "/password*", "/reset*", "/logout*", "/register*"};
