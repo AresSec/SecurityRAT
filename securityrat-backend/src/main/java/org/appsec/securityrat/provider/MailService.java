@@ -37,7 +37,7 @@ public class MailService {
         Context context = new Context(locale);
         context.setVariable("user", user);
         context.setVariable("baseUrl", this.jHipsterProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("activationEmail", context);
+        String content = templateEngine.process("mail/activationEmail", context);
         String subject = messageSource.getMessage("email.activation.title", null, locale);
         this.sendEmail(user.getEmail(), subject, content, false, true);
     }
@@ -49,7 +49,7 @@ public class MailService {
         Context context = new Context(locale);
         context.setVariable("user", user);
         context.setVariable("password", password);
-        String content = templateEngine.process("activationPasswordEmail", context);
+        String content = templateEngine.process("mail/activationPasswordEmail", context);
         String subject = messageSource.getMessage("password.activation.title", null, locale);
         this.sendEmail(user.getEmail(), subject, content, false, true);
     }
@@ -61,7 +61,7 @@ public class MailService {
         Context context = new Context(locale);
         context.setVariable("user", user);
         context.setVariable("baseUrl", this.jHipsterProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("passwordResetEmail", context);
+        String content = templateEngine.process("mail/passwordResetEmail", context);
         String subject = messageSource.getMessage("email.reset.title", null, locale);
         this.sendEmail(user.getEmail(), subject, content, false, true);
     }

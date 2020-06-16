@@ -247,7 +247,7 @@ module.exports = function (grunt) {
                         'assets/fonts/*',
                         'assets/static/*',
                         'bower_components/**/*',
-                        'swagger-ui',
+                        'swagger-ui/**/*',
                         '.htaccess',
                         'robots.txt'
                     ]
