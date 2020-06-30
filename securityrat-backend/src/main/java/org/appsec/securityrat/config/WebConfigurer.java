@@ -74,6 +74,7 @@ public class WebConfigurer implements ServletContextInitializer,
         
         // Document root
         
+        /*
         if (configurableFactory != null) {
             URL indexHtmlUrl = WebConfigurer.class.getResource(
                     "/webapp/index.html");
@@ -87,6 +88,7 @@ public class WebConfigurer implements ServletContextInitializer,
                 log.error("Cannot set document root", ex);
             }
         }
+        */
     }
     
     /**

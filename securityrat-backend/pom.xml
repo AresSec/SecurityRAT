@@ -433,6 +433,11 @@
                 <artifactId>properties-maven-plugin</artifactId>
             </plugin>
             <!-- jhipster-needle-maven-add-plugin -->
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -882,6 +887,38 @@
 
                 </plugin>
                 <!-- jhipster-needle-maven-add-plugin-management -->
+                
+                <!-- Copying the webapp files -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.appsec.securityrat</groupId>
+                                        <artifactId>securityrat-frontend</artifactId>
+                                        <version>${project.version}</version>
+                                        <outputDirectory>${project.build.directory}/classes/static</outputDirectory>
+                                        <includes>webapp/**/*</includes>
+                                        <fileMappers>
+                                            <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                                                <pattern>^webapp\/</pattern>
+                                                <replacement>./</replacement>
+                                            </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                                        </fileMappers>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
