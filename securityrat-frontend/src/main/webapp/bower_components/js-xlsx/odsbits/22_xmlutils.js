@@ -1,20 +1,27 @@
-var attregexg=/\b[\w:-]+=["'][^"]*['"]/g;
+var attregexg=/[^\s?>\/]+=["'][^"]*['"]/g;
 var tagregex=/<[^>]*>/g;
 var nsregex=/<\w*:/, nsregex2 = /<(\/?)\w+:/;
 function parsexmltag(tag, skip_root) {
-	var z = [];
+	var z/*:any*/ = [];
 	var eq = 0, c = 0;
 	for(; eq !== tag.length; ++eq) if((c = tag.charCodeAt(eq)) === 32 || c === 10 || c === 13) break;
 	if(!skip_root) z[0] = tag.substr(0, eq);
 	if(eq === tag.length) return z;
-	var m = tag.match(attregexg), j=0, w="", v="", i=0, q="", cc="";
+	var m = tag.match(attregexg), j=0, v="", i=0, q="", cc="";
 	if(m) for(i = 0; i != m.length; ++i) {
 		cc = m[i];
 		for(c=0; c != cc.length; ++c) if(cc.charCodeAt(c) === 61) break;
 		q = cc.substr(0,c); v = cc.substring(c+2, cc.length-1);
 		for(j=0;j!=q.length;++j) if(q.charCodeAt(j) === 58) break;
-		if(j===q.length) z[q] = v;
-		else z[(j===5 && q.substr(0,5)==="xmlns"?"xmlns":"")+q.substr(j+1)] = v;
+		if(j===q.length) {
+			if(q.indexOf("_") > 0) q = q.substr(0, q.indexOf("_"));
+			z[q] = v;
+		}
+		else {
+			var k = (j===5 && q.substr(0,5)==="xmlns"?"xmlns":"")+q.substr(j+1);
+			if(z[k] && q.substr(j-3,3) == "ext") continue;
+			z[k] = v;
+		}
 	}
 	return z;
 }
@@ -37,7 +44,8 @@ var rencoding = {
 var rencstr = "&<>'\"".split("");
 
 // TODO: CP remap (need to read file version to determine OS)
-var encregex = /&[a-z]*;/g, coderegex = /_x([\da-fA-F]+)_/g;
+/* 22.4.2.4 bstr (Basic String) */
+var encregex = /&[a-z]*;/g, coderegex = /_x([\da-fA-F]{4})_/g;
 function unescapexml(text){
 	var s = text + '';
 	return s.replace(encregex, function($$) { return encodings[$$]; }).replace(coderegex,function(m,c) {return String.fromCharCode(parseInt(c,16));});
@@ -48,7 +56,7 @@ function escapexml(text){
 	return s.replace(decregex, function(y) { return rencoding[y]; }).replace(charegex,function(s) { return "_x" + ("000"+s.charCodeAt(0).toString(16)).substr(-4) + "_";});
 }
 
-function parsexmlbool(value, tag) {
+function parsexmlbool(value) {
 	switch(value) {
 		case '1': case 'true': case 'TRUE': return true;
 		/* case '0': case 'false': case 'FALSE':*/
@@ -56,8 +64,9 @@ function parsexmlbool(value, tag) {
 	}
 }
 
-function datenum(v) {
-	var epoch = Date.parse(v);
+function datenum(v/*:Date*/, date1904/*:?boolean*/)/*:number*/ {
+	var epoch = v.getTime();
+	if(date1904) epoch += 1462*24*60*60*1000;
 	return (epoch + 2209161600000) / (24 * 60 * 60 * 1000);
 }
 
@@ -87,3 +96,5 @@ function parse_isodur(s) {
 	}
 	return sec;
 }
+
+var XML_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n';

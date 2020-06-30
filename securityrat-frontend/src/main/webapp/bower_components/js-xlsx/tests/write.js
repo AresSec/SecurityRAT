@@ -6,7 +6,7 @@ var data = [
 	[1,2,3],
 	[true, false, null, "sheetjs"],
 	["foo","bar",new Date("2014-02-19T14:30Z"), "0.3"],
-	["baz", null, "qux"]
+	["baz", null, "qux", 3.14159]
 ];
 
 var ws_name = "SheetJS";
@@ -37,11 +37,10 @@ function Workbook() {
 var wb = new Workbook();
 
 
-/* TODO: date1904 logic */
-function datenum(v, date1904) {
-	if(date1904) v+=1462;
-	var epoch = Date.parse(v);
-	return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+function datenum(v/*:Date*/, date1904/*:?boolean*/)/*:number*/ {
+	var epoch = v.getTime();
+	if(date1904) epoch += 1462*24*60*60*1000;
+	return (epoch + 2209161600000) / (24 * 60 * 60 * 1000);
 }
 
 /* convert an array of arrays in JS to a CSF spreadsheet */
@@ -85,3 +84,18 @@ ws['!cols'] = wscols;
 
 /* write file */
 XLSX.writeFile(wb, 'sheetjs.xlsx');
+XLSX.writeFile(wb, 'sheetjs.xlsm');
+XLSX.writeFile(wb, 'sheetjs.xlsb');
+XLSX.writeFile(wb, 'sheetjs.xls', {bookType:'biff2'});
+XLSX.writeFile(wb, 'sheetjs.ods');
+XLSX.writeFile(wb, 'sheetjs.fods');
+XLSX.writeFile(wb, 'sheetjs.csv');
+
+/* test by reading back files */
+XLSX.readFile('sheetjs.xlsx');
+XLSX.readFile('sheetjs.xlsm');
+XLSX.readFile('sheetjs.xlsb');
+XLSX.readFile('sheetjs.xls');
+XLSX.readFile('sheetjs.ods');
+XLSX.readFile('sheetjs.fods');
+//XLSX.readFile('sheetjs.csv');

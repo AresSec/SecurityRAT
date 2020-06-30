@@ -11,16 +11,21 @@ import org.appsec.securityrat.api.provider.PersistentStorage;
 import org.appsec.securityrat.api.provider.advanced.OptColumnContentProvider;
 import org.appsec.securityrat.api.provider.advanced.RequirementSkeletonProvider;
 import org.appsec.securityrat.provider.frontend.FrontendDtoProvider;
+import org.appsec.securityrat.provider.frontend.ImporterProvider;
 import org.appsec.securityrat.web.dto.FrontendAlternativeInstanceDto;
 import org.appsec.securityrat.web.dto.FrontendCategoryDto;
 import org.appsec.securityrat.web.dto.FrontendCollectionCategoryDto;
 import org.appsec.securityrat.web.dto.FrontendOptionColumnAlternativeDto;
 import org.appsec.securityrat.web.dto.FrontendProjectTypeDto;
 import org.appsec.securityrat.web.dto.FrontendTagCategoryDto;
+import org.appsec.securityrat.web.dto.importer.FrontendObjectDto;
+import org.appsec.securityrat.web.dto.importer.FrontendTypeDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +44,9 @@ public class FrontendUniversalResource {
     
     @Inject
     private OptColumnContentProvider optColumnContentProvider;
+    
+    @Inject
+    private ImporterProvider importerProvider;
     
     @GetMapping("/collections")
     public ResponseEntity<Set<FrontendCollectionCategoryDto>> getActiveCollectonCategories() {
@@ -206,5 +214,28 @@ public class FrontendUniversalResource {
         }
         
         return ResponseEntity.ok(dtos);
+    }
+    
+    // ============================= IMPORTER API ==============================
+    
+    @GetMapping("/importer/types")
+    public ResponseEntity<Set<FrontendTypeDto>> getAssistantAvailableTypes() {
+        Set<FrontendTypeDto> result = this.importerProvider.getAvailableTypes();
+        
+        if (result == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/importer/apply")
+    public ResponseEntity<Void> applyAssistantObjects(
+            @RequestBody Set<FrontendObjectDto> dtos) {
+        if (!this.importerProvider.applyObjects(dtos)) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

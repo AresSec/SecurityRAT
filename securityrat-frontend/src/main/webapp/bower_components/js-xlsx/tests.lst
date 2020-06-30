@@ -3,6 +3,7 @@ BlankSheetTypes.xlsb.pending
 ErrorTypes.xlsb
 NumberFormatCondition.xlsb
 RkNumber.xlsb
+apachepoi_Simple.xlsb.pending
 calendar_stress_test.xlsb.pending
 cell_style_simple.xlsb
 comments_stress_test.xlsb
@@ -11,21 +12,24 @@ defined_names_simple.xlsb
 formula_stress_test.xlsb
 formulae_test_simple.xlsb
 hyperlink_stress_test_2011.xlsb
+large_strings.xlsb.pending
 merge_cells.xlsb
 named_ranges_2011.xlsb
 number_format.xlsb
 number_format_entities.xlsb
 number_format_russian.xlsb
+numfmt_1_russian.xlsb
 pivot_table_named_range.xlsb
 pivot_table_test.xlsb
 rich_text_stress.xlsb
 smart_tags_2007.xlsb
 sushi.xlsb
 text_and_numbers.xlsb
+time_stress_test_1.xlsb.pending
 xlsx-stream-d-date-cell.xlsb
 2013/apachepoi_29982.xls.xlsb
 2013/apachepoi_43251.xls.xlsb
-2013/apachepoi_44593.xls.xlsb
+2013/apachepoi_44593.xls.xlsb ## xlsb loop timeout
 2013/apachepoi_44643.xls.xlsb
 2013/apachepoi_44958.xls.xlsb
 2013/apachepoi_46136-NoWarnings.xls.xlsb
@@ -126,7 +130,7 @@ apachepoi_56688_1.xlsx
 apachepoi_56688_2.xlsx
 apachepoi_56688_3.xlsx
 apachepoi_56688_4.xlsx
-apachepoi_56702.xlsx
+# apachepoi_56702.xlsx ## xlsb bad xnum
 apachepoi_56730.xlsx
 apachepoi_56737.xlsx
 apachepoi_AverageTaxRates.xlsx
@@ -247,9 +251,9 @@ mixed_sheets.xlsx
 named_ranges_2011.xlsx
 number_format_entities.xlsx
 openpyxl_g_NameWithValueBug.xlsx
+openpyxl_g_empty.xlsx.pending
 openpyxl_g_empty-no-string.xlsx
 openpyxl_g_empty-with-styles.xlsx
-openpyxl_g_empty.xlsx
 openpyxl_g_empty_libre.xlsx
 openpyxl_g_empty_no_dimensions.xlsx
 openpyxl_g_empty_with_no_properties.xlsx
@@ -476,7 +480,7 @@ apachepoi_44200.xls
 apachepoi_44201.xls
 apachepoi_44235.xls
 apachepoi_44297.xls
-apachepoi_44593.xls
+apachepoi_44593.xls ## xlsb loop timeout
 apachepoi_44636.xls
 apachepoi_44643.xls
 apachepoi_44693.xls
@@ -530,7 +534,7 @@ apachepoi_49529.xls
 apachepoi_49581.xls
 apachepoi_49612.xls
 apachepoi_49751.xls
-apachepoi_49761.xls
+# apachepoi_49761.xls ## xlsb bad xnum
 apachepoi_49896.xls
 apachepoi_49928.xls
 apachepoi_49931.xls
@@ -616,12 +620,12 @@ apachepoi_PercentPtg.xls
 apachepoi_QuotientFunctionTestCaseData.xls
 apachepoi_RangePtg.xls
 apachepoi_ReadOnlyRecommended.xls
-apachepoi_ReferencePtg.xls
+apachepoi_ReferencePtg.xls ## xlsb loop timeout
 apachepoi_RepeatingRowsCols.xls
 apachepoi_ReptFunctionTestCaseData.xls
 apachepoi_RomanFunctionTestCaseData.xls
 apachepoi_SampleSS.xls
-apachepoi_SharedFormulaTest.xls
+apachepoi_SharedFormulaTest.xls ## xlsb loop timeout
 apachepoi_SheetWithDrawing.xls
 apachepoi_ShrinkToFit.xls
 apachepoi_Simple.xls
@@ -900,7 +904,7 @@ libreoffice_calc_xls-import_pivot-dup-data-fields.xls
 libreoffice_calc_xls-import_pivot-layout-field-non-default.xls
 libreoffice_calc_xls-import_row-attributes_row-all-hidden.xls
 libreoffice_calc_xls-import_row-attributes_row-filtered.xls
-libreoffice_calc_xls-import_row-attributes_row-heights.xls
+libreoffice_calc_xls-import_row-attributes_row-heights.xls ## xlsb loop timeout
 libreoffice_calc_xls-import_row-attributes_row-tail-hidden-2.xls
 libreoffice_calc_xls-import_row-attributes_row-tail-hidden-last-row-visible.xls
 libreoffice_calc_xls-import_row-attributes_row-tail-hidden.xls

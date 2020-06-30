@@ -768,3 +768,87 @@ Back to Top button style
     padding: 10px;
     border-radius: 20px;
 }
+
+/* ===================================
+Import Assistant styles
+====================================== */
+.ia-file-box-wrapper {
+    margin: 100px 0;
+    height: 300px;
+}
+
+.ia-file-box {
+    border: 3px dashed gray;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.ia-file-box-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.ia-file-box-title {
+    color: gray;
+    font-weight: bold;
+}
+
+.ia-file-box-subtitle {
+    margin-top: 15px;
+    border-top: 1px solid #EEE;
+    padding-top: 20px;
+    display: inline-block;
+    width: 50%;
+    font-size: small;
+}
+
+.ia-file-box-worksheet {
+    margin: 30px auto 20px;
+    width: 25%;
+    text-align: left;
+}
+
+.ia-mapping-wrapper {
+    display: flex;
+    overflow-x: scroll;
+    padding-bottom: 20px;
+}
+
+.ia-mapping-box {
+    flex-basis: 450px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: auto 20px;
+}
+
+.ia-add-attr-mapping {
+    display: block;
+    text-align: center;
+}
+
+.ia-italic {
+    font-style: italic;
+}
+
+.ia-bold {
+    font-weight: bold;
+}
+
+.ia-section {
+    margin: 40px 0;
+}
+
+.ia-push-down {
+    margin-top: 30px;
+}
+
+.ia-navigation {
+    text-align: right;
+}
+
+.ia-table {
+    width: 100%;
+}

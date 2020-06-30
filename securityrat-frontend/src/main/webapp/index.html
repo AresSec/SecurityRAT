@@ -21,6 +21,7 @@
       	<link id="maincss" rel="stylesheet" href="/assets/styles/main.css" />
         <!-- endbuild -->
         <link rel="stylesheet" href="/bower_components/jstree/dist/themes/default/style.css" />
+        <link rel="stylesheet" href="/bower_components/datatables.net-bs/css/dataTables.bootstrap.css" />
 		<base href="/">
     </head>
 
@@ -81,6 +82,8 @@
 	<script src="bower_components/revealjs/lib/js/head.min.js"></script>
     <script src="bower_components/revealjs/js/reveal.js"></script>
     <script src="bower_components/jstree/dist/jstree.js"></script>
+    <script src="bower_components/datatables.net/js/jquery.dataTables.js"></script>
+    <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.js"></script>
 
     <!-- build:js({.tmp,src/main/webapp}) scripts/app.js -->
 	<script src="scripts/app/editor/regex-weburl.js"></script>
@@ -333,6 +336,24 @@
     <script src="scripts/components/entities/trainingRequirementNode/trainingRequirementNode.search.service.js"></script>
     <script src="scripts/components/entities/trainingGeneratedSlideNode/trainingGeneratedSlideNode.service.js"></script>
     <script src="scripts/components/entities/trainingGeneratedSlideNode/trainingGeneratedSlideNode.search.service.js"></script>
+    <!--
+    <script src="scripts/app/import/import-step1.controller.js"></script>
+    <script src="scripts/app/import/import-step2.controller.js"></script>
+    <script src="scripts/app/import/import-step3.controller.js"></script>
+    <script src="scripts/app/import/import.js"></script>
+    -->
+    <!--
+    <script src="scripts/components/import/import.service.js"></script>
+    <script src="scripts/components/import/excelHelper.service.js"></script>
+    -->
+    <script src="scripts/components/importAssistant/http.js"></script>
+    <script src="scripts/components/importAssistant/state.js"></script>
+    <script src="scripts/components/importAssistant/table.js"></script>
+    <script src="scripts/components/importAssistant/mapping.js"></script>
+    <script src="scripts/app/importAssistant/config.js"></script>
+    <script src="scripts/app/importAssistant/step1.js"></script>
+    <script src="scripts/app/importAssistant/step2.js"></script>
+    <script src="scripts/app/importAssistant/step3.js"></script>
     <!-- endbuild -->
 </body>
 </html>
