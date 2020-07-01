@@ -4,6 +4,7 @@
   "description": "Description for sdlctool",
   "private": true,
   "devDependencies": {
+    "bower": "^1.8.8",
     "event-stream": "4.0.1",
     "generator-jhipster": "2.20.0",
     "grunt": "^1.0.4",

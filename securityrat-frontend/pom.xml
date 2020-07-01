@@ -37,11 +37,19 @@
                         </goals>
                     </execution>
 
-                    <!-- Task: Installing Bower -->
+                    <!-- Task: Installing Bower, Grunt, etc. -->
                     <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    
+                    <!-- Task: Installing dependencies via Bower -->
+                    <execution>
+                        <id>bower install</id>
+                        <goals>
+                            <goal>bower</goal>
                         </goals>
                     </execution>
 
