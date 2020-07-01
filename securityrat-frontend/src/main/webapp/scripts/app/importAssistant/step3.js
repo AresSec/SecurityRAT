@@ -65,5 +65,21 @@ angular.module('sdlctoolApp')
             });
         };
 
-        console.log($scope.tableViews);
+        // Navigation
+
+        $scope.navigation = {
+            cancelButton: {
+                handleClick: function () {
+                    ImportAssistantState.reset();
+                    $state.go('editor');
+                }
+            },
+
+            applyButton: {
+                handleClick: function () {
+                    ImportAssistantHttp.apply(_entities);
+                    $state.go('editor');
+                }
+            }
+        };
     });

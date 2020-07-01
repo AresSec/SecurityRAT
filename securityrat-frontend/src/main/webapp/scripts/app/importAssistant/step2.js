@@ -263,8 +263,6 @@ angular.module('sdlctoolApp')
                         $scope.generalSettings.selectedEntryType,
                         _ignoredTableEntries);
 
-                    console.log(entities);
-
                     // Continue
 
                     ImportAssistantState.state.entities = entities;
