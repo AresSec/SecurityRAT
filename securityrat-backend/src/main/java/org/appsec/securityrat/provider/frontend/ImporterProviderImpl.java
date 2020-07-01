@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -202,11 +203,11 @@ public class ImporterProviderImpl implements ImporterProvider {
     
     private static Object findDuplicate(
             FrontendObjectDto dto,
-            List<Object> duplicatePool,
+            Collection<Object> duplicatePool,
             Class<?> entityClass,
             Map<String, Object> objectPool) {
         // Since resolving fields with Java's reflection API is considered to be
-        // slow, we does this only once at the beginning for all key component
+        // slow, we do this only once at the beginning for all key component
         // attributes.
         // (The assigned value is the expected value.)
         
@@ -289,18 +290,21 @@ public class ImporterProviderImpl implements ImporterProvider {
     @Override
     @Transactional
     public boolean applyObjects(Set<FrontendObjectDto> objects) {
-        List<FrontendTypeDto> availableTypes = this.getAvailableTypesSorted();
+        List<String> availableTypes = this.getAvailableTypesSorted()
+                .stream()
+                .map(e -> e.getIdentifier())
+                .collect(Collectors.toList());
         
         // Separating the objects by their entity classes and discarding those
         // which are not part of the availableTypes set
         
         Map<String, Set<FrontendObjectDto>> objectsByEntity = new HashMap<>();
         
-        for (FrontendTypeDto type : availableTypes) {
+        for (String typeName : availableTypes) {
             Set<FrontendObjectDto> typeObjects =
                     objects.stream()
                             .filter(obj -> Objects.equals(
-                                    type.getIdentifier(),
+                                    typeName,
                                     obj.getTypeIdentifier()))
                             .collect(Collectors.toSet());
             
@@ -308,7 +312,7 @@ public class ImporterProviderImpl implements ImporterProvider {
                 continue;
             }
             
-            objectsByEntity.put(type.getIdentifier(), typeObjects);
+            objectsByEntity.put(typeName, typeObjects);
         }
         
         // The following map will store all instances of types that have been
@@ -324,7 +328,13 @@ public class ImporterProviderImpl implements ImporterProvider {
         // NOTE: The reason that we do this in another loop is the readability
         //       of the code.
         
-        for (String typeIdentifier : objectsByEntity.keySet()) {
+        for (String typeIdentifier : availableTypes) {
+            // Skip this type, if there is no objectsByEntity entry for it
+            
+            if (!objectsByEntity.containsKey(typeIdentifier)) {
+                continue;
+            }
+            
             // Resolving the entity type by its fully-qualified class name
             
             Class<?> entityClass;
@@ -380,11 +390,28 @@ public class ImporterProviderImpl implements ImporterProvider {
                 // Depending on the settings, we perform a duplicate check
                 
                 if (objDto.getReplaceRule() != FrontendReplaceRule.Duplicate) {
+                    // First, we look in the objectPool
+                    
                     duplicate = ImporterProviderImpl.findDuplicate(
                             objDto,
                             existingEntities,
                             entityClass,
                             objectPool);
+                    
+                    // If there is no duplicate entry in the objectPool, maybe
+                    // there is one in the newEntities map.
+                    //
+                    // This may be the case, if the same object has been
+                    // submitted multiple times with different instance
+                    // identifiers.
+                    
+                    if (duplicate == null) {
+                        duplicate = ImporterProviderImpl.findDuplicate(
+                                objDto,
+                                newEntities.values(),
+                                entityClass,
+                                objectPool);
+                    }
                 }
                 
                 // If we're preserving existing duplicates, we do not need to
