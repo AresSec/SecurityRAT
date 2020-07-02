@@ -73,7 +73,7 @@
         </div>
         <div class="ia-push-down ia-mapping-wrapper">
             <!-- Mapping Box -->
-            <div class="panel panel-primary ia-mapping-box">
+            <div class="panel panel-primary ia-mapping-editor">
                 <div class="panel-heading ia-bold">
                     New entity mapping
                 </div>
@@ -117,7 +117,7 @@
                                     <th></th>
                                     <th>Attribute</th>
                                     <th>Mapping</th>
-                                    <th>Target</th>
+                                    <th>Target/Value</th>
                                     <th>Key</th>
                                 </tr>
                             </thead>
@@ -146,6 +146,9 @@
                                             <option value="TableEntry" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
                                                 Entry
                                             </option>
+                                            <option value="JavaScript" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
+                                                JavaScript
+                                            </option>
                                             <option value="Value" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
                                                 Value
                                             </option>
@@ -165,10 +168,17 @@
                                             </option>
                                         </select>
                                         <input class="form-control" type="text" ng-if="attrMapping.type === 'Value'" ng-model="attrMapping.value">
+                                        <label ng-if="attrMapping.type === 'JavaScript'" style="white-space: nowrap; margin-right: 8px;">
+                                            <input class="form-control" type="text" ng-model="attrMapping.jsExpr" style="display: inline-block; font-weight: normal;">
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                title="Specify a JavaScript expression that calculates the attribute's value. (e is an array of the current entry's columns/rows, i is the zero-based index of the entry)"
+                                                data-toggle="tooltip"
+                                                data-placement="right"></span>
+                                        </label>
                                     </td>
                                     <!-- Key Component -->
                                     <td>
-                                        <input type="checkbox" class="form-control" ng-model="attrMapping.keyComponent">
+                                        <input type="checkbox" class="form-control" ng-model="attrMapping.keyComponent" style="margin: auto;">
                                     </td>
                                 </tr>
                             </tbody>
@@ -208,6 +218,7 @@
                                     <span ng-if="attrMapping.type === 'Entity'">Entity</span>
                                     <span ng-if="attrMapping.type === 'TableEntry'">Entry</span>
                                     <span ng-if="attrMapping.type === 'Value'">Value</span>
+                                    <span ng-if="attrMapping.type === 'JavaScript'">JavaScript</span>
                                 </td>
                                 <td>
                                     <span ng-if="attrMapping.type === 'Entity'">
@@ -218,6 +229,9 @@
                                     </span>
                                     <span ng-if="attrMapping.type === 'Value'">
                                         {{ attrMapping.value }}
+                                    </span>
+                                    <span ng-if="attrMapping.type === 'JavaScript'">
+                                        {{ attrMapping.jsExpr }}
                                     </span>
                                 </td>
                             </tr>

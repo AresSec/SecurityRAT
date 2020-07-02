@@ -44,7 +44,11 @@ angular.module('sdlctoolApp')
                     // Value
                     entityMappingIdentifier: null,
                     tableEntryIndex: null,
-                    value: null
+                    value: null,
+
+                    // A JavaScript expression that calculates the attribute's
+                    // value.
+                    jsExpr: null
                 };
             },
 
@@ -125,6 +129,23 @@ angular.module('sdlctoolApp')
                                     case 'Value':
                                         result.reference = false;
                                         result.value = attr.value;
+                                        break;
+
+                                    case 'JavaScript':
+                                        result.reference = false;
+
+                                        // JavaScript execution should be XSS-safe here, because there is no
+                                        // possibility someone could inject JavaScript code via an URL parameter.
+                                        //
+                                        // Also, the only one who is able to enter JavaScript expressions is the user
+                                        // themselve, so they break their own browser, if the do something wrong, but
+                                        // nothing else.
+
+                                        var jsExpr = attr.jsExpr;
+                                        var i = index;
+                                        var e = cells;
+
+                                        result.value = Function('i', 'e', 'return (' + jsExpr + ')').call(null, i, e);
                                         break;
                                 }
 

@@ -817,8 +817,16 @@ Import Assistant styles
     padding-bottom: 20px;
 }
 
+.ia-mapping-editor {
+    flex-basis: 600px;
+}
+
 .ia-mapping-box {
-    flex-basis: 450px;
+    flex-basis: 400px;
+}
+
+.ia-mapping-editor,
+.ia-mapping-box {
     flex-grow: 0;
     flex-shrink: 0;
     margin: auto 20px;
