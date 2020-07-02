@@ -167,3 +167,5 @@ Spring version:
    served web application to the static one that is included in the SecurityRAT
    backend (on a full page reload). Those missing paths require further
    configuration in the grunt config.
+ * Adding a ShowOrder type to the Import Assistant
+ * Adding a regular expression type to the Import Assistant
