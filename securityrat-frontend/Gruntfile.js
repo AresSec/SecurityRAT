@@ -55,7 +55,15 @@ module.exports = function (grunt) {
                 src: ['src/main/webapp/index.html'],
                 exclude: [
                     /angular-i18n/  // localizations are loaded dynamically
-                ]
+                ],
+                fileTypes: {
+                    html: {
+                        replace: {
+                            js: '<script src="/{{filePath}}"></script>',
+                            css: '<link rel="stylesheet" href="/{{filePath}}" />'
+                        }
+                    }
+                }
             },
             test: {
                 src: 'src/test/javascript/karma.conf.js',
@@ -90,8 +98,6 @@ module.exports = function (grunt) {
             },
             options: {
                 watchTask: true,
-                //proxy: "localhost:8080",
-                //serveStatic: [ 'src/main/webapp/' ],
                 server: {
                     baseDir: [ 'src/main/webapp/' ],
                     middleware: [
@@ -370,7 +376,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        // 'wiredep:app',
+        'wiredep:app',
         'ngconstant:prod',
         'useminPrepare',
         'ngtemplates',

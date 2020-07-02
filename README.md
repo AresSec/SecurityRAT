@@ -163,10 +163,10 @@ Spring version:
    via the SPA because the DTO-structure and endpoint names have changed.
  * Elasticsearch configuration class has been removed temporary, otherwise
    production builds won't start successfully. Further investigation required.
- * If you work with `npx grunt serve`, you may switch from the dynamically
+ * ~~If you work with `npx grunt serve`, you may switch from the dynamically
    served web application to the static one that is included in the SecurityRAT
    backend (on a full page reload). Those missing paths require further
-   configuration in the grunt config.
+   configuration in the grunt config.~~ [DONE]
  * Adding a ShowOrder type to the Import Assistant
  * Adding a regular expression type to the Import Assistant
  * Choosing an existing entity as reference (Import Assistant)
