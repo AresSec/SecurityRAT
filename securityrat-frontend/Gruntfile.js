@@ -1,6 +1,8 @@
 // Generated on 2015-09-02 using generator-jhipster 2.20.0
 'use strict';
 var fs = require('fs');
+var connectHistoryApiFallback = require('connect-history-api-fallback');
+var httpProxyMiddleware = require('http-proxy-middleware');
 
 var parseString = require('xml2js').parseString;
 // Returns the second occurence of the version number
@@ -88,8 +90,26 @@ module.exports = function (grunt) {
             },
             options: {
                 watchTask: true,
-                proxy: "localhost:8080",
-                serveStatic: [ 'src/main/webapp/' ]
+                //proxy: "localhost:8080",
+                //serveStatic: [ 'src/main/webapp/' ],
+                server: {
+                    baseDir: [ 'src/main/webapp/' ],
+                    middleware: [
+                        connectHistoryApiFallback(),
+                        {
+                            route: '/api',
+                            handle: httpProxyMiddleware.createProxyMiddleware({ target: 'http://localhost:8080', changeOrigin: true })
+                        },
+                        {
+                            route: '/frontend-api',
+                            handle: httpProxyMiddleware.createProxyMiddleware({ target: 'http://localhost:8080', changeOrigin: true })
+                        },
+                        {
+                            route: '/admin-api',
+                            handle: httpProxyMiddleware.createProxyMiddleware({ target: 'http://localhost:8080', changeOrigin: true })
+                        }
+                    ]
+                }
             }
         },
         clean: {
