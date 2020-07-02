@@ -56,7 +56,7 @@ Ensure that Maven is installed on your system and that it's available via the
 PATH variable. Then execute the following command in your favorite shell:
 
 ```shell
-mvn package -p Prod
+mvn package -P prod
 ```
 
 After the build process completed successfully, you can find the built artifact
