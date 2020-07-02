@@ -29,7 +29,7 @@ angular.module('sdlctoolApp')
                     identifier: _generateIdentifier(),
                     typeIdentifier: null,
                     attributes: new Array(),
-                    replaceRule: null
+                    replaceRule: 'Ignore'
                 };
             },
 

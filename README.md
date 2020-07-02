@@ -56,7 +56,7 @@ Ensure that Maven is installed on your system and that it's available via the
 PATH variable. Then execute the following command in your favorite shell:
 
 ```shell
-mvn package
+mvn package -p Prod
 ```
 
 After the build process completed successfully, you can find the built artifact
@@ -103,7 +103,7 @@ Now, run the following command in your favorite shell (from the root directory
 of the repository):
 
 ```shell
-mvn package
+mvn package -P prod
 ```
 
 After the build process completed successfully, you can find the built artifact
@@ -161,3 +161,9 @@ Spring version:
  * The CAS authentication was removed and needs to be reimplemented
  * Some administration features (health, configuration, etc.) are not available
    via the SPA because the DTO-structure and endpoint names have changed.
+ * Elasticsearch configuration class has been removed temporary, otherwise
+   production builds won't start successfully. Further investigation required.
+ * If you work with `npx grunt serve`, you may switch from the dynamically
+   served web application to the static one that is included in the SecurityRAT
+   backend (on a full page reload). Those missing paths require further
+   configuration in the grunt config.

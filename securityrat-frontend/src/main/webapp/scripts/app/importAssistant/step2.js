@@ -243,6 +243,11 @@ angular.module('sdlctoolApp')
                 }
             });
 
+        Object.defineProperty($scope.mappingBox.editor, "replaceRules", {
+            value: [ 'Duplicate', 'Replace', 'Ignore' ],
+            writable: false
+        });
+
         // Navigation
 
         $scope.navigation = {

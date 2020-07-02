@@ -94,6 +94,21 @@
                                 </option>
                             </select>
                         </div>
+                        <!-- Replace Rule -->
+                        <div class="form-group">
+                            <label>
+                                Replace Rule
+                                <span class="glyphicon glyphicon-info-sign"
+                                    title="Whether an entity with existing keys shall replace the existing entity, the new one shall be ignored or duplicates are allowed."
+                                    data-toggle="tooltip"
+                                    data-placement="right"></span>
+                            </label>
+                            <select class="form-control" ng-model="mappingBox.editor.mapping.replaceRule">
+                                <option value="{{ rule }}" ng-repeat="rule in mappingBox.editor.replaceRules">
+                                    {{ rule }}
+                                </option>
+                            </select>
+                        </div>
                         <!-- Attribute mappings -->
                         <hr ng-if="mappingBox.editor.mapping.attributes.length > 0">
                         <table class="table ia-table" ng-if="mappingBox.editor.mapping.attributes.length > 0">
