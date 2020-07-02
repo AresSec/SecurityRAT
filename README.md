@@ -169,3 +169,4 @@ Spring version:
    configuration in the grunt config.
  * Adding a ShowOrder type to the Import Assistant
  * Adding a regular expression type to the Import Assistant
+ * Choosing an existing entity as reference (Import Assistant)
