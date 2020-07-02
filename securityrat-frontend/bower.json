@@ -29,7 +29,6 @@
     "file-saver.js": "~1.20150507.2",
     "angular-spinner": "~0.8.0",
     "jszip": "~2.5.0",
-    "js-xlsx": "~0.8.0",
     "xregexp": "^3.0.0",
     "angular-disable-all": "^0.0.2",
     "angular-ui-indeterminate": "^1.0.0",
@@ -38,7 +37,8 @@
     "jstree": "^3.3.8",
     "angular-bootstrap-switch": "^0.5.2",
     "datatables.net": "^1.10.20",
-    "datatables.net-bs": "^2.1.1"
+    "datatables.net-bs": "^2.1.1",
+    "js-xlsx": "^0.16.3"
   },
   "devDependencies": {
     "angular-mocks": "^1.7.8",

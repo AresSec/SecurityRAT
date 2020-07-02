@@ -310,7 +310,5 @@ angular.module('sdlctoolApp')
 
                         return -1;
                     });
-
-                console.log($scope.mappingBox.editor.availableTypes);
             });
     });
