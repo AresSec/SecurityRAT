@@ -288,20 +288,24 @@ angular.module('sdlctoolApp')
         ImportAssistantHttp.getTypes()
             .then(function (types) {
                 Array.prototype.push.apply(
-                    // Sorting the types by their displayName alphabetically
-
-                    $scope.mappingBox.editor.availableTypes.sort(
-                        function (a, b) {
-                            if (a.displayName > b.displayName) {
-                                return 1;
-                            }
-
-                            if (a.displayName === b.displayName) {
-                                return 0;
-                            }
-
-                            return -1;
-                        }),
+                    $scope.mappingBox.editor.availableTypes,
                     types);
+
+                // Sorting the types by their displayName alphabetically
+
+                $scope.mappingBox.editor.availableTypes.sort(
+                    function (a, b) {
+                        if (a.displayName > b.displayName) {
+                            return 1;
+                        }
+
+                        if (a.displayName === b.displayName) {
+                            return 0;
+                        }
+
+                        return -1;
+                    });
+
+                console.log($scope.mappingBox.editor.availableTypes);
             });
     });
