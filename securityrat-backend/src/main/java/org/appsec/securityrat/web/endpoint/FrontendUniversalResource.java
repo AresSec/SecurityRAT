@@ -238,4 +238,17 @@ public class FrontendUniversalResource {
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @GetMapping("/importer/instances/{typeIdentifier}")
+    public ResponseEntity<Set<FrontendObjectDto>> getAssistantExistingInstances(
+            @PathVariable String typeIdentifier) {
+        Set<FrontendObjectDto> result =
+                this.importerProvider.getExistingInstances(typeIdentifier);
+        
+        if (result == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        
+        return ResponseEntity.ok(result);
+    }
 }

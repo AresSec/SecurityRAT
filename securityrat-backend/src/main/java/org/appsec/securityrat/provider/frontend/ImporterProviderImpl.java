@@ -24,6 +24,7 @@ import org.appsec.securityrat.domain.PersistentToken;
 import org.appsec.securityrat.domain.User;
 import org.appsec.securityrat.web.dto.importer.FrontendAttributeDto;
 import org.appsec.securityrat.web.dto.importer.FrontendAttributeValueDto;
+import org.appsec.securityrat.web.dto.importer.FrontendAttributeValueType;
 import org.appsec.securityrat.web.dto.importer.FrontendObjectDto;
 import org.appsec.securityrat.web.dto.importer.FrontendReplaceRule;
 import org.appsec.securityrat.web.dto.importer.FrontendTypeDto;
@@ -113,14 +114,6 @@ public class ImporterProviderImpl implements ImporterProvider {
         return result;
     }
     
-    private static Class<?> getIdType(Class<?> entityClass) {
-        return Arrays.stream(entityClass.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(Id.class))
-                .map(Field::getType)
-                .findAny()
-                .orElse(null);
-    }
-    
     private static Object fromFrontendObject(
             FrontendObjectDto dto,
             Class<?> entityClass,
@@ -158,7 +151,7 @@ public class ImporterProviderImpl implements ImporterProvider {
             // If the attribute contains a reference value, we need to resolve
             // that one and insert it.
             
-            if (attr.isReference()) {
+            if (attr.getValueType() == FrontendAttributeValueType.PoolReference) { // TODO
                 String refId = attr.getValue();
                 
                 if (refId == null) {
@@ -201,6 +194,83 @@ public class ImporterProviderImpl implements ImporterProvider {
         return obj;
     }
     
+    private static FrontendObjectDto toFrontendObject(Object entityInstance) {
+        // Iterating through the entity's attributes and copying those who are
+        // public (have also a look at the fromClasses(Set<Class<?>>) method
+        // above)
+        
+        Class<?> entityClass = entityInstance.getClass();
+        Set<FrontendAttributeValueDto> attributes = new HashSet<>();
+        Object identifier = null;
+        
+        for (Field field : entityClass.getDeclaredFields()) {
+            // TODO [luis.felger@bosch.com]: Merge this and fix security issue
+            //                               in fromFrontendObject method
+            
+            if (field.isAnnotationPresent(Id.class)) {
+                field.setAccessible(true);
+                
+                try {
+                    identifier = field.get(entityInstance);
+                } catch (IllegalAccessException ex) {
+                    // This should not occur, otherwise we cannot do anything
+                    // besides throwing an exception.
+                    
+                    throw new IllegalStateException(ex);
+                }
+            }
+            
+            if (field.isAnnotationPresent(JsonIgnore.class)) {
+                continue;
+            }
+            
+            Class<?> type = field.getType();
+            
+            if (!ImporterProviderImpl.PRIMITIVE_CLASSES.contains(type)) {
+                // TODO [luis.felger@bosch.com]: Also include other entity type
+                //                               attributes
+                continue;
+            }
+            
+            // Creating the attribute instance
+            
+            field.setAccessible(true);
+            
+            FrontendAttributeValueDto attrDto = new FrontendAttributeValueDto();
+            attrDto.setAttributeIdentifier(field.getName());
+            
+            try {
+                attrDto.setValue(Objects.toString(field.get(entityInstance)));
+            } catch (IllegalAccessException ex) {
+                // This should not occur, otherwise we cannot do anything
+                // besides throwing an exception.
+                
+                throw new IllegalStateException(ex);
+            }
+            
+            attrDto.setValueType(FrontendAttributeValueType.Value);
+            attrDto.setKeyComponent(false);
+            
+            attributes.add(attrDto);
+        }
+        
+        if (identifier == null) {
+            throw new IllegalStateException(
+                    "Entity does not provide identifier");
+        }
+        
+        // Finishing the DTO
+        
+        FrontendObjectDto dto = new FrontendObjectDto();
+        
+        dto.setIdentifier("s/" + entityClass.getName() + "/" + identifier);
+        dto.setTypeIdentifier(entityClass.getName());
+        dto.setAttributes(attributes);
+        dto.setReplaceRule(FrontendReplaceRule.Ignore);
+        
+        return dto;
+    }
+    
     private static Object findDuplicate(
             FrontendObjectDto dto,
             Collection<Object> duplicatePool,
@@ -234,13 +304,13 @@ public class ImporterProviderImpl implements ImporterProvider {
             String value = attr.getValue();
             Object fieldValue = null;
             
-            if (attr.isReference() && value != null) {
+            if (attr.getValueType() == FrontendAttributeValueType.PoolReference && value != null) { // TODO
                 fieldValue = objectPool.get(value);
                 
                 if (fieldValue == null) {
                     throw new IllegalArgumentException("Invalid reference!");
                 }
-            } else if (!attr.isReference() && value != null) {
+            } else if (attr.getValueType() == FrontendAttributeValueType.Value && value != null) {
                 fieldValue = PrimitiveHelper.parsePrimitive(
                         value,
                         field.getType());
@@ -345,26 +415,10 @@ public class ImporterProviderImpl implements ImporterProvider {
                 return false;
             }
             
-            // Resolving the type the entity's identifier.
-            
-            Class<?> identifierClass =
-                    ImporterProviderImpl.getIdType(entityClass);
-            
-            if (identifierClass == null) {
-                // Invalid entity.
-                return false;
-            }
-            
             // We need the JPA repository to access the persistent storage of
             // the current entity type.
             
-            JpaRepository repo =
-                    (JpaRepository) this.appContext.getBeanProvider(
-                            ResolvableType.forClassWithGenerics(
-                                    JpaRepository.class,
-                                    entityClass,
-                                    identifierClass))
-                            .getObject();
+            JpaRepository repo = this.getRepo(entityClass);
             
             if (repo == null) {
                 // No repository?!
@@ -442,6 +496,49 @@ public class ImporterProviderImpl implements ImporterProvider {
         
         return true;
     }
+
+    @Override
+    @Transactional
+    public Set<FrontendObjectDto> getExistingInstances(String typeIdentifier) {
+        // Check, if the typeIdentifier is part of the availableTypes. If not,
+        // it's not suported to access the instances of that type via this API.
+        
+        boolean supported = this.getAvailableTypesSorted()
+                .stream()
+                .anyMatch(type -> Objects.equals(
+                        type.getIdentifier(),
+                        typeIdentifier));
+        
+        if (!supported) {
+            return null;
+        }
+        
+        // Resolving the entity class via reflection
+        
+        Class<?> entityClass;
+        
+        try {
+            entityClass = Class.forName(typeIdentifier);
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
+        
+        // Resolving the entity's repository
+        
+        JpaRepository<?, ?> repo = this.getRepo(entityClass);
+        
+        if (repo == null) {
+            return null;
+        }
+        
+        // Retrieving all instances of the entityClass and mapping them to their
+        // corresponding FrontedObject instance
+        
+        return repo.findAll()
+                .stream()
+                .map(ImporterProviderImpl::toFrontendObject)
+                .collect(Collectors.toSet());
+    }
     
     private List<FrontendTypeDto> getAvailableTypesSorted() {
         // If the availableTypes collection has been created already, we can
@@ -506,5 +603,25 @@ public class ImporterProviderImpl implements ImporterProvider {
         // Returning the newly created List as HashSet
         
         return this.availableTypes;
+    }
+    
+    private JpaRepository getRepo(Class<?> entityClass) {
+        // Before we are able to resolve the repository from the Spring
+        // application context, we determine the type of the entity's
+        // identifier.
+        
+        Class<?> idClass = Arrays.stream(entityClass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Id.class))
+                .map(Field::getType)
+                .findAny()
+                .orElse(null);
+        
+        if (idClass == null) {
+            return null;
+        }
+        
+        return (JpaRepository) this.appContext.getBeanProvider(
+                ResolvableType.forClassWithGenerics(
+                        JpaRepository.class, entityClass, idClass)).getObject();
     }
 }

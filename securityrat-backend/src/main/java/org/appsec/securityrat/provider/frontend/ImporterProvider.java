@@ -25,4 +25,16 @@ public interface ImporterProvider {
      *         otherwise <code>false</code>.
      */
     boolean applyObjects(Set<FrontendObjectDto> objects);
+    
+    /**
+     * Returns all existing instances of the specified
+     * <code>typeIdentifier</code>.
+     * 
+     * @param typeIdentifier The identifier of the entity type whose existing
+     *                       instances shall be returned.
+     * 
+     * @return Either a collection of the type's instances or <code>null</code>,
+     *         if the type is either unknown or protected.
+     */
+    Set<FrontendObjectDto> getExistingInstances(String typeIdentifier);
 }

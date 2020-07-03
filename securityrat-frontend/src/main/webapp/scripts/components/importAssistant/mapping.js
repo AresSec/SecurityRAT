@@ -115,24 +115,24 @@ angular.module('sdlctoolApp')
 
                                 switch (attr.type) {
                                     case 'Entity':
-                                        result.reference = true;
+                                        result.valueType = 'PoolReference';
                                         result.value = mappedInstances[
                                             attr.entityMappingIdentifier].identifier;
                                         break;
 
                                     case 'TableEntry':
-                                        result.reference = false;
+                                        result.valueType = 'Value';
                                         result.value = cells[
                                             attr.tableEntryIndex];
                                         break;
 
                                     case 'Value':
-                                        result.reference = false;
+                                        result.valueType = 'Value';
                                         result.value = attr.value;
                                         break;
 
                                     case 'JavaScript':
-                                        result.reference = false;
+                                        result.valueType = 'Value';
 
                                         // JavaScript execution should be XSS-safe here, because there is no
                                         // possibility someone could inject JavaScript code via an URL parameter.
