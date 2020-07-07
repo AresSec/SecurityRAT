@@ -26,7 +26,6 @@
     <properties>
         <!-- Build properties -->
         <maven.version>3.3.9</maven.version>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
@@ -433,7 +432,7 @@
                 <artifactId>properties-maven-plugin</artifactId>
             </plugin>
             <!-- jhipster-needle-maven-add-plugin -->
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -887,7 +886,7 @@
 
                 </plugin>
                 <!-- jhipster-needle-maven-add-plugin-management -->
-                
+
                 <!-- Copying the webapp files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
