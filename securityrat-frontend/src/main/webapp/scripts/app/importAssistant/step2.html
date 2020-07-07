@@ -191,6 +191,7 @@
                 </div>
                 <div class="panel-footer ia-navigation">
                     <button class="btn btn-primary"
+                        ng-disabled="!mappingBox.editor.addButton.enabled"
                         ng-click="mappingBox.editor.addButton.handleClick()">
                         <span class="glyphicon glyphicon-plus"></span>
                         Add
@@ -208,12 +209,19 @@
                             <tr>
                                 <th>Attribute</th>
                                 <th>Mapping</th>
-                                <th>Target</th>
+                                <th>Target/Value</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="attrMapping in entityMapping.attributes">
-                                <td>{{ mappingBox.getEntityTypeAttribute(entityMapping.typeIdentifier, attrMapping.attributeIdentifier).displayName }}</td>
+                                <td>
+                                    {{ mappingBox.getEntityTypeAttribute(entityMapping.typeIdentifier, attrMapping.attributeIdentifier).displayName }}
+                                    <span ng-if="attrMapping.keyComponent"
+                                        class="glyphicon glyphicon-lock"
+                                        title="Key component"
+                                        data-toggle="tooltip"
+                                        data-placement="right"></span>
+                                </td>
                                 <td>
                                     <span ng-if="attrMapping.type === 'Entity'">Entity</span>
                                     <span ng-if="attrMapping.type === 'TableEntry'">Entry</span>

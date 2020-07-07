@@ -244,8 +244,67 @@ angular.module('sdlctoolApp')
             });
 
         Object.defineProperty($scope.mappingBox.editor, "replaceRules", {
-            value: [ 'Duplicate', 'Replace', 'Ignore' ],
+            value: [ 'Duplicate', 'Ignore', 'Replace' ],
             writable: false
+        });
+
+        Object.defineProperty($scope.mappingBox.editor.addButton, "enabled", {
+            get: function () {
+                // Adding an entity mapping is only allowed, if:
+                //
+                // - An entity type has been selected
+                // - A replace rule has been selected
+                // - There are no incomplete attributes
+
+                if (!$scope.mappingBox.editor.mapping.typeIdentifier) {
+                    return false;
+                }
+
+                if (!$scope.mappingBox.editor.mapping.replaceRule) {
+                    return false;
+                }
+
+                return $scope.mappingBox.editor.mapping.attributes.every(
+                    function (attr) {
+                        if (!attr.attributeIdentifier) {
+                            return false;
+                        }
+
+                        if (!attr.type) {
+                            return false;
+                        }
+                        
+                        // Validation depending on the type
+
+                        switch (attr.type) {
+                            case 'Entity':
+                                if (!attr.entityMappingIdentifier) {
+                                    return false;
+                                }
+                                break;
+
+                            case 'TableEntry':
+                                if (!attr.tableEntryIndex) {
+                                    return false;
+                                }
+                                break;
+
+                            case 'Value':
+                                if (!attr.value) {
+                                    return false;
+                                }
+                                break;
+
+                            case 'JavaScript':
+                                if (!attr.jsExpr) {
+                                    return false;
+                                }
+                                break;
+                        }
+
+                        return true;
+                    });
+            }
         });
 
         // Navigation

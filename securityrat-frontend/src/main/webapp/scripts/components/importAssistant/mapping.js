@@ -6,7 +6,11 @@ angular.module('sdlctoolApp')
         // very unlikely to collide with another generated name.
 
         function _generateIdentifier() {
-            var result = '';
+            // Client-side-generated identifiers are required to start with the
+            // 'c/' prefix (to prevent them from collisions with
+            // server-side-generated identifiers).
+
+            var result = 'c/';
             
             while (result.length < 16) {
                 var r = Math.floor(Math.random() * 128);
