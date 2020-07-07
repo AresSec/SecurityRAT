@@ -170,3 +170,4 @@ Spring version:
  * ~~Adding a ShowOrder type to the Import Assistant~~ [SUPERSEDED BY JAVASCRIPT] 
  * ~~Adding a regular expression type to the Import Assistant~~ [SUPERSEDED BY JAVASCRIPT]
  * Choosing an existing entity as reference (Import Assistant)
+ * n <-> m references between entities cannot be mapped at the moment (manual only)

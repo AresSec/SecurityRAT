@@ -140,14 +140,17 @@
                                     <!-- Attribute mapping types -->
                                     <td>
                                         <select class="form-control" ng-model="attrMapping.type">
-                                            <option value="Entity" ng-if="mappingBox.editor.attributes.getType(attrMapping).type.reference">
-                                                Entity
-                                            </option>
                                             <option value="TableEntry" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
                                                 Entry
                                             </option>
+                                            <option value="ExistingEntity" ng-if="mappingBox.editor.attributes.getType(attrMapping).type.reference">
+                                                Existing Entity
+                                            </option>
                                             <option value="JavaScript" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
                                                 JavaScript
+                                            </option>
+                                            <option value="MappedEntity" ng-if="mappingBox.editor.attributes.getType(attrMapping).type.reference">
+                                                Mapped Entity
                                             </option>
                                             <option value="Value" ng-if="!mappingBox.editor.attributes.getType(attrMapping).type.reference">
                                                 Value
@@ -156,18 +159,16 @@
                                     </td>
                                     <!-- Attribute mapping value -->
                                     <td>
-                                        <select class="form-control" ng-if="attrMapping.type === 'Entity'" ng-model="attrMapping.entityMappingIdentifier">
-                                            <option value="{{ entityMapping.identifier }}"
-                                                ng-repeat="entityMapping in mappingBox.editor.attributes.getEntityMappings(mappingBox.editor.attributes.getType(attrMapping).type.referenceIdentifier)">
-                                                {{ mappingBox.getEntityMappingTitle(entityMapping) }}
-                                            </option>
-                                        </select>
-                                        <select class="form-control" ng-if="attrMapping.type === 'TableEntry'" ng-model="attrMapping.tableEntryIndex">
-                                            <option value="{{ $index }}" ng-repeat="value in mappingBox.editor.attributes.tableEntries">
-                                                {{ value }}
-                                            </option>
-                                        </select>
-                                        <input class="form-control" type="text" ng-if="attrMapping.type === 'Value'" ng-model="attrMapping.value">
+                                        <!-- ExistingEntity -->
+                                        <div ng-if="attrMapping.type === 'ExistingEntity'" class="input-group">
+                                            <input type="text" class="form-control" value="{{ attrMapping.existingEntityIdentifier }}" disabled>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="button" ng-click="mappingBox.editor.attributes.chooseEntityButton.handleClick(attrMapping)">
+                                                    Select...
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <!-- JavaScript -->
                                         <label ng-if="attrMapping.type === 'JavaScript'" style="white-space: nowrap; margin-right: 8px;">
                                             <input class="form-control" type="text" ng-model="attrMapping.jsExpr" style="display: inline-block; font-weight: normal;">
                                             <span class="glyphicon glyphicon-info-sign"
@@ -175,6 +176,21 @@
                                                 data-toggle="tooltip"
                                                 data-placement="right"></span>
                                         </label>
+                                        <!-- MappedEntity -->
+                                        <select class="form-control" ng-if="attrMapping.type === 'MappedEntity'" ng-model="attrMapping.entityMappingIdentifier">
+                                            <option value="{{ entityMapping.identifier }}"
+                                                ng-repeat="entityMapping in mappingBox.editor.attributes.getEntityMappings(mappingBox.editor.attributes.getType(attrMapping).type.referenceIdentifier)">
+                                                {{ mappingBox.getEntityMappingTitle(entityMapping) }}
+                                            </option>
+                                        </select>
+                                        <!-- Table Entry -->
+                                        <select class="form-control" ng-if="attrMapping.type === 'TableEntry'" ng-model="attrMapping.tableEntryIndex">
+                                            <option value="{{ $index }}" ng-repeat="value in mappingBox.editor.attributes.tableEntries">
+                                                {{ value }}
+                                            </option>
+                                        </select>
+                                        <!-- Value -->
+                                        <input class="form-control" type="text" ng-if="attrMapping.type === 'Value'" ng-model="attrMapping.value">
                                     </td>
                                     <!-- Key Component -->
                                     <td>
@@ -223,13 +239,20 @@
                                         data-placement="right"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="attrMapping.type === 'Entity'">Entity</span>
+                                    <span ng-if="attrMapping.type === 'ExistingEntity'">Existing Entity</span>
+                                    <span ng-if="attrMapping.type === 'JavaScript'">JavaScript</span>
+                                    <span ng-if="attrMapping.type === 'MappedEntity'">Mapped Entity</span>
                                     <span ng-if="attrMapping.type === 'TableEntry'">Entry</span>
                                     <span ng-if="attrMapping.type === 'Value'">Value</span>
-                                    <span ng-if="attrMapping.type === 'JavaScript'">JavaScript</span>
                                 </td>
                                 <td>
-                                    <span ng-if="attrMapping.type === 'Entity'">
+                                    <span ng-if="attrMapping.type === 'ExistingEntity'">
+                                        {{ attrMapping.existingEntityIdentifier }}
+                                    </span>
+                                    <span ng-if="attrMapping.type === 'JavaScript'">
+                                        {{ attrMapping.jsExpr }}
+                                    </span>
+                                    <span ng-if="attrMapping.type === 'MappedEntity'">
                                         {{ mappingBox.getEntityMappingTitle(mappingBox.getEntityMapping(attrMapping.entityMappingIdentifier)) }}
                                     </span>
                                     <span ng-if="attrMapping.type === 'TableEntry'">
@@ -237,9 +260,6 @@
                                     </span>
                                     <span ng-if="attrMapping.type === 'Value'">
                                         {{ attrMapping.value }}
-                                    </span>
-                                    <span ng-if="attrMapping.type === 'JavaScript'">
-                                        {{ attrMapping.jsExpr }}
                                     </span>
                                 </td>
                             </tr>

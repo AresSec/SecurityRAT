@@ -6,6 +6,7 @@ angular.module('sdlctoolApp')
 
         var ENDPOINT_TYPES = '/frontend-api/importer/types';
         var ENDPOINT_APPLY = '/frontend-api/importer/apply';
+        var ENDPOINT_INSTANCES = '/frontend-api/importer/instances/{typeIdentifier}';
 
         // A cache that may be used by the getTypes function for caching the
         // backend's response.
@@ -45,6 +46,23 @@ angular.module('sdlctoolApp')
                         deferred.resolve();
                     })
                     .catch(function() {
+                        deferred.reject('The server responded with an '
+                            + 'invalid status code!');
+                    });
+
+                return deferred.promise;
+            },
+
+            getInstances: function (typeIdentifier) {
+                var deferred = $q.defer();
+
+                $http.get(ENDPOINT_INSTANCES.replace(
+                    '{typeIdentifier}',
+                    typeIdentifier))
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function () {
                         deferred.reject('The server responded with an '
                             + 'invalid status code!');
                     });

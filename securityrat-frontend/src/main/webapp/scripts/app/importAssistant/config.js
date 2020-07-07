@@ -6,7 +6,7 @@ angular.module('sdlctoolApp')
             parent: 'site',
             url: '/import/step1',
             data: {
-                roles: [ 'ROLE_ADMIN' ],
+                roles: [ 'ROLE_ADMIN' ]
             },
             views: {
                 'content@': {
@@ -20,7 +20,7 @@ angular.module('sdlctoolApp')
             parent: 'site',
             url: '/import/step2',
             data: {
-                roles: [ 'ROLE_ADMIN' ],
+                roles: [ 'ROLE_ADMIN' ]
             },
             views: {
                 'content@': {
@@ -34,7 +34,7 @@ angular.module('sdlctoolApp')
             parent: 'site',
             url: '/import/step3',
             data: {
-                roles: [ 'ROLE_ADMIN' ],
+                roles: [ 'ROLE_ADMIN' ]
             },
             views: {
                 'content@': {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sdlctoolApp')
-    .controller('ImportAssistantStep2Controller', function ($scope, $state, ImportAssistantState, ImportAssistantTable, ImportAssistantMapping, ImportAssistantHttp) {
+    .controller('ImportAssistantStep2Controller', function ($scope, $state, $uibModal, ImportAssistantState, ImportAssistantTable, ImportAssistantMapping, ImportAssistantHttp) {
         // Checking, if the global state of the import assistant has a table
         // reference. This is required for this step.
 
@@ -193,6 +193,23 @@ angular.module('sdlctoolApp')
                         }
                     },
 
+                    chooseEntityButton: {
+                        handleClick: function (attributeMapping) {
+                            $uibModal.open({
+                                templateUrl: 'scripts/app/importAssistant/entityChooser.html',
+                                controller: 'ImportAssistantEntityChooser',
+                                size: 'lg',
+                                resolve: {
+                                    typeIdentifier: function () {
+                                        return $scope.mappingBox.editor.attributes.getType(attributeMapping).type.referenceIdentifier;
+                                    }
+                                }
+                            }).result.then(function (entity) {
+                                attributeMapping.existingEntityIdentifier = entity.identifier
+                            });
+                        }
+                    },
+
                     getType: function (attributeMapping) {
                         var entityType = $scope.mappingBox.editor.selectedEntityType;
 
@@ -277,7 +294,19 @@ angular.module('sdlctoolApp')
                         // Validation depending on the type
 
                         switch (attr.type) {
-                            case 'Entity':
+                            case 'ExistingEntity':
+                                if (!attr.existingEntityIdentifier) {
+                                    return false;
+                                }
+                                break;
+
+                            case 'JavaScript':
+                                if (!attr.jsExpr) {
+                                    return false;
+                                }
+                                break;
+
+                            case 'MappedEntity':
                                 if (!attr.entityMappingIdentifier) {
                                     return false;
                                 }
@@ -291,12 +320,6 @@ angular.module('sdlctoolApp')
 
                             case 'Value':
                                 if (!attr.value) {
-                                    return false;
-                                }
-                                break;
-
-                            case 'JavaScript':
-                                if (!attr.jsExpr) {
                                     return false;
                                 }
                                 break;

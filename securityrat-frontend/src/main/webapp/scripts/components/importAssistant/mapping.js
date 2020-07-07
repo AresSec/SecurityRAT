@@ -52,7 +52,10 @@ angular.module('sdlctoolApp')
 
                     // A JavaScript expression that calculates the attribute's
                     // value.
-                    jsExpr: null
+                    jsExpr: null,
+
+                    // The identifier of an existing entity.
+                    existingEntityIdentifier: null
                 };
             },
 
@@ -118,21 +121,9 @@ angular.module('sdlctoolApp')
                                 };
 
                                 switch (attr.type) {
-                                    case 'Entity':
-                                        result.valueType = 'PoolReference';
-                                        result.value = mappedInstances[
-                                            attr.entityMappingIdentifier].identifier;
-                                        break;
-
-                                    case 'TableEntry':
-                                        result.valueType = 'Value';
-                                        result.value = cells[
-                                            attr.tableEntryIndex];
-                                        break;
-
-                                    case 'Value':
-                                        result.valueType = 'Value';
-                                        result.value = attr.value;
+                                    case 'ExistingEntity':
+                                        result.valueType = 'ExistingReference';
+                                        result.value = attr.existingEntityIdentifier;
                                         break;
 
                                     case 'JavaScript':
@@ -150,6 +141,23 @@ angular.module('sdlctoolApp')
                                         var e = cells;
 
                                         result.value = Function('i', 'e', 'return (' + jsExpr + ')').call(null, i, e);
+                                        break;
+
+                                    case 'MappedEntity':
+                                        result.valueType = 'PoolReference';
+                                        result.value = mappedInstances[
+                                            attr.entityMappingIdentifier].identifier;
+                                        break;
+
+                                    case 'TableEntry':
+                                        result.valueType = 'Value';
+                                        result.value = cells[
+                                            attr.tableEntryIndex];
+                                        break;
+
+                                    case 'Value':
+                                        result.valueType = 'Value';
+                                        result.value = attr.value;
                                         break;
                                 }
 
