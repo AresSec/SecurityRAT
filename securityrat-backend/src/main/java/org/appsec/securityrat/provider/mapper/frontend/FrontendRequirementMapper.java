@@ -13,6 +13,9 @@ public abstract class FrontendRequirementMapper
     @Inject
     private FrontendOptionColumnContentMapper frontendOptionColumnContentMapper;
 
+    @Inject
+    private FrontendCollectionInstanceMapper frontendCollectionInstanceMapper;
+
     @Override
     public FrontendRequirementDto toDto(RequirementSkeleton entity) {
         FrontendRequirementDto dto = new FrontendRequirementDto();
@@ -33,6 +36,14 @@ public abstract class FrontendRequirementMapper
                         .stream()
                         .map(e -> e.getId())
                         .collect(Collectors.toSet()));
+
+	dto.setCollectionInstances(
+		entity.getCollectionInstances()
+			.stream()
+			.map(this.frontendCollectionInstanceMapper::toDto)
+			.collect(Collectors.toSet()));
+
+	System.out.println(dto);
         
         return dto;
     }
