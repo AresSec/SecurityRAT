@@ -348,7 +348,7 @@
 			<th class="text-center">
                                	<span tooltip-append-to-body="true">Properties</span>
                         </th>
-                        <th class="text-center">Short Names!!!!
+                        <th class="text-center">Short Name
                             <span data-ng-if="textFilters.shortName" style="color: red"
                                 class="glyphicon glyphicon-filter"></span>
                         </th>
@@ -509,7 +509,7 @@
                         </td>
                         <td class="text-center" 
                             data-ng-style="reqs.isNew && {'background-color':'rgb(204, 255, 204)'} || reqs.isOld && {'background-color':'rgb(255, 204, 204)'}">
-                             <div data-ng-if="patternToHide" data-ng-repeat="col in reqs.collectionInstances | orderBy:'showOrder' "><span class="label label-primary">{{col.name}}</span></div>
+                             <div data-ng-repeat="col in reqs.collectionInstances | orderBy:'showOrder' "><span class="label label-primary">{{col.name}}</span></div>
                         </td>	
                         <td class="text-center" data-ng-style="reqs.isNew && {'background-color':'rgb(204, 255, 204)'} || reqs.isOld && {'background-color':'rgb(255, 204, 204)'}">
                             <strong>{{ reqs.shortName }}</strong>

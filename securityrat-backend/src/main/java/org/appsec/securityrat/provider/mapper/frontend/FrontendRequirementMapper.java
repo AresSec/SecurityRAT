@@ -43,8 +43,6 @@ public abstract class FrontendRequirementMapper
 			.map(this.frontendCollectionInstanceMapper::toDto)
 			.collect(Collectors.toSet()));
 
-	System.out.println(dto);
-        
         return dto;
     }
 }

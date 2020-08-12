@@ -1017,7 +1017,6 @@ angular.module('sdlctoolApp')
                 var lastElementOrder = 0;
                 angular.forEach(requirementCategory.requirements, function (requirement) {
                     var values = buildReqOptContents(requirement.optionColumnContents);
-
                     $scope.fillEmptyOpts(values, $scope.optColumns);
                     $scope.requirements.push({
                         id: requirement.id,

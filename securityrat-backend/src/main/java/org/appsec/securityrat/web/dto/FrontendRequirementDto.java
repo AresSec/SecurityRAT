@@ -23,7 +23,7 @@ public class FrontendRequirementDto implements Dto {
     
     public FrontendRequirementDto(){
 	}
-    
+    /*
     public FrontendRequirementDto(RequirementSkeleton skeleton) {
 		this.id = skeleton.getId();
 		this.shortName = skeleton.getShortName();
@@ -48,5 +48,5 @@ public class FrontendRequirementDto implements Dto {
 		for (CollectionInstance collectionInstance : collectionInstanceForSkeleton) {
 			this.collectionInstances.add(new FrontendCollectionInstanceDto(collectionInstance));
 		}
-	}
+	}*/
 }
