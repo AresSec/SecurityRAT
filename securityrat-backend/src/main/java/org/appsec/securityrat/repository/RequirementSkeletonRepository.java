@@ -33,7 +33,8 @@ public interface RequirementSkeletonRepository extends JpaRepository<Requirement
 
     @Query("select distinct requirementSkeleton from RequirementSkeleton requirementSkeleton "
     		+ "left join fetch requirementSkeleton.projectTypes pt "
-    		+ "where requirementSkeleton.reqCategory=:reqCategory "
+    		+ "left join fetch requirementSkeleton.collectionInstances col "
+		+ "where requirementSkeleton.reqCategory=:reqCategory "
     		+ "and requirementSkeleton.active=true "
     		+ "and pt in :projectTypes")
     Set<RequirementSkeleton> findActiveReqsForCategoryAndProjectTypes(@Param("reqCategory") ReqCategory reqCategory, @Param("projectTypes") List<ProjectType> projectTypes);

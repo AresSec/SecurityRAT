@@ -1030,6 +1030,7 @@ angular.module('sdlctoolApp')
                         order: requirement.showOrder,
                         tagInstances: requirement.tagInstanceIds,
                         optionColumns: values,
+			collectionInstances: requirement.collectionInstances,    
                         tickets: [],
                         // linkStatus : {enableTooltip : true, link: true},
                         linkStatus: {
@@ -1075,6 +1076,24 @@ angular.module('sdlctoolApp')
             $scope.promiseForStorage = $interval($scope.onTimeout, 60000);
             $scope.length = $scope.requirementSkeletons.length;
 
+	    $scope.filterCollectionInstances();
+
+        };
+
+	$scope.filterCollectionInstances = function () {
+            angular.forEach($scope.requirements, function (requirement) {
+               var cols = [];
+               angular.forEach(requirement.collectionInstances, function (col) {
+                  angular.forEach($scope.systemSettings.colls, function (settingCol) {
+                     angular.forEach(settingCol.values, function (colType) {
+                       if(col.name === colType.type) {
+                          cols.push({name: col.name, showOrder: col.showOrder});
+                       }
+                     });
+                  });
+                });
+                requirement.collectionInstances = cols;
+            });
         };
 
         $scope.mergeOldAndNewRequirements = function () {
@@ -1270,6 +1289,7 @@ angular.module('sdlctoolApp')
                         order: requirement.showOrder,
                         tagInstances: requirement.tagInstanceIds,
                         optionColumns: values,
+			collectionInstances: requirement.collectionInstances,
                         tickets: [],
                         // linkStatus : {enableTooltip: true, link:true},
                         linkStatus: {
@@ -1804,7 +1824,7 @@ angular.module('sdlctoolApp')
                 }
             }
 
-            var colspan = $scope.optColumns.length + $scope.statusColumns.length + 3;
+            var colspan = $scope.optColumns.length + $scope.statusColumns.length + 4;
             var ws = $scope.buildExcelFile(colspan, withStatusColumns);
             var wscols = [{
                 wch: 20
@@ -1881,7 +1901,7 @@ angular.module('sdlctoolApp')
         }
         //builds the array with the requirement values for the excel export.
         $scope.reproduceTable = function (withStatusColumn) {
-            var titleSelector = ['category', 'shortName', 'description'];
+            var titleSelector = ['collectionInstances', 'category', 'shortName', 'description'];
             var requirements = $filter('orderBy')($filter('filter')($scope.requirements, {
                 selected: true
             }), ['categoryOrder', 'order']);
@@ -1920,7 +1940,7 @@ angular.module('sdlctoolApp')
             $scope.tableArray[counter] = [];
             counter++;
             $scope.tableArray[counter] = [];
-            ['Category', 'Short name', 'Description'].forEach(function (element) {
+            ['Pattern', 'Control', 'Short name', 'Description'].forEach(function (element) {
                 if (angular.equals(element, 'Description')) {
                     $scope.tableArray[counter].push({
                         value: element,
@@ -1966,13 +1986,51 @@ angular.module('sdlctoolApp')
                 counter++;
                 $scope.tableArray[counter] = [];
                 for (var i = 0; i < titleSelector.length; i++) {
-                    $scope.tableArray[counter].push({
+		    if (titleSelector[i] === 'collectionInstances') {
+                      var name = "";
+                      angular.forEach($filter('orderBy')(requirement.collectionInstances, ['showOrder']), function (colInstance) {
+                          name += colInstance.name + " \n\n";
+                       });	
+                      $scope.tableArray[counter].push({
+	                 value: name,
+                         format: {
+                           fontId: 0,
+                           xfinnertags: [{
+                                alignment: {
+                                    wrapText: '1'
+                                },
+                                name: 'alignment'
+                            }]
+                         }
+                      });
+                    } else if (titleSelector[i] === 'collectionInstances') {
+		      $scope.tableArray[counter].push({
+                        value: requirement['Control'],
+                        format: {
+                            fontId: 0,
+                            xfinnertags: [{
+                              alignment: {
+                                  wrapText: '1'
+                              },
+                              name: 'alignment'
+                            }]
+                        }
+                      });
+		    } else {
+                      $scope.tableArray[counter].push({
                         value: requirement[titleSelector[i]],
                         format: {
-                            fontId: 0
+                            fontId: 0,
+                            xfinnertags: [{
+                              alignment: {
+                                  wrapText: '1'
+                              },
+                              name: 'alignment'
+                            }]
                         }
-                    });
-                }
+                       });
+                    }
+	        }
                 angular.forEach($filter('orderBy')(requirement.optionColumns, ['showOrder']), function (optColumn) {
                     var contentValue = '';
                     angular.forEach(optColumn.content, function (content) {
@@ -2258,7 +2316,7 @@ angular.module('sdlctoolApp')
                 collections: $scope.systemSettings.colls,
                 generatedOn: $scope.generatedOn,
                 lastChanged: Helper.getCurrentDate(),
-                requirements: angular.copy($scope.requirements)
+                requirements: $scope.requirements
 
             };
             return Helper.buildYAMLFile(objectToExport);

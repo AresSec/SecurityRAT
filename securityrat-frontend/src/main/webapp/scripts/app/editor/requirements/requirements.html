@@ -345,7 +345,10 @@
                 <thead>
                     <tr>
                         <th data-ng-if="updateProperties.updatedReqs">Updates</th>
-                        <th class="text-center">Short Name
+			<th class="text-center">
+                               	<span tooltip-append-to-body="true">Properties</span>
+                        </th>
+                        <th class="text-center">Short Names!!!!
                             <span data-ng-if="textFilters.shortName" style="color: red"
                                 class="glyphicon glyphicon-filter"></span>
                         </th>
@@ -409,6 +412,9 @@
                     </tr>
                     <tr>
                         <td data-ng-if="updateProperties.updatedReqs"></td>
+			<td class="text-center" >
+				<input placeholder="Filter" type="text" class="form-control" data-ng-model="textFilters.pattern"/>
+                        </td>
                         <td class="text-center">
                             <input placeholder="Filter" type="text" class="form-control"
                                 data-ng-model="textFilters.shortName" />
@@ -501,13 +507,12 @@
                                 </button>
                             </div>
                         </td>
-                        <td class="text-center"
+                        <td class="text-center" 
                             data-ng-style="reqs.isNew && {'background-color':'rgb(204, 255, 204)'} || reqs.isOld && {'background-color':'rgb(255, 204, 204)'}">
-                            <strong>
-                                <div data-ng-if="!(reqs.isNew || reqs.isOld)"
-                                    data-ng-bind-html="reqs.shortName | trusted"></div>
-                                <div data-ng-if="reqs.isNew || reqs.isOld" marked="reqs.diffShortName"></div>
-                            </strong>
+                             <div data-ng-if="patternToHide" data-ng-repeat="col in reqs.collectionInstances | orderBy:'showOrder' "><span class="label label-primary">{{col.name}}</span></div>
+                        </td>	
+                        <td class="text-center" data-ng-style="reqs.isNew && {'background-color':'rgb(204, 255, 204)'} || reqs.isOld && {'background-color':'rgb(255, 204, 204)'}">
+                            <strong>{{ reqs.shortName }}</strong>
                             <div disable-all="updateProperties.updatedReqs" data-ng-if="reqs.id < 10000">
                                 <span data-ng-if="updateProperties.updatedReqs"
                                     uib-tooltip="Please apply updates first." style="cursor:not-allowed"
