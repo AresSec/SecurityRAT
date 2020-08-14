@@ -165,6 +165,7 @@ angular.module('sdlctoolApp')
                                     tickets: requirement.tickets,
                                     tagInstances: requirement.tagInstances,
                                     optColumns: requirement.optionColumns,
+				    collectionInstances: requirement.collectionInstances,
                                     statusColumns: requirement.statusColumns
                                 });
                             }
@@ -183,6 +184,7 @@ angular.module('sdlctoolApp')
                             tickets: requirement.tickets,
                             tagInstances: requirement.tagInstances,
                             optColumns: requirement.optionColumns,
+			    collectionInstances: requirement.collectionInstances,
                             statusColumns: requirement.statusColumns
                         });
                         yamlExport.requirementCategories.push({

@@ -470,6 +470,7 @@ angular.module('sdlctoolApp')
                         categoryOrder: category.categoryOrder,
                         order: requirement.showOrder,
                         optionColumns: values,
+			collectionInstances: requirement.collectionInstances,
                         statusColumns: statusColumnsValues,
                         tagInstances: requirement.tagInstances,
                         selected: false,

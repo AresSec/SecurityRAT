@@ -1822,10 +1822,10 @@ angular.module('sdlctoolApp')
                     statusCounter++;
                 }
             }
-
             var colspan = $scope.optColumns.length + $scope.statusColumns.length + 4;
-            var ws = $scope.buildExcelFile(colspan, withStatusColumns);
-            var wscols = [{
+            var ws = $scope.buildExcelFile("foo","bar");
+		//var ws = $scope.buildExcelFile(colspan, withStatusColumns);
+	    var wscols = [{
                 wch: 20
             }, // width of column category
             {
@@ -1846,14 +1846,15 @@ angular.module('sdlctoolApp')
                     wch: 10
                 });
             });
-            var wb = new Workbook();
+            //var wb = new Workbook();
+	    var wb = XLSX.utils.book_new();
             wb.SheetNames.push(wsName);
             wb.Sheets[wsName] = ws;
 
             if (dropdownList.length > 0) {
                 wb.SheetNames.push(wsName1);
                 // in case there are no statuscolumns of type enum.
-                wb.Sheets[wsName1] = $scope.buildDropdownList(dropdownList);
+                //wb.Sheets[wsName1] = $scope.buildDropdownList(dropdownList);
             }
             //sets the columns width.
             ws['!cols'] = wscols;
@@ -1862,6 +1863,18 @@ angular.module('sdlctoolApp')
                 bookSST: false,
                 type: 'binary'
             };
+	    console.log(XLSX.version);
+	    console.log(wb);
+            /*var foo = XLSX.utils.book_new();
+	    var opts = {
+                bookType: 'xlsx',
+                bookSST: false,
+                type: 'binary'
+            };
+	    foo.SheetNames.push(wsName);
+            foo.Sheets[wsName] = ws; 
+	    console.log(ws);
+	    var out = XLSX.write(foo, opts);*/
             var wbout = XLSX.write(wb, wbopts);
             if (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1) {
                 window.open('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8;base64,' + window.btoa(wbout), '', 'width=300,height=150');
@@ -2128,11 +2141,12 @@ angular.module('sdlctoolApp')
                     excelFile[cellRef] = cell;
                 }
             }
-
+            
             if (range.s.c < 10000000) {
                 excelFile['!ref'] = XLSX.utils.encode_range(range);
             }
             return excelFile;
+	    //return ['foobar'];
         };
 
         //creates the requirement worksheet.
@@ -2149,6 +2163,7 @@ angular.module('sdlctoolApp')
                     r: 0
                 }
             };
+	    	
             for (var R = 0; R !== row; ++R) {
                 for (var C = 0; C < colspan; C++) {
                     if (range.s.r > R) {
